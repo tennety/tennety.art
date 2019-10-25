@@ -1,4 +1,4 @@
-module Metadata exposing (ArticleMetadata, Metadata(..), PageMetadata, decoder)
+module Metadata exposing (ArticleMetadata, IndexMetadata, Metadata(..), PageMetadata, PreviewType(..), decoder)
 
 import Data.Author
 import Date exposing (Date)
@@ -14,7 +14,12 @@ type Metadata
     = Page PageMetadata
     | Article ArticleMetadata
     | Author Data.Author.Author
-    | BlogIndex
+    | BlogIndex IndexMetadata
+
+
+type PreviewType
+    = Summary
+    | Image
 
 
 type alias ArticleMetadata =
@@ -23,12 +28,21 @@ type alias ArticleMetadata =
     , published : Date
     , author : Data.Author.Author
     , image : ImagePath Pages.PathKey
+    , thumb : ImagePath Pages.PathKey
     , draft : Bool
     }
 
 
 type alias PageMetadata =
-    { title : String }
+    { title : String
+    , image : ImagePath Pages.PathKey
+    }
+
+
+type alias IndexMetadata =
+    { title : String
+    , previewType : PreviewType
+    }
 
 
 decoder =
@@ -37,11 +51,27 @@ decoder =
             (\pageType ->
                 case pageType of
                     "page" ->
-                        Decode.field "title" Decode.string
-                            |> Decode.map (\title -> Page { title = title })
+                        Decode.map2 PageMetadata
+                            (Decode.field "title" Decode.string)
+                            (Decode.field "image" imageDecoder)
+                            |> Decode.map Page
 
                     "blog-index" ->
-                        Decode.succeed BlogIndex
+                        Decode.map2 IndexMetadata
+                            (Decode.field "title" Decode.string)
+                            (Decode.field "previewType"
+                                Decode.string
+                                    |> Decode.maybe
+                                    |> Decode.map (Maybe.withDefault "summary")
+                                    |> Decode.andThen
+                                        (\previewType ->
+                                            if previewType == "image" then
+                                                Decode.succeed Image
+                                            else
+                                                Decode.succeed Summary
+                                        )
+                            )
+                            |> Decode.map BlogIndex
 
                     "author" ->
                         Decode.map3 Data.Author.Author
@@ -51,7 +81,7 @@ decoder =
                             |> Decode.map Author
 
                     "blog" ->
-                        Decode.map6 ArticleMetadata
+                        Decode.map7 ArticleMetadata
                             (Decode.field "title" Decode.string)
                             (Decode.field "description" Decode.string)
                             (Decode.field "published"
@@ -69,6 +99,7 @@ decoder =
                             )
                             (Decode.field "author" Data.Author.decoder)
                             (Decode.field "image" imageDecoder)
+                            (Decode.field "thumb" imageDecoder)
                             (Decode.field "draft" Decode.bool
                                 |> Decode.maybe
                                 |> Decode.map (Maybe.withDefault False)

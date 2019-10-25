@@ -75,49 +75,68 @@ application config =
 
 allPages : List (PagePath PathKey)
 allPages =
-    [ (buildPage [ "blog", "draft" ])
-    , (buildPage [ "blog", "hello" ])
-    , (buildPage [ "blog" ])
+    [ (buildPage [ "comics", "catch-yourself" ])
+    , (buildPage [ "comics", "handouts" ])
+    , (buildPage [ "comics" ])
+    , (buildPage [ "comics", "smiley-face" ])
+    , (buildPage [ "illustration" ])
     , (buildPage [  ])
     ]
 
 pages =
-    { blog =
-        { draft = (buildPage [ "blog", "draft" ])
-        , hello = (buildPage [ "blog", "hello" ])
-        , index = (buildPage [ "blog" ])
-        , directory = directoryWithIndex ["blog"]
+    { comics =
+        { catchYourself = (buildPage [ "comics", "catch-yourself" ])
+        , handouts = (buildPage [ "comics", "handouts" ])
+        , index = (buildPage [ "comics" ])
+        , smileyFace = (buildPage [ "comics", "smiley-face" ])
+        , directory = directoryWithIndex ["comics"]
+        }
+    , illustration =
+        { index = (buildPage [ "illustration" ])
+        , directory = directoryWithIndex ["illustration"]
         }
     , index = (buildPage [  ])
     , directory = directoryWithIndex []
     }
 
 images =
-    { articleCovers =
-        { hello = (buildImage [ "article-covers", "hello.jpg" ])
-        , mountains = (buildImage [ "article-covers", "mountains.jpg" ])
-        , directory = directoryWithoutIndex ["articleCovers"]
-        }
-    , author =
-        { dillon = (buildImage [ "author", "dillon.jpg" ])
+    { author =
+        { tennety = (buildImage [ "author", "tennety.jpeg" ])
         , directory = directoryWithoutIndex ["author"]
         }
-    , elmLogo = (buildImage [ "elm-logo.svg" ])
-    , github = (buildImage [ "github.svg" ])
+    , comics =
+        { catchYourself = (buildImage [ "comics", "catch-yourself.png" ])
+        , handouts = (buildImage [ "comics", "handouts.jpg" ])
+        , smileyFaceLores = (buildImage [ "comics", "SmileyFace-lores.jpeg" ])
+        , directory = directoryWithoutIndex ["comics"]
+        }
     , iconPng = (buildImage [ "icon-png.png" ])
     , icon = (buildImage [ "icon.svg" ])
+    , indexCovers =
+        { hummerSwingBw = (buildImage [ "index-covers", "hummer-swing-bw.png" ])
+        , directory = directoryWithoutIndex ["indexCovers"]
+        }
+    , thumbnails =
+        { catchYourself = (buildImage [ "thumbnails", "catch-yourself.png" ])
+        , handouts = (buildImage [ "thumbnails", "handouts.jpg" ])
+        , smiley = (buildImage [ "thumbnails", "smiley.png" ])
+        , directory = directoryWithoutIndex ["thumbnails"]
+        }
     , directory = directoryWithoutIndex []
     }
 
 allImages : List (ImagePath PathKey)
 allImages =
-    [(buildImage [ "article-covers", "hello.jpg" ])
-    , (buildImage [ "article-covers", "mountains.jpg" ])
-    , (buildImage [ "author", "dillon.jpg" ])
-    , (buildImage [ "elm-logo.svg" ])
-    , (buildImage [ "github.svg" ])
+    [(buildImage [ "author", "tennety.jpeg" ])
+    , (buildImage [ "comics", "catch-yourself.png" ])
+    , (buildImage [ "comics", "handouts.jpg" ])
+    , (buildImage [ "comics", "SmileyFace-lores.jpeg" ])
     , (buildImage [ "icon-png.png" ])
     , (buildImage [ "icon.svg" ])
+    , (buildImage [ "index-covers", "hummer-swing-bw.png" ])
+    , (buildImage [ "thumbnails", "catch-yourself.png" ])
+    , (buildImage [ "thumbnails", "handouts.jpg" ])
+    , (buildImage [ "thumbnails", "smiley.png" ])
     ]
 
 
@@ -145,26 +164,38 @@ isValidRoute route =
 content : List ( List String, { extension: String, frontMatter : String, body : Maybe String } )
 content =
     [ 
-  ( ["blog", "draft"]
-    , { frontMatter = """{"type":"blog","author":"Dillon Kearns","title":"A Draft Blog Post","description":"I'm not quite ready to share this post with the world","image":"/images/article-covers/mountains.jpg","draft":true,"published":"2019-09-21"}
+  ( ["comics", "catch-yourself"]
+    , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Catch Yourself","description":"Do you ever catch yourself falling?","image":"/images/comics/catch-yourself.png","thumb":"/images/thumbnails/catch-yourself.png","published":"2019-09-01"}
 """ , body = Nothing
     , extension = "md"
     } )
   ,
-  ( ["blog", "hello"]
-    , { frontMatter = """{"type":"blog","author":"Dillon Kearns","title":"Hello `elm-pages`! 🚀","description":"Here's an intro for my blog post to get you interested in reading more...","image":"/images/article-covers/hello.jpg","published":"2019-09-21"}
+  ( ["comics", "handouts"]
+    , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Looking for Handouts","description":"Never amount to anything, they said.","image":"/images/comics/handouts.jpg","thumb":"/images/thumbnails/handouts.jpg","published":"2019-08-16"}
 """ , body = Nothing
     , extension = "md"
     } )
   ,
-  ( ["blog"]
-    , { frontMatter = """{"title":"elm-pages blog","type":"blog-index"}
+  ( ["comics"]
+    , { frontMatter = """{"title":"comics","type":"blog-index","previewType":"image"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( ["comics", "smiley-face"]
+    , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Smiley Face","description":"Late night conversation with my child","image":"/images/comics/SmileyFace-lores.jpeg","thumb":"/images/thumbnails/smiley.png","published":"2019-06-12"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( ["illustration"]
+    , { frontMatter = """{"title":"illustration","type":"blog-index"}
 """ , body = Nothing
     , extension = "md"
     } )
   ,
   ( []
-    , { frontMatter = """{"title":"elm-pages-starter - a simple blog starter","type":"page"}
+    , { frontMatter = """{"title":"tennety.art","image":"/images/index-covers/hummer-swing-bw.png","type":"page"}
 """ , body = Nothing
     , extension = "md"
     } )

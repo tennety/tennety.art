@@ -1,4 +1,4 @@
 ---
-title: elm-pages blog
+title: illustration
 type: blog-index
 ---

@@ -1,5 +1,38 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Yrsa:300,400,500,600,700|IM+Fell+English&display=swap");
 
-.avatar img {
+* {
+  box-sizing: border-box;
+}
+
+.avatar img, .image-preview img {
   border-radius: 50%;
+  object-fit: cover;
+  transition: all 100ms;
+}
+
+.image-preview img:hover {
+  height: 160px;
+  width: 160px;
+  margin-top: -5px;
+  margin-left: -5px;
+}
+
+.bh .menu {
+  opacity: 0;
+}
+
+.fr .menu, .hero-image {
+  animation-duration: 500ms;
+  animation-name: fadein;
+  animation-timing-function: ease-out;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

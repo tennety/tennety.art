@@ -5,39 +5,57 @@ import Date
 import Element exposing (Element)
 import Element.Border
 import Element.Font
+import Html.Attributes as Attr
 import Metadata exposing (Metadata)
 import Pages
 import Pages.PagePath as PagePath exposing (PagePath)
+import Pages.ImagePath as ImagePath
 import Pages.Platform exposing (Page)
 
 
 view :
     List ( PagePath Pages.PathKey, Metadata )
+    -> PagePath Pages.PathKey
+    -> Metadata.IndexMetadata
     -> Element msg
-view posts =
-    Element.column [ Element.spacing 20 ]
-        (posts
-            |> List.filterMap
-                (\( path, metadata ) ->
-                    case metadata of
-                        Metadata.Page meta ->
-                            Nothing
-
-                        Metadata.Author _ ->
-                            Nothing
-
-                        Metadata.Article meta ->
-                            if meta.draft then
+view posts currentPagePath indexMetadata =
+    let
+        entries =
+            posts
+                |> List.filterMap
+                    (\( path, metadata ) ->
+                        case metadata of
+                            Metadata.Page meta ->
                                 Nothing
 
-                            else
-                                Just ( path, meta )
+                            Metadata.Author _ ->
+                                Nothing
 
-                        Metadata.BlogIndex ->
-                            Nothing
-                )
-            |> List.map postSummary
-        )
+                            Metadata.Article meta ->
+                                if meta.draft then
+                                    Nothing
+
+                                else
+                                    if (shareDirectory path currentPagePath) then
+                                        Just ( path, meta )
+                                    else
+                                        Nothing
+
+                            Metadata.BlogIndex _ ->
+                                Nothing
+                    )
+    in
+        case indexMetadata.previewType of
+            Metadata.Image ->
+                Element.wrappedRow
+                    [ Element.spacing 40
+                    , Element.alignLeft
+                    , Element.width (Element.fill |> Element.maximum 600)
+                    ]
+                    (entries |> List.map imageSummary)
+
+            Metadata.Summary ->
+                Element.column [ Element.spacing 20 ] (entries |> List.map postSummary)
 
 
 postSummary :
@@ -48,9 +66,17 @@ postSummary ( postPath, post ) =
         |> linkToPost postPath
 
 
+imageSummary :
+    ( PagePath Pages.PathKey, Metadata.ArticleMetadata )
+    -> Element msg
+imageSummary ( postPath, post ) =
+    imageIndex post
+        |> linkToPost postPath
+
+
 linkToPost : PagePath Pages.PathKey -> Element msg -> Element msg
 linkToPost postPath content =
-    Element.link [ Element.width Element.fill ]
+    Element.link []
         { url = PagePath.toString postPath, label = content }
 
 
@@ -60,7 +86,7 @@ title text =
         |> Element.paragraph
             [ Element.Font.size 36
             , Element.Font.center
-            , Element.Font.family [ Element.Font.typeface "Raleway" ]
+            , Element.Font.family [ Element.Font.typeface "IM Fell English" ]
             , Element.Font.semiBold
             , Element.padding 16
             ]
@@ -80,6 +106,16 @@ articleIndex metadata =
             ]
         ]
         (postPreview metadata)
+
+
+imageIndex : Metadata.ArticleMetadata -> Element msg
+imageIndex metadata =
+    Element.image
+        [ Element.width (Element.px 150)
+        , Element.height (Element.px 150)
+        , Element.htmlAttribute (Attr.class "image-preview")
+        ]
+        { src = ImagePath.toString metadata.thumb, description = metadata.description }
 
 
 readMoreLink =
@@ -115,7 +151,20 @@ postPreview post =
             |> Element.paragraph
                 [ Element.Font.size 22
                 , Element.Font.center
-                , Element.Font.family [ Element.Font.typeface "Raleway" ]
+                , Element.Font.family [ Element.Font.typeface "Yrsa" ]
                 ]
         , readMoreLink
         ]
+
+
+-- UTILITIES
+
+pathList : PagePath Pages.PathKey -> List String
+pathList rawPath =
+    rawPath |> PagePath.toString |> String.split "/" |> List.drop 1
+
+
+shareDirectory : PagePath Pages.PathKey -> PagePath Pages.PathKey -> Bool
+shareDirectory pagePath otherPagePath =
+    List.map2 Tuple.pair (pathList pagePath) (pathList otherPagePath)
+    |> not << List.any (\(a, b) -> a /= b)

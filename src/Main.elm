@@ -8,11 +8,13 @@ import Element exposing (Element)
 import Element.Background
 import Element.Border
 import Element.Font as Font
+import Element.Input as Input
 import Element.Region
 import Head
 import Head.Seo as Seo
 import Html exposing (Html)
 import Html.Attributes as Attr
+import Icons
 import Index
 import Json.Decode
 import Markdown
@@ -48,6 +50,9 @@ type alias Rendered =
     Element Msg
 
 
+type MenuState
+    = Open
+    | Closed
 
 -- the intellij-elm plugin doesn't support type aliases for Programs so we need to use this line
 -- main : Platform.Program Pages.Platform.Flags (Pages.Platform.Model Model Msg Metadata Rendered) (Pages.Platform.Msg Msg Metadata Rendered)
@@ -83,23 +88,23 @@ markdownDocument =
 
 
 type alias Model =
-    {}
+    {  menuState: MenuState }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model, Cmd.none )
+    ( { menuState = Closed }, Cmd.none )
 
 
-type alias Msg =
-    ()
+type Msg =
+    ToggleMenu
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        () ->
-            ( model, Cmd.none )
+        ToggleMenu ->
+            ({ model | menuState = toggleMenu model.menuState }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -115,12 +120,14 @@ view model siteMetadata page =
     in
     { title = title
     , body =
-        body
-            |> Element.layout
+        body |>
+            Element.layout
                 [ Element.width Element.fill
                 , Font.size 20
-                , Font.family [ Font.typeface "Roboto" ]
+                , Font.family [ Font.typeface "Yrsa" ]
                 , Font.color (Element.rgba255 0 0 0 0.8)
+                , Element.inFront ( nav model.menuState page.path )
+                , Element.inFront ( menuButton model.menuState )
                 ]
     }
 
@@ -131,26 +138,24 @@ pageView model siteMetadata page =
         Metadata.Page metadata ->
             { title = metadata.title
             , body =
-                [ header page.path
-                , Element.column
-                    [ Element.padding 50
-                    , Element.spacing 60
-                    , Element.Region.mainContent
+                [ Element.column
+                    [ Element.Region.mainContent
+                    , Element.width (Element.fill |> Element.maximum 800)
+                    , Element.centerX
                     ]
-                    [ page.view
+                    [ homeLink
+                    , articleImageView metadata.image
+                    , page.view
                     ]
                 ]
-                    |> Element.textColumn
-                        [ Element.width Element.fill
-                        ]
+                    |> Element.row [ Element.width Element.fill ]
             }
 
         Metadata.Article metadata ->
             { title = metadata.title
             , body =
-                Element.column [ Element.width Element.fill ]
-                    [ header page.path
-                    , Element.column
+                Element.row [ Element.width Element.fill ]
+                    [ Element.column
                         [ Element.padding 30
                         , Element.spacing 40
                         , Element.Region.mainContent
@@ -180,11 +185,10 @@ pageView model siteMetadata page =
         Metadata.Author author ->
             { title = author.name
             , body =
-                Element.column
+                Element.row
                     [ Element.width Element.fill
                     ]
-                    [ header page.path
-                    , Element.column
+                    [ Element.column
                         [ Element.padding 30
                         , Element.spacing 20
                         , Element.Region.mainContent
@@ -198,62 +202,94 @@ pageView model siteMetadata page =
                     ]
             }
 
-        Metadata.BlogIndex ->
-            { title = "elm-pages blog"
+        Metadata.BlogIndex indexMetadata ->
+            { title = indexMetadata.title ++ " - tennety.art"
             , body =
-                Element.column [ Element.width Element.fill ]
-                    [ header page.path
-                    , Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata ]
+                Element.row [ Element.width Element.fill ]
+                    [ Element.column
+                        [ Element.padding 20, Element.centerX ]
+                        [ Index.view siteMetadata page.path indexMetadata ]
                     ]
             }
 
 
 articleImageView : ImagePath Pages.PathKey -> Element msg
 articleImageView articleImage =
-    Element.image [ Element.width Element.fill ]
+    Element.image
+        [ Element.width Element.fill
+        , Element.htmlAttribute ( Attr.class "hero-image" )
+        ]
         { src = ImagePath.toString articleImage
         , description = "Article cover photo"
         }
 
 
-header : PagePath Pages.PathKey -> Element msg
-header currentPath =
-    Element.column [ Element.width Element.fill ]
-        [ Element.el
-            [ Element.height (Element.px 4)
-            , Element.width Element.fill
-            , Element.Background.gradient
-                { angle = 0.2
-                , steps =
-                    [ Element.rgb255 0 242 96
-                    , Element.rgb255 5 117 230
-                    ]
-                }
-            ]
-            Element.none
-        , Element.row
-            [ Element.paddingXY 25 4
-            , Element.spaceEvenly
-            , Element.width Element.fill
-            , Element.Region.navigation
-            , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
-            , Element.Border.color (Element.rgba255 40 80 40 0.4)
-            ]
-            [ Element.link []
-                { url = "/"
-                , label =
-                    Element.row [ Font.size 30, Element.spacing 16 ]
-                        [ DocumentSvg.view
-                        , Element.text "elm-pages-starter"
-                        ]
-                }
-            , Element.row [ Element.spacing 15 ]
-                [ elmDocsLink
-                , githubRepoLink
-                , highlightableLink currentPath pages.blog.directory "Blog"
+nav : MenuState -> PagePath Pages.PathKey -> Element Msg
+nav menuState currentPath =
+    case menuState of
+        Open ->
+            Element.column
+                [ Element.width Element.fill
+                , Element.height Element.fill
+                , Element.Background.color (Element.rgba255 255 255 255 1)
+                , Element.centerX
+                , Element.htmlAttribute (Attr.class "menu")
                 ]
-            ]
-        ]
+                [ homeLink
+                , Element.column
+                    [ Element.Region.navigation
+                    , Element.centerX
+                    , Element.padding 15
+                    ]
+                    [ highlightableLink currentPath pages.comics.directory "comics"
+                    , highlightableLink currentPath pages.illustration.directory "illustration"
+                    , Element.newTabLink
+                        [ Element.width Element.fill
+                        , Element.paddingXY 25 15
+                        , Font.size (Palette.scaled 2)
+                        , Font.center
+                        ]
+                        { url = "https://instagram.com/tennety.art"
+                        , label = Element.row [] [ Element.html Icons.instagram, Element.text " instagram" ]
+                        }
+                    ]
+                ]
+        Closed ->
+            Element.none
+
+
+toggleMenu : MenuState -> MenuState
+toggleMenu state =
+    case state of
+        Open -> Closed
+        Closed -> Open
+
+
+menuButton : MenuState -> Element Msg
+menuButton state =
+    let
+        icon =
+            case state of
+                Open -> Icons.close
+                Closed -> Icons.menu
+    in
+        Input.button
+            [ Element.padding 10 ]
+            { onPress = Just ToggleMenu
+            , label = Element.html icon
+            }
+
+
+homeLink =
+  Element.link
+    [ Element.centerX
+    , Element.padding 10
+    , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
+    , Element.Border.color (Element.rgba255 100 100 100 0.8)
+    ]
+    { url = "/"
+    , label = Palette.blogHeading "tennety.art"
+    }
 
 
 highlightableLink :
@@ -265,16 +301,18 @@ highlightableLink currentPath linkDirectory displayName =
     let
         isHighlighted =
             currentPath |> Directory.includes linkDirectory
+        fontStyle =
+            if isHighlighted then
+                Font.bold
+            else
+                Font.regular
     in
     Element.link
-        (if isHighlighted then
-            [ Font.underline
-            , Font.color Palette.color.primary
-            ]
-
-         else
-            []
-        )
+        ([ Element.width Element.fill
+        , Element.paddingXY 25 15
+        , Font.size (Palette.scaled 2)
+        , Font.center
+        ] ++ [fontStyle])
         { url = linkDirectory |> Directory.indexPath |> PagePath.toString
         , label = Element.text displayName
         }
@@ -361,7 +399,7 @@ head metadata =
                     , username = Nothing
                     }
 
-        Metadata.BlogIndex ->
+        Metadata.BlogIndex _ ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
                 , siteName = "elm-pages"
@@ -393,29 +431,3 @@ publishedDateView metadata =
         (metadata.published
             |> Date.format "MMMM ddd, yyyy"
         )
-
-
-githubRepoLink : Element msg
-githubRepoLink =
-    Element.newTabLink []
-        { url = "https://github.com/dillonkearns/elm-pages"
-        , label =
-            Element.image
-                [ Element.width (Element.px 22)
-                , Font.color Palette.color.primary
-                ]
-                { src = ImagePath.toString Pages.images.github, description = "Github repo" }
-        }
-
-
-elmDocsLink : Element msg
-elmDocsLink =
-    Element.newTabLink []
-        { url = "https://package.elm-lang.org/packages/dillonkearns/elm-pages/latest/"
-        , label =
-            Element.image
-                [ Element.width (Element.px 22)
-                , Font.color Palette.color.primary
-                ]
-                { src = ImagePath.toString Pages.images.elmLogo, description = "Elm Package Docs" }
-        }
