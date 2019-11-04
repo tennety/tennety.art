@@ -274,7 +274,10 @@ menuButton state =
                 Closed -> Icons.menu
     in
         Input.button
-            [ Element.padding 10 ]
+            [ Element.padding 10
+            , Element.htmlAttribute (Attr.title "menu")
+            , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
+            ]
             { onPress = Just ToggleMenu
             , label = Element.html icon
             }
