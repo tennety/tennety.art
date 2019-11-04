@@ -36,12 +36,12 @@ manifest =
     , categories = [ Pages.Manifest.Category.education ]
     , displayMode = Manifest.Standalone
     , orientation = Manifest.Portrait
-    , description = "elm-pages-starter - A statically typed site generator."
+    , description = "tennety.art - Chandu Tennety's Art Portfolio"
     , iarcRatingId = Nothing
-    , name = "elm-pages-starter"
+    , name = "tennety.art"
     , themeColor = Just Color.white
     , startUrl = pages.index
-    , shortName = Just "elm-pages-starter"
+    , shortName = Just "tennety.art"
     , sourceIcon = images.iconPng
     }
 
@@ -329,10 +329,10 @@ head metadata =
         Metadata.Page meta ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
-                , siteName = "elm-pages-starter"
+                , siteName = "tennety.art"
                 , image =
                     { url = images.iconPng
-                    , alt = "elm-pages logo"
+                    , alt = "tennety art hummingbird logo"
                     , dimensions = Nothing
                     , mimeType = Nothing
                     }
@@ -345,7 +345,7 @@ head metadata =
         Metadata.Article meta ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
-                , siteName = "elm-pages starter"
+                , siteName = "tennety.art"
                 , image =
                     { url = meta.image
                     , alt = meta.description
@@ -382,16 +382,16 @@ head metadata =
             in
             Seo.summary
                 { canonicalUrlOverride = Nothing
-                , siteName = "elm-pages-starter"
+                , siteName = "tennety.art"
                 , image =
                     { url = meta.avatar
-                    , alt = meta.name ++ "'s elm-pages articles."
+                    , alt = meta.name ++ "'s art."
                     , dimensions = Nothing
                     , mimeType = Nothing
                     }
                 , description = meta.bio
                 , locale = Nothing
-                , title = meta.name ++ "'s elm-pages articles."
+                , title = meta.name ++ "'s art."
                 }
                 |> Seo.profile
                     { firstName = firstName
@@ -399,31 +399,31 @@ head metadata =
                     , username = Nothing
                     }
 
-        Metadata.BlogIndex _ ->
+        Metadata.BlogIndex indexMetadata ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
-                , siteName = "elm-pages"
+                , siteName = "tennety.art"
                 , image =
                     { url = images.iconPng
-                    , alt = "elm-pages logo"
+                    , alt = "tennety art hummingbird logo"
                     , dimensions = Nothing
                     , mimeType = Nothing
                     }
                 , description = siteTagline
                 , locale = Nothing
-                , title = "elm-pages blog"
+                , title = indexMetadata.title
                 }
                 |> Seo.website
 
 
 canonicalSiteUrl : String
 canonicalSiteUrl =
-    "https://elm-pages-starter.netlify.com/"
+    "https://tennety.art/"
 
 
 siteTagline : String
 siteTagline =
-    "Starter blog for elm-pages"
+    "Chandu Tennety's Art Portfolio"
 
 
 publishedDateView metadata =
