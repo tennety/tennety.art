@@ -1,13 +1,13 @@
 {
-  "name": "elm-pages-example",
+  "name": "tennety.art",
   "version": "1.0.0",
-  "description": "Example site built with elm-pages.",
+  "description": "Chandu Tennety's Art Portfolio",
   "scripts": {
     "start": "elm-pages develop",
     "serve": "npm run build && http-server ./dist -a localhost -p 3000 -c-1",
     "build": "elm-pages build"
   },
-  "author": "Dillon Kearns",
+  "author": "Chandu Tennety",
   "license": "BSD-3",
   "dependencies": {
     "highlight.js": "^9.15.10",
@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "elm": "^0.19.0-no-deps",
-    "elm-pages": "1.0.36",
+    "elm-pages": "1.0.39",
     "http-server": "^0.11.1"
   }
 }
