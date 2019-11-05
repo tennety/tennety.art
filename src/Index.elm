@@ -47,12 +47,16 @@ view posts currentPagePath indexMetadata =
     in
         case indexMetadata.previewType of
             Metadata.Image ->
-                Element.wrappedRow
-                    [ Element.spacing 40
-                    , Element.alignLeft
-                    , Element.width (Element.fill |> Element.maximum 600)
+                Element.column
+                    [ Element.spacing 20 ]
+                    [ title indexMetadata.title
+                    , Element.wrappedRow
+                        [ Element.spacing 40
+                        , Element.alignLeft
+                        , Element.width (Element.fill |> Element.maximum 600)
+                        ]
+                        (entries |> List.map imageSummary)
                     ]
-                    (entries |> List.map imageSummary)
 
             Metadata.Summary ->
                 Element.column [ Element.spacing 20 ] (entries |> List.map postSummary)

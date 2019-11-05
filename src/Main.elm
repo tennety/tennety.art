@@ -140,11 +140,10 @@ pageView model siteMetadata page =
             , body =
                 [ Element.column
                     [ Element.Region.mainContent
-                    , Element.width (Element.fill |> Element.maximum 800)
                     , Element.centerX
                     ]
                     [ homeLink
-                    , articleImageView metadata.image
+                    , pageImageView metadata.image
                     , page.view
                     ]
                 ]
@@ -215,6 +214,15 @@ pageView model siteMetadata page =
 
 articleImageView : ImagePath Pages.PathKey -> Element msg
 articleImageView articleImage =
+    Element.image
+        [ Element.width Element.fill ]
+        { src = ImagePath.toString articleImage
+        , description = "Article cover photo"
+        }
+
+
+pageImageView : ImagePath Pages.PathKey -> Element msg
+pageImageView articleImage =
     Element.image
         [ Element.width Element.fill
         , Element.htmlAttribute ( Attr.class "hero-image" )
