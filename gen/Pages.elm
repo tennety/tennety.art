@@ -79,7 +79,9 @@ allPages =
     , (buildPage [ "comics", "handouts" ])
     , (buildPage [ "comics" ])
     , (buildPage [ "comics", "smiley-face" ])
+    , (buildPage [ "illustration", "hummer" ])
     , (buildPage [ "illustration" ])
+    , (buildPage [ "illustration", "loon" ])
     , (buildPage [  ])
     ]
 
@@ -92,7 +94,9 @@ pages =
         , directory = directoryWithIndex ["comics"]
         }
     , illustration =
-        { index = (buildPage [ "illustration" ])
+        { hummer = (buildPage [ "illustration", "hummer" ])
+        , index = (buildPage [ "illustration" ])
+        , loon = (buildPage [ "illustration", "loon" ])
         , directory = directoryWithIndex ["illustration"]
         }
     , index = (buildPage [  ])
@@ -112,6 +116,11 @@ images =
         }
     , iconPng = (buildImage [ "icon-png.png" ])
     , icon = (buildImage [ "icon.svg" ])
+    , illustration =
+        { hummerFull = (buildImage [ "illustration", "hummer-full.png" ])
+        , loon = (buildImage [ "illustration", "loon.png" ])
+        , directory = directoryWithoutIndex ["illustration"]
+        }
     , indexCovers =
         { hummerSwingBw = (buildImage [ "index-covers", "hummer-swing-bw.png" ])
         , directory = directoryWithoutIndex ["indexCovers"]
@@ -133,6 +142,8 @@ allImages =
     , (buildImage [ "comics", "SmileyFace-lores.jpeg" ])
     , (buildImage [ "icon-png.png" ])
     , (buildImage [ "icon.svg" ])
+    , (buildImage [ "illustration", "hummer-full.png" ])
+    , (buildImage [ "illustration", "loon.png" ])
     , (buildImage [ "index-covers", "hummer-swing-bw.png" ])
     , (buildImage [ "thumbnails", "catch-yourself.png" ])
     , (buildImage [ "thumbnails", "handouts.jpg" ])
@@ -188,8 +199,20 @@ content =
     , extension = "md"
     } )
   ,
+  ( ["illustration", "hummer"]
+    , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Hummingbird on Swing","description":"Ballpoint pen illustration of a hummingbird on swing","image":"/images/illustration/hummer-full.png","thumb":"/images/illustration/hummer-full.png","published":"2019-09-10"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
   ( ["illustration"]
-    , { frontMatter = """{"title":"illustration","type":"blog-index"}
+    , { frontMatter = """{"title":"illustration","type":"blog-index","previewType":"image"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( ["illustration", "loon"]
+    , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Common loon","description":"Ballpoint pen illustration of a common loon","image":"/images/illustration/loon.png","thumb":"/images/illustration/loon.png","published":"2019-09-21"}
 """ , body = Nothing
     , extension = "md"
     } )
