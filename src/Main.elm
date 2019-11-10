@@ -35,13 +35,13 @@ manifest =
     { backgroundColor = Just Color.white
     , categories = [ Pages.Manifest.Category.education ]
     , displayMode = Manifest.Standalone
-    , orientation = Manifest.Portrait
-    , description = "tennety.art - Chandu Tennety's Art Portfolio"
+    , orientation = Manifest.Landscape
+    , description = siteTagline
     , iarcRatingId = Nothing
-    , name = "tennety.art"
+    , name = siteName
     , themeColor = Just Color.white
     , startUrl = pages.index
-    , shortName = Just "tennety.art"
+    , shortName = Just siteName
     , sourceIcon = images.iconPng
     }
 
@@ -151,33 +151,21 @@ pageView model siteMetadata page =
             }
 
         Metadata.Article metadata ->
-            { title = metadata.title
+            { title = withSiteName metadata.title
             , body =
                 Element.row [ Element.width Element.fill ]
                     [ Element.column
                         [ Element.padding 30
-                        , Element.spacing 40
+                        , Element.spacing 20
                         , Element.Region.mainContent
                         , Element.width (Element.fill |> Element.maximum 800)
                         , Element.centerX
                         ]
-                        (Element.column [ Element.spacing 10 ]
-                            [ Element.row [ Element.spacing 10 ]
-                                [ Author.view [] metadata.author
-                                , Element.column [ Element.spacing 10, Element.width Element.fill ]
-                                    [ Element.paragraph [ Font.bold, Font.size 24 ]
-                                        [ Element.text metadata.author.name
-                                        ]
-                                    , Element.paragraph [ Font.size 16 ]
-                                        [ Element.text metadata.author.bio ]
-                                    ]
-                                ]
-                            ]
-                            :: (publishedDateView metadata |> Element.el [ Font.size 16, Font.color (Element.rgba255 0 0 0 0.6) ])
-                            :: Palette.blogHeading metadata.title
-                            :: articleImageView metadata.image
-                            :: [ page.view ]
-                        )
+                        [ Palette.blogHeading metadata.title
+                        , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (Element.rgba255 0 0 0 0.6), Font.center ] [publishedDateView metadata]
+                        , articleImageView metadata.image
+                        , page.view
+                        ]
                     ]
             }
 
@@ -194,15 +182,20 @@ pageView model siteMetadata page =
                         , Element.width (Element.fill |> Element.maximum 800)
                         , Element.centerX
                         ]
-                        [ Palette.blogHeading author.name
-                        , Author.view [] author
+                        [ Palette.blogHeading "about the artist"
+                        , Element.column
+                            [ Element.spacing 30 ]
+                            [ Author.view [ Element.centerX ] author
+                            , Element.paragraph [ Font.size (Palette.scaled 2) ]
+                                    [ Element.text author.bio ]
+                            ]
                         , Element.paragraph [ Element.centerX, Font.center ] [ page.view ]
                         ]
                     ]
             }
 
         Metadata.BlogIndex indexMetadata ->
-            { title = indexMetadata.title ++ " - tennety.art"
+            { title = withSiteName indexMetadata.title
             , body =
                 Element.row [ Element.width Element.fill ]
                     [ Element.column
@@ -249,8 +242,9 @@ nav menuState currentPath =
                     , Element.centerX
                     , Element.padding 15
                     ]
-                    [ highlightableLink currentPath pages.comics.directory "comics"
-                    , highlightableLink currentPath pages.illustration.directory "illustration"
+                    [ highlightableDirLink currentPath pages.comics.directory "comics"
+                    , highlightableDirLink currentPath pages.illustration.directory "illustration"
+                    , highlightableLink currentPath pages.about "about"
                     , Element.newTabLink
                         [ Element.width Element.fill
                         , Element.paddingXY 25 15
@@ -299,16 +293,16 @@ homeLink =
     , Element.Border.color (Element.rgba255 100 100 100 0.8)
     ]
     { url = "/"
-    , label = Palette.blogHeading "tennety.art"
+    , label = Palette.blogHeading siteName
     }
 
 
-highlightableLink :
+highlightableDirLink :
     PagePath Pages.PathKey
     -> Directory Pages.PathKey Directory.WithIndex
     -> String
     -> Element msg
-highlightableLink currentPath linkDirectory displayName =
+highlightableDirLink currentPath linkDirectory displayName =
     let
         isHighlighted =
             currentPath |> Directory.includes linkDirectory
@@ -329,6 +323,32 @@ highlightableLink currentPath linkDirectory displayName =
         }
 
 
+highlightableLink :
+    PagePath Pages.PathKey
+    -> PagePath Pages.PathKey
+    -> String
+    -> Element msg
+highlightableLink currentPath linkPath displayName =
+    let
+        isHighlighted =
+            PagePath.toString currentPath == PagePath.toString linkPath
+        fontStyle =
+            if isHighlighted then
+                Font.bold
+            else
+                Font.regular
+    in
+    Element.link
+        ([ Element.width Element.fill
+        , Element.paddingXY 25 15
+        , Font.size (Palette.scaled 2)
+        , Font.center
+        ] ++ [fontStyle])
+        { url = linkPath |> PagePath.toString
+        , label = Element.text displayName
+        }
+
+
 {-| <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards>
 <https://htmlhead.dev>
 <https://html.spec.whatwg.org/multipage/semantics.html#standard-metadata-names>
@@ -340,7 +360,7 @@ head metadata =
         Metadata.Page meta ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
-                , siteName = "tennety.art"
+                , siteName = siteName
                 , image =
                     { url = images.iconPng
                     , alt = "tennety art hummingbird logo"
@@ -356,7 +376,7 @@ head metadata =
         Metadata.Article meta ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
-                , siteName = "tennety.art"
+                , siteName = siteName
                 , image =
                     { url = meta.image
                     , alt = meta.description
@@ -393,7 +413,7 @@ head metadata =
             in
             Seo.summary
                 { canonicalUrlOverride = Nothing
-                , siteName = "tennety.art"
+                , siteName = siteName
                 , image =
                     { url = meta.avatar
                     , alt = meta.name ++ "'s art."
@@ -413,7 +433,7 @@ head metadata =
         Metadata.BlogIndex indexMetadata ->
             Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
-                , siteName = "tennety.art"
+                , siteName = siteName
                 , image =
                     { url = images.iconPng
                     , alt = "tennety art hummingbird logo"
@@ -435,6 +455,16 @@ canonicalSiteUrl =
 siteTagline : String
 siteTagline =
     "Chandu Tennety's Art Portfolio"
+
+
+siteName : String
+siteName =
+    "tennety.art"
+
+
+withSiteName : String -> String
+withSiteName title =
+    [ title, siteName ] |> String.join " - "
 
 
 publishedDateView metadata =

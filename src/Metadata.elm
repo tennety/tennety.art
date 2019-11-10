@@ -74,11 +74,7 @@ decoder =
                             |> Decode.map BlogIndex
 
                     "author" ->
-                        Decode.map3 Data.Author.Author
-                            (Decode.field "name" Decode.string)
-                            (Decode.field "avatar" imageDecoder)
-                            (Decode.field "bio" Decode.string)
-                            |> Decode.map Author
+                        (Decode.field "name" Data.Author.decoder) |> Decode.map Author
 
                     "blog" ->
                         Decode.map7 ArticleMetadata

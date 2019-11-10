@@ -75,7 +75,8 @@ application config =
 
 allPages : List (PagePath PathKey)
 allPages =
-    [ (buildPage [ "comics", "catch-yourself" ])
+    [ (buildPage [ "about" ])
+    , (buildPage [ "comics", "catch-yourself" ])
     , (buildPage [ "comics", "handouts" ])
     , (buildPage [ "comics" ])
     , (buildPage [ "comics", "smiley-face" ])
@@ -86,7 +87,8 @@ allPages =
     ]
 
 pages =
-    { comics =
+    { about = (buildPage [ "about" ])
+    , comics =
         { catchYourself = (buildPage [ "comics", "catch-yourself" ])
         , handouts = (buildPage [ "comics", "handouts" ])
         , index = (buildPage [ "comics" ])
@@ -175,6 +177,12 @@ isValidRoute route =
 content : List ( List String, { extension: String, frontMatter : String, body : Maybe String } )
 content =
     [ 
+  ( ["about"]
+    , { frontMatter = """{"title":"about the author","name":"Chandu Tennety","type":"author"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
   ( ["comics", "catch-yourself"]
     , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Catch Yourself","description":"Do you ever catch yourself falling?","image":"/images/comics/catch-yourself.png","thumb":"/images/thumbnails/catch-yourself.png","published":"2019-09-01"}
 """ , body = Nothing

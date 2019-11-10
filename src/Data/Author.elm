@@ -19,7 +19,7 @@ all : List Author
 all =
     [ { name = "Chandu Tennety"
       , avatar = Pages.images.author.tennety
-      , bio = "Self-taught artist who loves to linger in the spaces between reality and metaphor."
+      , bio = "Chandu Tennety is a self-taught artist and has been drawing for as long as he can remember. He lives in Ohio with his musician spouse and daughter (an artist in her own right) and loves to linger in the spaces between reality and metaphor."
       }
     ]
 
@@ -41,7 +41,7 @@ decoder =
 view : List (Element.Attribute msg) -> Author -> Element msg
 view attributes author =
     Element.image
-        (Element.width (Element.px 70)
+        (Element.width (Element.px 175)
             :: Element.htmlAttribute (Attr.class "avatar")
             :: attributes
         )
