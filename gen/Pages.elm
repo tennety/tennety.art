@@ -76,6 +76,7 @@ application config =
 allPages : List (PagePath PathKey)
 allPages =
     [ (buildPage [ "about" ])
+    , (buildPage [ "comics", "butterfly" ])
     , (buildPage [ "comics", "catch-yourself" ])
     , (buildPage [ "comics", "handouts" ])
     , (buildPage [ "comics" ])
@@ -83,13 +84,15 @@ allPages =
     , (buildPage [ "illustration", "hummer" ])
     , (buildPage [ "illustration" ])
     , (buildPage [ "illustration", "loon" ])
+    , (buildPage [ "illustration", "warbler" ])
     , (buildPage [  ])
     ]
 
 pages =
     { about = (buildPage [ "about" ])
     , comics =
-        { catchYourself = (buildPage [ "comics", "catch-yourself" ])
+        { butterfly = (buildPage [ "comics", "butterfly" ])
+        , catchYourself = (buildPage [ "comics", "catch-yourself" ])
         , handouts = (buildPage [ "comics", "handouts" ])
         , index = (buildPage [ "comics" ])
         , smileyFace = (buildPage [ "comics", "smiley-face" ])
@@ -99,6 +102,7 @@ pages =
         { hummer = (buildPage [ "illustration", "hummer" ])
         , index = (buildPage [ "illustration" ])
         , loon = (buildPage [ "illustration", "loon" ])
+        , warbler = (buildPage [ "illustration", "warbler" ])
         , directory = directoryWithIndex ["illustration"]
         }
     , index = (buildPage [  ])
@@ -111,7 +115,8 @@ images =
         , directory = directoryWithoutIndex ["author"]
         }
     , comics =
-        { catchYourself = (buildImage [ "comics", "catch-yourself.png" ])
+        { butterfly = (buildImage [ "comics", "butterfly.jpg" ])
+        , catchYourself = (buildImage [ "comics", "catch-yourself.png" ])
         , handouts = (buildImage [ "comics", "handouts.jpg" ])
         , smileyFaceLores = (buildImage [ "comics", "SmileyFace-lores.jpeg" ])
         , directory = directoryWithoutIndex ["comics"]
@@ -121,6 +126,7 @@ images =
     , illustration =
         { hummerFull = (buildImage [ "illustration", "hummer-full.png" ])
         , loon = (buildImage [ "illustration", "loon.png" ])
+        , warbler = (buildImage [ "illustration", "warbler.png" ])
         , directory = directoryWithoutIndex ["illustration"]
         }
     , indexCovers =
@@ -128,7 +134,8 @@ images =
         , directory = directoryWithoutIndex ["indexCovers"]
         }
     , thumbnails =
-        { catchYourself = (buildImage [ "thumbnails", "catch-yourself.png" ])
+        { butterfly = (buildImage [ "thumbnails", "butterfly.jpg" ])
+        , catchYourself = (buildImage [ "thumbnails", "catch-yourself.png" ])
         , handouts = (buildImage [ "thumbnails", "handouts.jpg" ])
         , smiley = (buildImage [ "thumbnails", "smiley.png" ])
         , directory = directoryWithoutIndex ["thumbnails"]
@@ -139,6 +146,7 @@ images =
 allImages : List (ImagePath PathKey)
 allImages =
     [(buildImage [ "author", "tennety.jpeg" ])
+    , (buildImage [ "comics", "butterfly.jpg" ])
     , (buildImage [ "comics", "catch-yourself.png" ])
     , (buildImage [ "comics", "handouts.jpg" ])
     , (buildImage [ "comics", "SmileyFace-lores.jpeg" ])
@@ -146,7 +154,9 @@ allImages =
     , (buildImage [ "icon.svg" ])
     , (buildImage [ "illustration", "hummer-full.png" ])
     , (buildImage [ "illustration", "loon.png" ])
+    , (buildImage [ "illustration", "warbler.png" ])
     , (buildImage [ "index-covers", "hummer-swing-bw.png" ])
+    , (buildImage [ "thumbnails", "butterfly.jpg" ])
     , (buildImage [ "thumbnails", "catch-yourself.png" ])
     , (buildImage [ "thumbnails", "handouts.jpg" ])
     , (buildImage [ "thumbnails", "smiley.png" ])
@@ -179,6 +189,12 @@ content =
     [ 
   ( ["about"]
     , { frontMatter = """{"title":"about the author","name":"Chandu Tennety","type":"author"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( ["comics", "butterfly"]
+    , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"The Transformation of Things","description":"Comic re-interpretation of Ike no Taiga's `Dreaming of a Butterfly (or a Butterfly Dreaming of Zhuangzi)`","image":"/images/comics/butterfly.jpg","thumb":"/images/thumbnails/butterfly.jpg","published":"2019-09-09"}
 """ , body = Nothing
     , extension = "md"
     } )
@@ -221,6 +237,12 @@ content =
   ,
   ( ["illustration", "loon"]
     , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Common loon","description":"Ballpoint pen illustration of a common loon","image":"/images/illustration/loon.png","thumb":"/images/illustration/loon.png","published":"2019-09-21"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( ["illustration", "warbler"]
+    , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Wilson's Warbler","description":"Color pencil illustration of a Wilson's warbler","image":"/images/illustration/warbler.png","thumb":"/images/illustration/warbler.png","published":"2017-12-15"}
 """ , body = Nothing
     , extension = "md"
     } )
