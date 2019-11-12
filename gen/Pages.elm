@@ -81,9 +81,11 @@ allPages =
     , (buildPage [ "comics", "handouts" ])
     , (buildPage [ "comics" ])
     , (buildPage [ "comics", "smiley-face" ])
+    , (buildPage [ "illustration", "catbird" ])
     , (buildPage [ "illustration", "hummer" ])
     , (buildPage [ "illustration" ])
     , (buildPage [ "illustration", "loon" ])
+    , (buildPage [ "illustration", "pickle" ])
     , (buildPage [ "illustration", "warbler" ])
     , (buildPage [  ])
     ]
@@ -99,9 +101,11 @@ pages =
         , directory = directoryWithIndex ["comics"]
         }
     , illustration =
-        { hummer = (buildPage [ "illustration", "hummer" ])
+        { catbird = (buildPage [ "illustration", "catbird" ])
+        , hummer = (buildPage [ "illustration", "hummer" ])
         , index = (buildPage [ "illustration" ])
         , loon = (buildPage [ "illustration", "loon" ])
+        , pickle = (buildPage [ "illustration", "pickle" ])
         , warbler = (buildPage [ "illustration", "warbler" ])
         , directory = directoryWithIndex ["illustration"]
         }
@@ -124,8 +128,10 @@ images =
     , iconPng = (buildImage [ "icon-png.png" ])
     , icon = (buildImage [ "icon.svg" ])
     , illustration =
-        { hummerFull = (buildImage [ "illustration", "hummer-full.png" ])
+        { catbird = (buildImage [ "illustration", "catbird.png" ])
+        , hummerFull = (buildImage [ "illustration", "hummer-full.png" ])
         , loon = (buildImage [ "illustration", "loon.png" ])
+        , pickle = (buildImage [ "illustration", "pickle.png" ])
         , warbler = (buildImage [ "illustration", "warbler.png" ])
         , directory = directoryWithoutIndex ["illustration"]
         }
@@ -152,8 +158,11 @@ allImages =
     , (buildImage [ "comics", "SmileyFace-lores.jpeg" ])
     , (buildImage [ "icon-png.png" ])
     , (buildImage [ "icon.svg" ])
+    , (buildImage [ "illustration", "catbird.png" ])
     , (buildImage [ "illustration", "hummer-full.png" ])
     , (buildImage [ "illustration", "loon.png" ])
+    , (buildImage [ "illustration", "pickle.jpg" ])
+    , (buildImage [ "illustration", "pickle.png" ])
     , (buildImage [ "illustration", "warbler.png" ])
     , (buildImage [ "index-covers", "hummer-swing-bw.png" ])
     , (buildImage [ "thumbnails", "butterfly.jpg" ])
@@ -223,6 +232,12 @@ content =
     , extension = "md"
     } )
   ,
+  ( ["illustration", "catbird"]
+    , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Gray Catbird","description":"Ballpoint pen illustration of a Gray Catbird","image":"/images/illustration/catbird.png","thumb":"/images/illustration/catbird.png","published":"2019-10-05"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
   ( ["illustration", "hummer"]
     , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Hummingbird on Swing","description":"Ballpoint pen illustration of a hummingbird on swing","image":"/images/illustration/hummer-full.png","thumb":"/images/illustration/hummer-full.png","published":"2019-09-10"}
 """ , body = Nothing
@@ -237,6 +252,12 @@ content =
   ,
   ( ["illustration", "loon"]
     , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Common loon","description":"Ballpoint pen illustration of a common loon","image":"/images/illustration/loon.png","thumb":"/images/illustration/loon.png","published":"2019-09-21"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( ["illustration", "pickle"]
+    , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Pickle","description":"Pencil illustration of Pickle, a family cat","image":"/images/illustration/pickle.jpg","thumb":"/images/illustration/pickle.jpg","published":"2018-12-15"}
 """ , body = Nothing
     , extension = "md"
     } )
