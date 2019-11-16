@@ -242,8 +242,8 @@ nav menuState currentPath =
                     , Element.centerX
                     , Element.padding 15
                     ]
-                    [ highlightableDirLink currentPath pages.comics.directory "comics"
-                    , highlightableDirLink currentPath pages.illustration.directory "illustration"
+                    [ highlightableDirLink currentPath pages.illustration.directory "illustration"
+                    , highlightableDirLink currentPath pages.comics.directory "comics"
                     , highlightableLink currentPath pages.about "about"
                     , Element.newTabLink
                         [ Element.width Element.fill

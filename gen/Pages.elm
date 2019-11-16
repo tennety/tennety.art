@@ -131,7 +131,7 @@ images =
         { catbird = (buildImage [ "illustration", "catbird.png" ])
         , hummerFull = (buildImage [ "illustration", "hummer-full.png" ])
         , loon = (buildImage [ "illustration", "loon.png" ])
-        , pickle = (buildImage [ "illustration", "pickle.png" ])
+        , pickle = (buildImage [ "illustration", "pickle.jpg" ])
         , warbler = (buildImage [ "illustration", "warbler.png" ])
         , directory = directoryWithoutIndex ["illustration"]
         }
@@ -162,7 +162,6 @@ allImages =
     , (buildImage [ "illustration", "hummer-full.png" ])
     , (buildImage [ "illustration", "loon.png" ])
     , (buildImage [ "illustration", "pickle.jpg" ])
-    , (buildImage [ "illustration", "pickle.png" ])
     , (buildImage [ "illustration", "warbler.png" ])
     , (buildImage [ "index-covers", "hummer-swing-bw.png" ])
     , (buildImage [ "thumbnails", "butterfly.jpg" ])
@@ -198,6 +197,12 @@ content =
     [ 
   ( ["about"]
     , { frontMatter = """{"title":"about the author","name":"Chandu Tennety","type":"author"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( []
+    , { frontMatter = """{"title":"tennety.art","image":"/images/index-covers/hummer-swing-bw.png","type":"page"}
 """ , body = Nothing
     , extension = "md"
     } )
@@ -264,12 +269,6 @@ content =
   ,
   ( ["illustration", "warbler"]
     , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Wilson's Warbler","description":"Color pencil illustration of a Wilson's warbler","image":"/images/illustration/warbler.png","thumb":"/images/illustration/warbler.png","published":"2017-12-15"}
-""" , body = Nothing
-    , extension = "md"
-    } )
-  ,
-  ( []
-    , { frontMatter = """{"title":"tennety.art","image":"/images/index-covers/hummer-swing-bw.png","type":"page"}
 """ , body = Nothing
     , extension = "md"
     } )
