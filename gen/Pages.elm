@@ -88,6 +88,7 @@ allPages =
     , (buildPage [ "illustration", "pickle" ])
     , (buildPage [ "illustration", "warbler" ])
     , (buildPage [  ])
+    , (buildPage [ "printmaking" ])
     ]
 
 pages =
@@ -110,6 +111,10 @@ pages =
         , directory = directoryWithIndex ["illustration"]
         }
     , index = (buildPage [  ])
+    , printmaking =
+        { index = (buildPage [ "printmaking" ])
+        , directory = directoryWithIndex ["printmaking"]
+        }
     , directory = directoryWithIndex []
     }
 
@@ -269,6 +274,12 @@ content =
   ,
   ( ["illustration", "warbler"]
     , { frontMatter = """{"type":"blog","author":"Chandu Tennety","title":"Wilson's Warbler","description":"Color pencil illustration of a Wilson's warbler","image":"/images/illustration/warbler.png","thumb":"/images/illustration/warbler.png","published":"2017-12-15"}
+""" , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( ["printmaking"]
+    , { frontMatter = """{"title":"printmaking","type":"blog-index","previewType":"image"}
 """ , body = Nothing
     , extension = "md"
     } )
