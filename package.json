@@ -15,8 +15,9 @@
     "npm": "^6.12.0"
   },
   "devDependencies": {
-    "elm": "^0.19.0-no-deps",
-    "elm-pages": "1.0.41",
+    "elm": "latest-0.19.1",
+    "elm-format": "0.8.2",
+    "elm-pages": "1.1.3",
     "http-server": "^0.11.1"
   }
 }

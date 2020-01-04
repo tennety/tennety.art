@@ -3,7 +3,6 @@ module Main exposing (main)
 import Color
 import Data.Author as Author
 import Date
-import DocumentSvg
 import Element exposing (Element)
 import Element.Background
 import Element.Border
@@ -16,7 +15,6 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import Icons
 import Index
-import Json.Decode
 import Markdown
 import Metadata exposing (Metadata)
 import Pages exposing (images, pages)
@@ -26,7 +24,8 @@ import Pages.ImagePath as ImagePath exposing (ImagePath)
 import Pages.Manifest as Manifest
 import Pages.Manifest.Category
 import Pages.PagePath as PagePath exposing (PagePath)
-import Pages.Platform exposing (Page)
+import Pages.Platform
+import Pages.StaticHttp as StaticHttp
 import Palette
 
 
@@ -54,21 +53,24 @@ type MenuState
     = Open
     | Closed
 
+
+
 -- the intellij-elm plugin doesn't support type aliases for Programs so we need to use this line
 -- main : Platform.Program Pages.Platform.Flags (Pages.Platform.Model Model Msg Metadata Rendered) (Pages.Platform.Msg Msg Metadata Rendered)
 
 
 main : Pages.Platform.Program Model Msg Metadata Rendered
 main =
-    Pages.application
-        { init = init
+    Pages.Platform.application
+        { init = \_ -> init
         , view = view
         , update = update
         , subscriptions = subscriptions
         , documents = [ markdownDocument ]
-        , head = head
         , manifest = manifest
         , canonicalSiteUrl = canonicalSiteUrl
+        , onPageChange = \_ -> CloseMenu
+        , internals = Pages.internals
         }
 
 
@@ -88,7 +90,7 @@ markdownDocument =
 
 
 type alias Model =
-    {  menuState: MenuState }
+    { menuState : MenuState }
 
 
 init : ( Model, Cmd Msg )
@@ -96,15 +98,19 @@ init =
     ( { menuState = Closed }, Cmd.none )
 
 
-type Msg =
-    ToggleMenu
+type Msg
+    = ToggleMenu
+    | CloseMenu
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ToggleMenu ->
-            ({ model | menuState = toggleMenu model.menuState }, Cmd.none )
+            ( { model | menuState = toggleMenu model.menuState }, Cmd.none )
+        
+        CloseMenu ->
+            ( { model | menuState = Closed }, Cmd.none)
 
 
 subscriptions : Model -> Sub Msg
@@ -112,29 +118,44 @@ subscriptions _ =
     Sub.none
 
 
-view : Model -> List ( PagePath Pages.PathKey, Metadata ) -> Page Metadata Rendered Pages.PathKey -> { title : String, body : Html Msg }
-view model siteMetadata page =
-    let
-        { title, body } =
-            pageView model siteMetadata page
-    in
-    { title = title
-    , body =
-        body |>
-            Element.layout
-                [ Element.width Element.fill
-                , Font.size 20
-                , Font.family [ Font.typeface "Yrsa" ]
-                , Font.color (Element.rgba255 0 0 0 0.8)
-                , Element.inFront ( nav model.menuState page.path )
-                , Element.inFront ( menuButton model.menuState )
-                ]
-    }
+view :
+    List ( PagePath Pages.PathKey, Metadata )
+    ->
+        { path : PagePath Pages.PathKey
+        , frontmatter : Metadata
+        }
+    ->
+        StaticHttp.Request
+            { view : Model -> Rendered -> { title : String, body : Html Msg }
+            , head : List (Head.Tag Pages.PathKey)
+            }
+view siteMetadata page =
+    StaticHttp.succeed
+        { view =
+            \model viewForPage ->
+                let
+                    { title, body } =
+                        pageView model siteMetadata page viewForPage
+                in
+                { title = title
+                , body =
+                    body
+                        |> Element.layout
+                            [ Element.width Element.fill
+                            , Font.size 20
+                            , Font.family [ Font.typeface "Yrsa" ]
+                            , Font.color (Element.rgba255 0 0 0 0.8)
+                            , Element.inFront (nav model.menuState page.path)
+                            , Element.inFront (menuButton model.menuState)
+                            ]
+                }
+        , head = head page.frontmatter
+        }
 
 
-pageView : Model -> List ( PagePath Pages.PathKey, Metadata ) -> Page Metadata Rendered Pages.PathKey -> { title : String, body : Element Msg }
-pageView model siteMetadata page =
-    case page.metadata of
+pageView : Model -> List ( PagePath Pages.PathKey, Metadata ) -> { path : PagePath Pages.PathKey, frontmatter : Metadata } -> Rendered -> { title : String, body : Element Msg }
+pageView model siteMetadata page viewForPage =
+    case page.frontmatter of
         Metadata.Page metadata ->
             { title = metadata.title
             , body =
@@ -144,7 +165,7 @@ pageView model siteMetadata page =
                     ]
                     [ homeLink
                     , pageImageView metadata.image
-                    , page.view
+                    , viewForPage
                     ]
                 ]
                     |> Element.row [ Element.width Element.fill ]
@@ -162,9 +183,9 @@ pageView model siteMetadata page =
                         , Element.centerX
                         ]
                         [ Palette.blogHeading metadata.title
-                        , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (Element.rgba255 0 0 0 0.6), Font.center ] [publishedDateView metadata]
+                        , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (Element.rgba255 0 0 0 0.6), Font.center ] [ publishedDateView metadata ]
                         , articleImageView metadata.image
-                        , page.view
+                        , viewForPage
                         ]
                     ]
             }
@@ -187,9 +208,9 @@ pageView model siteMetadata page =
                             [ Element.spacing 30 ]
                             [ Author.view [ Element.centerX ] author
                             , Element.paragraph [ Font.size (Palette.scaled 2) ]
-                                    [ Element.text author.bio ]
+                                [ Element.text author.bio ]
                             ]
-                        , Element.paragraph [ Element.centerX, Font.center ] [ page.view ]
+                        , Element.paragraph [ Element.centerX, Font.center ] [ viewForPage ]
                         ]
                     ]
             }
@@ -218,7 +239,7 @@ pageImageView : ImagePath Pages.PathKey -> Element msg
 pageImageView articleImage =
     Element.image
         [ Element.width Element.fill
-        , Element.htmlAttribute ( Attr.class "hero-image" )
+        , Element.htmlAttribute (Attr.class "hero-image")
         ]
         { src = ImagePath.toString articleImage
         , description = "Article cover photo"
@@ -257,6 +278,7 @@ nav menuState currentPath =
                         }
                     ]
                 ]
+
         Closed ->
             Element.none
 
@@ -264,8 +286,11 @@ nav menuState currentPath =
 toggleMenu : MenuState -> MenuState
 toggleMenu state =
     case state of
-        Open -> Closed
-        Closed -> Open
+        Open ->
+            Closed
+
+        Closed ->
+            Open
 
 
 menuButton : MenuState -> Element Msg
@@ -273,29 +298,32 @@ menuButton state =
     let
         icon =
             case state of
-                Open -> Icons.close
-                Closed -> Icons.menu
+                Open ->
+                    Icons.close
+
+                Closed ->
+                    Icons.menu
     in
-        Input.button
-            [ Element.padding 10
-            , Element.htmlAttribute (Attr.title "menu")
-            , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
-            ]
-            { onPress = Just ToggleMenu
-            , label = Element.html icon
-            }
+    Input.button
+        [ Element.padding 10
+        , Element.htmlAttribute (Attr.title "menu")
+        , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
+        ]
+        { onPress = Just ToggleMenu
+        , label = Element.html icon
+        }
 
 
 homeLink =
-  Element.link
-    [ Element.centerX
-    , Element.padding 10
-    , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
-    , Element.Border.color (Element.rgba255 100 100 100 0.8)
-    ]
-    { url = "/"
-    , label = Palette.blogHeading siteName
-    }
+    Element.link
+        [ Element.centerX
+        , Element.padding 10
+        , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
+        , Element.Border.color (Element.rgba255 100 100 100 0.8)
+        ]
+        { url = "/"
+        , label = Palette.blogHeading siteName
+        }
 
 
 highlightableDirLink :
@@ -307,18 +335,22 @@ highlightableDirLink currentPath linkDirectory displayName =
     let
         isHighlighted =
             currentPath |> Directory.includes linkDirectory
+
         fontStyle =
             if isHighlighted then
                 Font.bold
+
             else
                 Font.regular
     in
     Element.link
         ([ Element.width Element.fill
-        , Element.paddingXY 25 15
-        , Font.size (Palette.scaled 2)
-        , Font.center
-        ] ++ [fontStyle])
+         , Element.paddingXY 25 15
+         , Font.size (Palette.scaled 2)
+         , Font.center
+         ]
+            ++ [ fontStyle ]
+        )
         { url = linkDirectory |> Directory.indexPath |> PagePath.toString
         , label = Element.text displayName
         }
@@ -333,18 +365,22 @@ highlightableLink currentPath linkPath displayName =
     let
         isHighlighted =
             PagePath.toString currentPath == PagePath.toString linkPath
+
         fontStyle =
             if isHighlighted then
                 Font.bold
+
             else
                 Font.regular
     in
     Element.link
         ([ Element.width Element.fill
-        , Element.paddingXY 25 15
-        , Font.size (Palette.scaled 2)
-        , Font.center
-        ] ++ [fontStyle])
+         , Element.paddingXY 25 15
+         , Font.size (Palette.scaled 2)
+         , Font.center
+         ]
+            ++ [ fontStyle ]
+        )
         { url = linkPath |> PagePath.toString
         , label = Element.text displayName
         }
