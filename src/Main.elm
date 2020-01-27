@@ -344,13 +344,11 @@ highlightableDirLink currentPath linkDirectory displayName =
                 Font.regular
     in
     Element.link
-        ([ Element.width Element.fill
+        [ Element.width Element.fill
          , Element.paddingXY 25 15
          , Font.size (Palette.scaled 2)
          , Font.center
-         ]
-            ++ [ fontStyle ]
-        )
+         , fontStyle ]
         { url = linkDirectory |> Directory.indexPath |> PagePath.toString
         , label = Element.text displayName
         }
@@ -374,13 +372,13 @@ highlightableLink currentPath linkPath displayName =
                 Font.regular
     in
     Element.link
-        ([ Element.width Element.fill
+        [ Element.width Element.fill
          , Element.paddingXY 25 15
          , Font.size (Palette.scaled 2)
          , Font.center
+         ,  fontStyle 
          ]
-            ++ [ fontStyle ]
-        )
+        
         { url = linkPath |> PagePath.toString
         , label = Element.text displayName
         }

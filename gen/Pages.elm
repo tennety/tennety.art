@@ -20,7 +20,7 @@ import Time
 
 builtAt : Time.Posix
 builtAt =
-    Time.millisToPosix 1579921777860
+    Time.millisToPosix 1580090457450
 
 type PathKey
     = PathKey
@@ -77,6 +77,8 @@ allPages =
     , (buildPage [ "illustration", "warbler" ])
     , (buildPage [  ])
     , (buildPage [ "printmaking" ])
+    , (buildPage [ "printmaking", "opossum" ])
+    , (buildPage [ "printmaking", "raccoon" ])
     ]
 
 pages =
@@ -101,6 +103,8 @@ pages =
     , index = (buildPage [  ])
     , printmaking =
         { index = (buildPage [ "printmaking" ])
+        , opossum = (buildPage [ "printmaking", "opossum" ])
+        , raccoon = (buildPage [ "printmaking", "raccoon" ])
         , directory = directoryWithIndex ["printmaking"]
         }
     , directory = directoryWithIndex []
@@ -132,6 +136,11 @@ images =
         { hummerSwingBw = (buildImage [ "index-covers", "hummer-swing-bw.png" ])
         , directory = directoryWithoutIndex ["indexCovers"]
         }
+    , printmaking =
+        { opossum = (buildImage [ "printmaking", "opossum.png" ])
+        , raccoon = (buildImage [ "printmaking", "raccoon.png" ])
+        , directory = directoryWithoutIndex ["printmaking"]
+        }
     , thumbnails =
         { butterfly = (buildImage [ "thumbnails", "butterfly.jpg" ])
         , catchYourself = (buildImage [ "thumbnails", "catch-yourself.png" ])
@@ -157,6 +166,8 @@ allImages =
     , (buildImage [ "illustration", "pickle.jpg" ])
     , (buildImage [ "illustration", "warbler.png" ])
     , (buildImage [ "index-covers", "hummer-swing-bw.png" ])
+    , (buildImage [ "printmaking", "opossum.png" ])
+    , (buildImage [ "printmaking", "raccoon.png" ])
     , (buildImage [ "thumbnails", "butterfly.jpg" ])
     , (buildImage [ "thumbnails", "catch-yourself.png" ])
     , (buildImage [ "thumbnails", "handouts.jpg" ])
@@ -268,6 +279,18 @@ content =
   ,
   ( ["printmaking"]
     , { frontMatter = "{\"title\":\"printmaking\",\"type\":\"blog-index\",\"previewType\":\"image\"}"
+    , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( ["printmaking", "opossum"]
+    , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Opossum\",\"description\":\"Opossum relief print\",\"image\":\"/images/printmaking/opossum.png\",\"thumb\":\"/images/printmaking/opossum.png\",\"published\":\"2020-01-11\"}"
+    , body = Nothing
+    , extension = "md"
+    } )
+  ,
+  ( ["printmaking", "raccoon"]
+    , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Raccoon\",\"description\":\"Raccoon relief print\",\"image\":\"/images/printmaking/raccoon.png\",\"thumb\":\"/images/printmaking/raccoon.png\",\"published\":\"2019-08-20\"}"
     , body = Nothing
     , extension = "md"
     } )
