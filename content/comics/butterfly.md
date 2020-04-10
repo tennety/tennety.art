@@ -4,8 +4,8 @@
   "author": "Chandu Tennety",
   "title": "The Transformation of Things",
   "description": "Comic re-interpretation of Ike no Taiga's `Dreaming of a Butterfly (or a Butterfly Dreaming of Zhuangzi)`",
-  "image": "/images/comics/butterfly.jpg",
-  "thumb": "/images/thumbnails/butterfly.jpg",
+  "image": "images/comics/butterfly.jpg",
+  "thumb": "images/thumbnails/butterfly.jpg",
   "published": "2019-09-09",
 }
 ---

@@ -4,8 +4,8 @@
   "author": "Chandu Tennety",
   "title": "Catch Yourself",
   "description": "Do you ever catch yourself falling?",
-  "image": "/images/comics/catch-yourself.png",
-  "thumb": "/images/thumbnails/catch-yourself.png",
+  "image": "images/comics/catch-yourself.png",
+  "thumb": "images/thumbnails/catch-yourself.png",
   "published": "2019-09-01",
 }
 ---

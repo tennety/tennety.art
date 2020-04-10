@@ -4,8 +4,8 @@
   "author": "Chandu Tennety",
   "title": "Looking for Handouts",
   "description": "Never amount to anything, they said.",
-  "image": "/images/comics/handouts.jpg",
-  "thumb": "/images/thumbnails/handouts.jpg",
+  "image": "images/comics/handouts.jpg",
+  "thumb": "images/thumbnails/handouts.jpg",
   "published": "2019-08-16",
 }
 ---

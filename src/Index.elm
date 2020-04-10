@@ -165,7 +165,7 @@ postPreview post =
 
 pathList : PagePath Pages.PathKey -> List String
 pathList rawPath =
-    rawPath |> PagePath.toString |> String.split "/" |> List.drop 1
+    rawPath |> PagePath.toString |> String.split "/"
 
 
 shareDirectory : PagePath Pages.PathKey -> PagePath Pages.PathKey -> Bool

@@ -70,6 +70,7 @@ main =
         , manifest = manifest
         , canonicalSiteUrl = canonicalSiteUrl
         , onPageChange = \_ -> CloseMenu
+        , generateFiles = \_ -> []
         , internals = Pages.internals
         }
 

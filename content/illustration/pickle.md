@@ -4,8 +4,8 @@
   "author": "Chandu Tennety",
   "title": "Pickle",
   "description": "Pencil illustration of Pickle, a family cat",
-  "image": "/images/illustration/pickle.jpg",
-  "thumb": "/images/illustration/pickle.jpg",
+  "image": "images/illustration/pickle.jpg",
+  "thumb": "images/illustration/pickle.jpg",
   "published": "2018-12-15",
 }
 ---

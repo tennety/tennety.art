@@ -20,7 +20,7 @@ import Url.Parser as Url exposing ((</>), s)
 
 builtAt : Time.Posix
 builtAt =
-    Time.millisToPosix 1586484667674
+    Time.millisToPosix 1586486810316
 
 
 type PathKey
@@ -212,25 +212,25 @@ content =
         }
       )
     , ( []
-      , { frontMatter = "{\"title\":\"tennety.art\",\"image\":\"/images/index-covers/hummer-swing-bw.png\",\"type\":\"page\"}"
+      , { frontMatter = "{\"title\":\"tennety.art\",\"image\":\"images/index-covers/hummer-swing-bw.png\",\"type\":\"page\"}"
         , body = Nothing
         , extension = "md"
         }
       )
     , ( [ "comics", "butterfly" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"The Transformation of Things\",\"description\":\"Comic re-interpretation of Ike no Taiga's `Dreaming of a Butterfly (or a Butterfly Dreaming of Zhuangzi)`\",\"image\":\"/images/comics/butterfly.jpg\",\"thumb\":\"/images/thumbnails/butterfly.jpg\",\"published\":\"2019-09-09\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"The Transformation of Things\",\"description\":\"Comic re-interpretation of Ike no Taiga's `Dreaming of a Butterfly (or a Butterfly Dreaming of Zhuangzi)`\",\"image\":\"images/comics/butterfly.jpg\",\"thumb\":\"images/thumbnails/butterfly.jpg\",\"published\":\"2019-09-09\"}"
         , body = Nothing
         , extension = "md"
         }
       )
     , ( [ "comics", "catch-yourself" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Catch Yourself\",\"description\":\"Do you ever catch yourself falling?\",\"image\":\"/images/comics/catch-yourself.png\",\"thumb\":\"/images/thumbnails/catch-yourself.png\",\"published\":\"2019-09-01\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Catch Yourself\",\"description\":\"Do you ever catch yourself falling?\",\"image\":\"images/comics/catch-yourself.png\",\"thumb\":\"images/thumbnails/catch-yourself.png\",\"published\":\"2019-09-01\"}"
         , body = Nothing
         , extension = "md"
         }
       )
     , ( [ "comics", "handouts" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Looking for Handouts\",\"description\":\"Never amount to anything, they said.\",\"image\":\"/images/comics/handouts.jpg\",\"thumb\":\"/images/thumbnails/handouts.jpg\",\"published\":\"2019-08-16\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Looking for Handouts\",\"description\":\"Never amount to anything, they said.\",\"image\":\"images/comics/handouts.jpg\",\"thumb\":\"images/thumbnails/handouts.jpg\",\"published\":\"2019-08-16\"}"
         , body = Nothing
         , extension = "md"
         }
@@ -242,19 +242,19 @@ content =
         }
       )
     , ( [ "comics", "smiley-face" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Smiley Face\",\"description\":\"Late night conversation with my child\",\"image\":\"/images/comics/SmileyFace-lores.jpeg\",\"thumb\":\"/images/thumbnails/smiley.png\",\"published\":\"2019-06-12\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Smiley Face\",\"description\":\"Late night conversation with my child\",\"image\":\"images/comics/SmileyFace-lores.jpeg\",\"thumb\":\"images/thumbnails/smiley.png\",\"published\":\"2019-06-12\"}"
         , body = Nothing
         , extension = "md"
         }
       )
     , ( [ "illustration", "catbird" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Gray Catbird\",\"description\":\"Ballpoint pen illustration of a Gray Catbird\",\"image\":\"/images/illustration/catbird.png\",\"thumb\":\"/images/illustration/catbird.png\",\"published\":\"2019-10-05\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Gray Catbird\",\"description\":\"Ballpoint pen illustration of a Gray Catbird\",\"image\":\"images/illustration/catbird.png\",\"thumb\":\"images/illustration/catbird.png\",\"published\":\"2019-10-05\"}"
         , body = Nothing
         , extension = "md"
         }
       )
     , ( [ "illustration", "hummer" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Hummingbird on Swing\",\"description\":\"Ballpoint pen illustration of a hummingbird on swing\",\"image\":\"/images/illustration/hummer-full.png\",\"thumb\":\"/images/illustration/hummer-full.png\",\"published\":\"2019-09-10\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Hummingbird on Swing\",\"description\":\"Ballpoint pen illustration of a hummingbird on swing\",\"image\":\"images/illustration/hummer-full.png\",\"thumb\":\"images/illustration/hummer-full.png\",\"published\":\"2019-09-10\"}"
         , body = Nothing
         , extension = "md"
         }
@@ -266,25 +266,25 @@ content =
         }
       )
     , ( [ "illustration", "loon" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Common loon\",\"description\":\"Ballpoint pen illustration of a common loon\",\"image\":\"/images/illustration/loon.png\",\"thumb\":\"/images/illustration/loon.png\",\"published\":\"2019-09-21\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Common loon\",\"description\":\"Ballpoint pen illustration of a common loon\",\"image\":\"images/illustration/loon.png\",\"thumb\":\"images/illustration/loon.png\",\"published\":\"2019-09-21\"}"
         , body = Nothing
         , extension = "md"
         }
       )
     , ( [ "illustration", "pickle" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Pickle\",\"description\":\"Pencil illustration of Pickle, a family cat\",\"image\":\"/images/illustration/pickle.jpg\",\"thumb\":\"/images/illustration/pickle.jpg\",\"published\":\"2018-12-15\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Pickle\",\"description\":\"Pencil illustration of Pickle, a family cat\",\"image\":\"images/illustration/pickle.jpg\",\"thumb\":\"images/illustration/pickle.jpg\",\"published\":\"2018-12-15\"}"
         , body = Nothing
         , extension = "md"
         }
       )
     , ( [ "illustration", "warbler" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Wilson's Warbler\",\"description\":\"Color pencil illustration of a Wilson's warbler\",\"image\":\"/images/illustration/warbler.png\",\"thumb\":\"/images/illustration/warbler.png\",\"published\":\"2017-12-15\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Wilson's Warbler\",\"description\":\"Color pencil illustration of a Wilson's warbler\",\"image\":\"images/illustration/warbler.png\",\"thumb\":\"images/illustration/warbler.png\",\"published\":\"2017-12-15\"}"
         , body = Nothing
         , extension = "md"
         }
       )
     , ( [ "printmaking", "hawk" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Hawk\",\"description\":\"Red-tail hawk relief print\",\"image\":\"/images/printmaking/hawk.png\",\"thumb\":\"/images/thumbnails/hawk.png\",\"published\":\"2020-03-09\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Hawk\",\"description\":\"Red-tail hawk relief print\",\"image\":\"images/printmaking/hawk.png\",\"thumb\":\"images/thumbnails/hawk.png\",\"published\":\"2020-03-09\"}"
         , body = Nothing
         , extension = "md"
         }
@@ -296,13 +296,13 @@ content =
         }
       )
     , ( [ "printmaking", "opossum" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Opossum\",\"description\":\"Opossum relief print\",\"image\":\"/images/printmaking/opossum.png\",\"thumb\":\"/images/printmaking/opossum.png\",\"published\":\"2020-01-11\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Opossum\",\"description\":\"Opossum relief print\",\"image\":\"images/printmaking/opossum.png\",\"thumb\":\"images/printmaking/opossum.png\",\"published\":\"2020-01-11\"}"
         , body = Nothing
         , extension = "md"
         }
       )
     , ( [ "printmaking", "raccoon" ]
-      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Raccoon\",\"description\":\"Raccoon relief print\",\"image\":\"/images/printmaking/raccoon.png\",\"thumb\":\"/images/printmaking/raccoon.png\",\"published\":\"2019-08-20\"}"
+      , { frontMatter = "{\"type\":\"blog\",\"author\":\"Chandu Tennety\",\"title\":\"Raccoon\",\"description\":\"Raccoon relief print\",\"image\":\"images/printmaking/raccoon.png\",\"thumb\":\"images/printmaking/raccoon.png\",\"published\":\"2019-08-20\"}"
         , body = Nothing
         , extension = "md"
         }
