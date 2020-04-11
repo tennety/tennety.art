@@ -55,28 +55,31 @@ view posts currentPagePath indexMetadata =
                         , Element.alignLeft
                         , Element.width (Element.fill |> Element.maximum 600)
                         ]
-                        (entries |> List.map imageSummary)
+                        (entries
+                            |> List.sortWith publishDateDesc
+                            |> List.map imageSummary)
                     ]
 
             Metadata.Summary ->
                 Element.column [ Element.spacing 20 ] (entries |> List.map postSummary)
 
-
-postSummary :
+type alias PostEntry =
     ( PagePath Pages.PathKey, Metadata.ArticleMetadata )
-    -> Element msg
+
+postSummary : PostEntry -> Element msg
 postSummary ( postPath, post ) =
     articleIndex post
         |> linkToPost postPath
 
 
-imageSummary :
-    ( PagePath Pages.PathKey, Metadata.ArticleMetadata )
-    -> Element msg
+imageSummary : PostEntry -> Element msg
 imageSummary ( postPath, post ) =
     imageIndex post
         |> linkToPost postPath
 
+publishDateDesc : PostEntry -> PostEntry -> Order
+publishDateDesc ( _, metadata1 ) ( _, metadata2 ) =
+    Date.compare metadata2.published metadata1.published
 
 linkToPost : PagePath Pages.PathKey -> Element msg -> Element msg
 linkToPost postPath content =
