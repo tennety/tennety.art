@@ -34,7 +34,7 @@ manifest =
     { backgroundColor = Just Color.white
     , categories = [ Pages.Manifest.Category.education ]
     , displayMode = Manifest.Standalone
-    , orientation = Manifest.Landscape
+    , orientation = Manifest.Portrait
     , description = siteTagline
     , iarcRatingId = Nothing
     , name = siteName
@@ -109,9 +109,9 @@ update msg model =
     case msg of
         ToggleMenu ->
             ( { model | menuState = toggleMenu model.menuState }, Cmd.none )
-        
+
         CloseMenu ->
-            ( { model | menuState = Closed }, Cmd.none)
+            ( { model | menuState = Closed }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -145,7 +145,7 @@ view siteMetadata page =
                             [ Element.width Element.fill
                             , Font.size 20
                             , Font.family [ Font.typeface "Yrsa" ]
-                            , Font.color (Element.rgba255 0 0 0 0.8)
+                            , Font.color Palette.color.darkest
                             , Element.inFront (nav model.menuState page.path)
                             , Element.inFront (menuButton model.menuState)
                             ]
@@ -160,7 +160,7 @@ pageView model siteMetadata page viewForPage =
         Metadata.Page metadata ->
             { title = metadata.title
             , body =
-                [ Element.column
+                Element.column
                     [ Element.Region.mainContent
                     , Element.centerX
                     ]
@@ -168,72 +168,53 @@ pageView model siteMetadata page viewForPage =
                     , pageImageView metadata.image
                     , viewForPage
                     ]
-                ]
-                    |> Element.row [ Element.width Element.fill ]
             }
 
         Metadata.Article metadata ->
             { title = withSiteName metadata.title
             , body =
-                Element.row [ Element.width Element.fill ]
-                    [ Element.column
-                        [ Element.padding 30
-                        , Element.spacing 20
-                        , Element.Region.mainContent
-                        , Element.width (Element.fill |> Element.maximum 800)
-                        , Element.centerX
-                        ]
-                        [ Palette.blogHeading metadata.title
-                        , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (Element.rgba255 0 0 0 0.6), Font.center ] [ publishedDateView metadata ]
-                        , articleImageView metadata.image
-                        , viewForPage
-                        ]
+                Element.column
+                    [ Element.padding 30
+                    , Element.spacing 20
+                    , Element.Region.mainContent
+                    , Element.centerX
+                    ]
+                    [ Palette.blogHeading metadata.title
+                    , Element.paragraph [ Font.size (Palette.scaled -1), Font.color Palette.color.darker, Font.center ] [ publishedDateView metadata ]
+                    , pageImageView metadata.image
+                    , viewForPage
                     ]
             }
 
         Metadata.Author author ->
             { title = author.name
             , body =
-                Element.row
-                    [ Element.width Element.fill
+                Element.column
+                    [ Element.padding 30
+                    , Element.spacing 20
+                    , Element.Region.mainContent
+                    , Element.centerX
                     ]
-                    [ Element.column
-                        [ Element.padding 30
-                        , Element.spacing 20
-                        , Element.Region.mainContent
-                        , Element.width (Element.fill |> Element.maximum 800)
-                        , Element.centerX
+                    [ Palette.blogHeading "about the artist"
+                    , Element.column
+                        [ Element.spacing 30 ]
+                        [ Author.view [ Element.centerX ] author
+                        , Element.paragraph [ Font.size (Palette.scaled 2) ]
+                            [ Element.text author.bio ]
                         ]
-                        [ Palette.blogHeading "about the artist"
-                        , Element.column
-                            [ Element.spacing 30 ]
-                            [ Author.view [ Element.centerX ] author
-                            , Element.paragraph [ Font.size (Palette.scaled 2) ]
-                                [ Element.text author.bio ]
-                            ]
-                        , Element.paragraph [ Element.centerX, Font.center ] [ viewForPage ]
-                        ]
+                    , Element.paragraph [ Element.centerX, Font.center ] [ viewForPage ]
                     ]
             }
 
         Metadata.BlogIndex indexMetadata ->
             { title = withSiteName indexMetadata.title
             , body =
-                Element.row [ Element.width Element.fill ]
-                    [ Element.column
-                        [ Element.padding 20, Element.centerX ]
-                        [ Index.view siteMetadata page.path indexMetadata ]
+                Element.column
+                    [ Element.padding 20
+                    , Element.centerX
                     ]
+                    [ Index.view siteMetadata page.path indexMetadata ]
             }
-
-
-articleImageView : ImagePath Pages.PathKey -> Element msg
-articleImageView articleImage =
-    Element.image
-        [ Element.width Element.fill ]
-        { src = ImagePath.toString articleImage
-        , description = "Article cover photo"
-        }
 
 
 pageImageView : ImagePath Pages.PathKey -> Element msg
@@ -241,6 +222,7 @@ pageImageView articleImage =
     Element.image
         [ Element.width Element.fill
         , Element.htmlAttribute (Attr.class "hero-image")
+        , Element.centerX
         ]
         { src = ImagePath.toString articleImage
         , description = "Article cover photo"
@@ -254,7 +236,7 @@ nav menuState currentPath =
             Element.column
                 [ Element.width Element.fill
                 , Element.height Element.fill
-                , Element.Background.color (Element.rgba255 255 255 255 1)
+                , Element.Background.color (Palette.fromElmColor Color.white)
                 , Element.centerX
                 , Element.htmlAttribute (Attr.class "menu")
                 ]
@@ -320,7 +302,7 @@ homeLink =
         [ Element.centerX
         , Element.padding 10
         , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
-        , Element.Border.color (Element.rgba255 100 100 100 0.8)
+        , Element.Border.color Palette.color.dark
         ]
         { url = "/"
         , label = Palette.blogHeading siteName
@@ -346,10 +328,11 @@ highlightableDirLink currentPath linkDirectory displayName =
     in
     Element.link
         [ Element.width Element.fill
-         , Element.paddingXY 25 15
-         , Font.size (Palette.scaled 2)
-         , Font.center
-         , fontStyle ]
+        , Element.paddingXY 25 15
+        , Font.size (Palette.scaled 2)
+        , Font.center
+        , fontStyle
+        ]
         { url = linkDirectory |> Directory.indexPath |> PagePath.toString
         , label = Element.text displayName
         }
@@ -374,12 +357,11 @@ highlightableLink currentPath linkPath displayName =
     in
     Element.link
         [ Element.width Element.fill
-         , Element.paddingXY 25 15
-         , Font.size (Palette.scaled 2)
-         , Font.center
-         ,  fontStyle 
-         ]
-        
+        , Element.paddingXY 25 15
+        , Font.size (Palette.scaled 2)
+        , Font.center
+        , fontStyle
+        ]
         { url = linkPath |> PagePath.toString
         , label = Element.text displayName
         }

@@ -8,8 +8,8 @@ import Element.Font
 import Html.Attributes as Attr
 import Metadata exposing (Metadata)
 import Pages
-import Pages.PagePath as PagePath exposing (PagePath)
 import Pages.ImagePath as ImagePath
+import Pages.PagePath as PagePath exposing (PagePath)
 import Pages.Platform exposing (Page)
 
 
@@ -35,36 +35,36 @@ view posts currentPagePath indexMetadata =
                                 if meta.draft then
                                     Nothing
 
+                                else if shareDirectory path currentPagePath then
+                                    Just ( path, meta )
+
                                 else
-                                    if (shareDirectory path currentPagePath) then
-                                        Just ( path, meta )
-                                    else
-                                        Nothing
+                                    Nothing
 
                             Metadata.BlogIndex _ ->
                                 Nothing
                     )
     in
-        case indexMetadata.previewType of
-            Metadata.Image ->
-                Element.column
-                    [ Element.spacing 20 ]
-                    [ title indexMetadata.title
-                    , Element.wrappedRow
-                        [ Element.spacing 40
-                        , Element.alignLeft
-                        , Element.width (Element.fill |> Element.maximum 600)
-                        ]
-                        (entries
-                            |> List.sortWith publishDateDesc
-                            |> List.map imageSummary)
-                    ]
+    case indexMetadata.previewType of
+        Metadata.Image ->
+            Element.column
+                [ Element.spacing 20 ]
+                [ title indexMetadata.title
+                , Element.wrappedRow
+                    [ Element.spacing 40 ]
+                    (entries
+                        |> List.sortWith publishDateDesc
+                        |> List.map imageSummary
+                    )
+                ]
 
-            Metadata.Summary ->
-                Element.column [ Element.spacing 20 ] (entries |> List.map postSummary)
+        Metadata.Summary ->
+            Element.column [ Element.spacing 20 ] (entries |> List.map postSummary)
+
 
 type alias PostEntry =
     ( PagePath Pages.PathKey, Metadata.ArticleMetadata )
+
 
 postSummary : PostEntry -> Element msg
 postSummary ( postPath, post ) =
@@ -77,13 +77,15 @@ imageSummary ( postPath, post ) =
     imageIndex post
         |> linkToPost postPath
 
+
 publishDateDesc : PostEntry -> PostEntry -> Order
 publishDateDesc ( _, metadata1 ) ( _, metadata2 ) =
     Date.compare metadata2.published metadata1.published
 
+
 linkToPost : PagePath Pages.PathKey -> Element msg -> Element msg
 linkToPost postPath content =
-    Element.link []
+    Element.link [ Element.centerX, Element.width Element.fill ]
         { url = PagePath.toString postPath, label = content }
 
 
@@ -164,7 +166,9 @@ postPreview post =
         ]
 
 
+
 -- UTILITIES
+
 
 pathList : PagePath Pages.PathKey -> List String
 pathList rawPath =
@@ -174,4 +178,5 @@ pathList rawPath =
 shareDirectory : PagePath Pages.PathKey -> PagePath Pages.PathKey -> Bool
 shareDirectory pagePath otherPagePath =
     List.map2 Tuple.pair (pathList pagePath) (pathList otherPagePath)
-    |> not << List.any (\(a, b) -> a /= b)
+        |> List.any (\( a, b ) -> a /= b)
+        |> not
