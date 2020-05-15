@@ -178,6 +178,17 @@ view siteMetadata page =
                 let
                     { title, body } =
                         pageView model siteMetadata page viewForPage
+
+                    ( fontColor, backgroundColor ) =
+                        case model.colorScheme of
+                            Light ->
+                                ( Palette.color.darkest, Palette.fromElmColor Color.white )
+
+                            Dark ->
+                                ( Palette.color.lightest, Palette.color.darker )
+
+                            NoPreference ->
+                                ( Palette.color.darkest, Palette.fromElmColor Color.white )
                 in
                 { title = title
                 , body =
@@ -186,8 +197,9 @@ view siteMetadata page =
                             [ Element.width Element.fill
                             , Font.size 20
                             , Font.family [ Font.typeface "Yrsa" ]
-                            , Font.color Palette.color.darkest
-                            , Element.inFront (nav model.menuState page.path)
+                            , Font.color fontColor
+                            , Element.Background.color backgroundColor
+                            , Element.inFront (nav model.menuState model.colorScheme page.path)
                             , Element.inFront (menuButton model.menuState)
                             ]
                 }
@@ -221,7 +233,7 @@ pageView model siteMetadata page viewForPage =
                     , Element.centerX
                     ]
                     [ Palette.blogHeading metadata.title
-                    , Element.paragraph [ Font.size (Palette.scaled -1), Font.color Palette.color.darker, Font.center ] [ publishedDateView metadata ]
+                    , Element.paragraph [ Font.size (Palette.scaled -1), Font.color Palette.color.neutral, Font.center ] [ publishedDateView metadata ]
                     , pageImageView metadata.image
                     , viewForPage
                     ]
@@ -270,14 +282,26 @@ pageImageView articleImage =
         }
 
 
-nav : MenuState -> PagePath Pages.PathKey -> Element Msg
-nav menuState currentPath =
+nav : MenuState -> ColorScheme -> PagePath Pages.PathKey -> Element Msg
+nav menuState preferredColorScheme currentPath =
     case menuState of
         Open ->
+            let
+                backgroundColor =
+                    case preferredColorScheme of
+                        Light ->
+                            Palette.fromElmColor Color.white
+
+                        Dark ->
+                            Palette.color.darker
+
+                        NoPreference ->
+                            Palette.fromElmColor Color.white
+            in
             Element.column
                 [ Element.width Element.fill
                 , Element.height Element.fill
-                , Element.Background.color (Palette.fromElmColor Color.white)
+                , Element.Background.color backgroundColor
                 , Element.centerX
                 , Element.htmlAttribute (Attr.class "menu")
                 ]
