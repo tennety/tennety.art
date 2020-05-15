@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Color
 import Data.Author as Author
@@ -15,6 +15,7 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import Icons
 import Index
+import Json.Decode as Decode exposing (Decoder, decodeValue)
 import Markdown
 import Metadata exposing (Metadata)
 import Pages exposing (images, pages)
@@ -54,6 +55,12 @@ type MenuState
     | Closed
 
 
+type ColorScheme
+    = Light
+    | Dark
+    | NoPreference
+
+
 
 -- the intellij-elm plugin doesn't support type aliases for Programs so we need to use this line
 -- main : Platform.Program Pages.Platform.Flags (Pages.Platform.Model Model Msg Metadata Rendered) (Pages.Platform.Msg Msg Metadata Rendered)
@@ -91,17 +98,20 @@ markdownDocument =
 
 
 type alias Model =
-    { menuState : MenuState }
+    { menuState : MenuState
+    , colorScheme : ColorScheme
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { menuState = Closed }, Cmd.none )
+    ( { menuState = Closed, colorScheme = NoPreference }, Cmd.none )
 
 
 type Msg
     = ToggleMenu
     | CloseMenu
+    | GotColorScheme Decode.Value
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -113,10 +123,41 @@ update msg model =
         CloseMenu ->
             ( { model | menuState = Closed }, Cmd.none )
 
+        GotColorScheme value ->
+            case decodeValue colorSchemeDecoder value of
+                Ok scheme ->
+                    ( { model | colorScheme = scheme }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.none
+    colorScheme GotColorScheme
+
+
+colorSchemeDecoder : Decoder ColorScheme
+colorSchemeDecoder =
+    Decode.string
+        |> Decode.andThen
+            (\scheme ->
+                case scheme of
+                    "light" ->
+                        Decode.succeed Light
+
+                    "dark" ->
+                        Decode.succeed Dark
+
+                    "no-preference" ->
+                        Decode.succeed NoPreference
+
+                    _ ->
+                        Decode.fail "Unknown colorscheme"
+            )
+
+
+port colorScheme : (Decode.Value -> msg) -> Sub msg
 
 
 view :

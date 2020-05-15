@@ -15,6 +15,10 @@ load("https://www.googletagmanager.com/gtag/js?id=UA-157882374-1", () => {
   gtag('config', 'UA-157882374-1');
 })
 
+const colorSchemePreference = ['light', 'dark', 'no-preference'].find(pref => window.matchMedia(`(prefers-color-scheme: ${pref})`).matches)
+
 pagesInit({
   mainElmModule: Elm.Main
+}).then(app => {
+  app.ports.colorScheme.send(colorSchemePreference)
 });
