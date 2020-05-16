@@ -105,7 +105,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { menuState = Closed, colorScheme = NoPreference }, Cmd.none )
+    ( { menuState = Closed, colorScheme = Dark }, Cmd.none )
 
 
 type Msg
