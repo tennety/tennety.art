@@ -92,7 +92,7 @@ markdownDocument =
                 Html.div [] [ Markdown.toHtml [] markdownBody ]
                     |> Element.html
                     |> List.singleton
-                    |> Element.paragraph [ Element.width Element.fill ]
+                    |> Element.paragraph [ Element.width (Element.fill |> Element.maximum 800) ]
                     |> Ok
         }
 
