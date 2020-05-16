@@ -150,7 +150,7 @@ colorSchemeDecoder =
                         Decode.succeed Dark
 
                     "no-preference" ->
-                        Decode.succeed NoPreference
+                        Decode.succeed Light
 
                     _ ->
                         Decode.fail "Unknown colorscheme"
@@ -188,7 +188,7 @@ view siteMetadata page =
                                 ( Palette.color.lightest, Palette.color.darker )
 
                             NoPreference ->
-                                ( Palette.color.darkest, Palette.fromElmColor Color.white )
+                                ( Palette.color.neutral, Palette.color.neutral )
                 in
                 { title = title
                 , body =
@@ -296,7 +296,7 @@ nav menuState preferredColorScheme currentPath =
                             Palette.color.darker
 
                         NoPreference ->
-                            Palette.fromElmColor Color.white
+                            Palette.color.neutral
             in
             Element.column
                 [ Element.width Element.fill
