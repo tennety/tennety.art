@@ -89,7 +89,7 @@ markdownDocument =
         , metadata = Metadata.decoder
         , body =
             \markdownBody ->
-                Html.div [] [ Markdown.toHtml [] markdownBody ]
+                Markdown.toHtml [ Attr.class "content" ] markdownBody
                     |> Element.html
                     |> List.singleton
                     |> Element.paragraph [ Element.width (Element.fill |> Element.maximum 800) ]
@@ -179,22 +179,23 @@ view siteMetadata page =
                     { title, body } =
                         pageView model siteMetadata page viewForPage
 
-                    ( fontColor, backgroundColor ) =
+                    ( fontColor, backgroundColor, bodyClass ) =
                         case model.colorScheme of
                             Light ->
-                                ( Palette.color.darkest, Palette.fromElmColor Color.white )
+                                ( Palette.color.darkest, Palette.fromElmColor Color.white, "light" )
 
                             Dark ->
-                                ( Palette.color.lightest, Palette.color.darker )
+                                ( Palette.color.lightest, Palette.color.darker, "dark" )
 
                             NoPreference ->
-                                ( Palette.color.neutral, Palette.color.neutral )
+                                ( Palette.color.neutral, Palette.color.neutral, "" )
                 in
                 { title = title
                 , body =
                     body
                         |> Element.layout
                             [ Element.width Element.fill
+                            , Element.htmlAttribute (Attr.class bodyClass)
                             , Font.size 20
                             , Font.family [ Font.typeface "Yrsa" ]
                             , Font.color fontColor
@@ -250,12 +251,11 @@ pageView model siteMetadata page viewForPage =
                     ]
                     [ Palette.blogHeading "about the artist"
                     , Element.column
-                        [ Element.spacing 30 ]
+                        [ Element.spacing 50 ]
                         [ Author.view [ Element.centerX ] author
-                        , Element.paragraph [ Font.size (Palette.scaled 2) ]
+                        , Element.paragraph [ Font.size (Palette.scaled 2), Element.width (Element.fill |> Element.maximum 800) ]
                             [ Element.text author.bio ]
                         ]
-                    , Element.paragraph [ Element.centerX, Font.center ] [ viewForPage ]
                     ]
             }
 
