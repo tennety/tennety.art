@@ -313,6 +313,7 @@ nav menuState preferredColorScheme currentPath =
                     ]
                     [ highlightableDirLink currentPath pages.illustration.directory "illustration"
                     , highlightableDirLink currentPath pages.printmaking.directory "printmaking"
+                    , highlightableDirLink currentPath pages.political.directory "political"
                     , highlightableDirLink currentPath pages.comics.directory "comics"
                     , highlightableLink currentPath pages.about "about"
                     , Element.newTabLink
