@@ -20,7 +20,6 @@ import Markdown
 import Metadata exposing (Metadata)
 import Pages exposing (images, pages)
 import Pages.Directory as Directory exposing (Directory)
-import Pages.Document
 import Pages.ImagePath as ImagePath exposing (ImagePath)
 import Pages.Manifest as Manifest
 import Pages.Manifest.Category
@@ -61,14 +60,9 @@ type ColorScheme
     | NoPreference
 
 
-
--- the intellij-elm plugin doesn't support type aliases for Programs so we need to use this line
--- main : Platform.Program Pages.Platform.Flags (Pages.Platform.Model Model Msg Metadata Rendered) (Pages.Platform.Msg Msg Metadata Rendered)
-
-
 main : Pages.Platform.Program Model Msg Metadata Rendered
 main =
-    Pages.Platform.application
+    Pages.Platform.init
         { init = \_ -> init
         , view = view
         , update = update
@@ -76,25 +70,24 @@ main =
         , documents = [ markdownDocument ]
         , manifest = manifest
         , canonicalSiteUrl = canonicalSiteUrl
-        , onPageChange = \_ -> CloseMenu
-        , generateFiles = \_ -> []
+        , onPageChange = Just (\_ -> CloseMenu)
         , internals = Pages.internals
         }
+        |> Pages.Platform.toProgram
 
 
-markdownDocument : ( String, Pages.Document.DocumentHandler Metadata Rendered )
+markdownDocument : { body : String -> Result error (Element msg), extension : String, metadata : Decoder Metadata }
 markdownDocument =
-    Pages.Document.parser
-        { extension = "md"
-        , metadata = Metadata.decoder
-        , body =
-            \markdownBody ->
-                Markdown.toHtml [ Attr.class "content" ] markdownBody
-                    |> Element.html
-                    |> List.singleton
-                    |> Element.paragraph [ Element.width (Element.fill |> Element.maximum 800) ]
-                    |> Ok
-        }
+    { extension = "md"
+    , metadata = Metadata.decoder
+    , body =
+        \markdownBody ->
+            Markdown.toHtml [ Attr.class "content" ] markdownBody
+                |> Element.html
+                |> List.singleton
+                |> Element.paragraph [ Element.width (Element.fill |> Element.maximum 800) ]
+                |> Ok
+    }
 
 
 type alias Model =
