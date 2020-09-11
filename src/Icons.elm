@@ -1,10 +1,10 @@
-module Icons
-    exposing
-        ( close
-        , instagram
-        , menu
-        , pencil
-        )
+module Icons exposing
+    ( close
+    , instagram
+    , menu
+    , pencil
+    , shoppingBag
+    )
 
 import Html exposing (Html)
 import Svg exposing (Svg, svg)
@@ -56,4 +56,13 @@ pencil : Html msg
 pencil =
     svgFeatherIcon "edit-2"
         [ Svg.path [ d "M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" ] []
+        ]
+
+
+shoppingBag : Html msg
+shoppingBag =
+    svgFeatherIcon "shopping-bag"
+        [ Svg.path [ d "M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" ] []
+        , Svg.line [ x1 "3", y1 "6", x2 "21", y2 "6" ] []
+        , Svg.path [ d "M16 10a4 4 0 0 1-8 0" ] []
         ]

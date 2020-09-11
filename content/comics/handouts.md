@@ -7,6 +7,7 @@
   "image": "images/comics/handouts.jpg",
   "thumb": "images/thumbnails/handouts.jpg",
   "published": "2019-08-16",
+  "shop-link": "https://shop.tennety.art/product/handouts-comic-poster"
 }
 ---
 

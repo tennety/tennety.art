@@ -8,6 +8,7 @@ import Json.Decode as Decode exposing (Decoder)
 import List.Extra
 import Pages
 import Pages.ImagePath as ImagePath exposing (ImagePath)
+import Pages.PagePath exposing (PagePath)
 
 
 type Metadata
@@ -30,6 +31,7 @@ type alias ArticleMetadata =
     , image : ImagePath Pages.PathKey
     , thumb : ImagePath Pages.PathKey
     , draft : Bool
+    , shopLink : Maybe (PagePath Pages.PathKey)
     }
 
 
@@ -61,23 +63,24 @@ decoder =
                             (Decode.field "title" Decode.string)
                             (Decode.field "previewType"
                                 Decode.string
-                                    |> Decode.maybe
-                                    |> Decode.map (Maybe.withDefault "summary")
-                                    |> Decode.andThen
-                                        (\previewType ->
-                                            if previewType == "image" then
-                                                Decode.succeed Image
-                                            else
-                                                Decode.succeed Summary
-                                        )
+                                |> Decode.maybe
+                                |> Decode.map (Maybe.withDefault "summary")
+                                |> Decode.andThen
+                                    (\previewType ->
+                                        if previewType == "image" then
+                                            Decode.succeed Image
+
+                                        else
+                                            Decode.succeed Summary
+                                    )
                             )
                             |> Decode.map BlogIndex
 
                     "author" ->
-                        (Decode.field "name" Data.Author.decoder) |> Decode.map Author
+                        Decode.field "name" Data.Author.decoder |> Decode.map Author
 
                     "blog" ->
-                        Decode.map7 ArticleMetadata
+                        Decode.map8 ArticleMetadata
                             (Decode.field "title" Decode.string)
                             (Decode.field "description" Decode.string)
                             (Decode.field "published"
@@ -100,6 +103,9 @@ decoder =
                                 |> Decode.maybe
                                 |> Decode.map (Maybe.withDefault False)
                             )
+                            (Decode.field "shop-link" shopLinkDecoder
+                                |> Decode.maybe
+                            )
                             |> Decode.map Article
 
                     _ ->
@@ -119,6 +125,12 @@ imageDecoder =
                     Just imagePath ->
                         Decode.succeed imagePath
             )
+
+
+shopLinkDecoder : Decoder (PagePath Pages.PathKey)
+shopLinkDecoder =
+    Decode.string
+        |> Decode.map Pages.PagePath.external
 
 
 findMatchingImage : String -> Maybe (ImagePath Pages.PathKey)

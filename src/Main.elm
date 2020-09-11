@@ -229,6 +229,7 @@ pageView model siteMetadata page viewForPage =
                     [ Palette.blogHeading metadata.title
                     , Element.paragraph [ Font.size (Palette.scaled -1), Font.color Palette.color.neutral, Font.center ] [ publishedDateView metadata ]
                     , pageImageView metadata.image
+                    , shopLink metadata.shopLink
                     , viewForPage
                     ]
             }
@@ -303,20 +304,37 @@ nav menuState preferredColorScheme currentPath =
                     [ Element.Region.navigation
                     , Element.centerX
                     , Element.padding 15
+                    , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
+                    , Element.Border.color Palette.color.dark
                     ]
                     [ highlightableDirLink currentPath pages.illustration.directory "illustration"
                     , highlightableDirLink currentPath pages.printmaking.directory "printmaking"
                     , highlightableDirLink currentPath pages.political.directory "political"
                     , highlightableDirLink currentPath pages.comics.directory "comics"
                     , highlightableLink currentPath pages.about "about"
-                    , Element.newTabLink
+                    ]
+                , Element.column
+                    [ Element.Region.navigation
+                    , Element.centerX
+                    , Element.padding 15
+                    ]
+                    [ Element.newTabLink
                         [ Element.width Element.fill
                         , Element.paddingXY 25 15
                         , Font.size (Palette.scaled 2)
                         , Font.center
                         ]
                         { url = "https://instagram.com/tennety.art"
-                        , label = Element.row [] [ Element.html Icons.instagram, Element.text " instagram" ]
+                        , label = Element.row [ Element.centerX ] [ Element.html Icons.instagram, Element.text " instagram" ]
+                        }
+                    , Element.newTabLink
+                        [ Element.width Element.fill
+                        , Element.paddingXY 25 15
+                        , Font.size (Palette.scaled 2)
+                        , Font.center
+                        ]
+                        { url = "https://shop.tennety.art"
+                        , label = Element.row [ Element.centerX ] [ Element.html Icons.shoppingBag, Element.text " shop" ]
                         }
                     ]
                 ]
@@ -424,6 +442,23 @@ highlightableLink currentPath linkPath displayName =
         { url = linkPath |> PagePath.toString
         , label = Element.text displayName
         }
+
+
+shopLink : Maybe (PagePath Pages.PathKey) -> Element Msg
+shopLink maybePath =
+    case maybePath of
+        Just shopPath ->
+            Element.link
+                [ Element.width Element.fill
+                , Element.paddingXY 25 15
+                , Font.center
+                ]
+                { url = shopPath |> PagePath.toString
+                , label = Element.text "Shop prints ≫"
+                }
+
+        Nothing ->
+            Element.none
 
 
 {-| <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards>

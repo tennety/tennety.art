@@ -7,6 +7,7 @@
   "image": "images/comics/catch-yourself.png",
   "thumb": "images/thumbnails/catch-yourself.png",
   "published": "2019-09-01",
+  "shop-link": "https://shop.tennety.art/product/catch-yourself-comic-poster"
 }
 ---
 
