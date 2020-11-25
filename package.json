@@ -11,7 +11,7 @@
   "license": "BSD-3",
   "dependencies": {
     "elm-pages": "^1.4.0",
-    "highlight.js": "^9.15.10",
+    "highlight.js": "^10.1.2",
     "little-loader": "^0.2.0",
     "node-sass": "^4.12.0"
   },
