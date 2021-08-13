@@ -8,7 +8,7 @@ import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Shared
 import View exposing (View)
-import Html
+import Element exposing (Element)
 
 
 type alias Model =
@@ -69,6 +69,5 @@ view :
 view maybeUrl sharedModel static =
     { title = ""
     , body = 
-        [ Html.div [] (List.map Html.text static.data)
-        ]
+        Element.row [] (List.map Element.text static.data)
     }

@@ -1,23 +1,23 @@
 module View exposing (View, map, placeholder)
 
-import Html exposing (Html)
+import Element exposing (Element)
 
 
 type alias View msg =
     { title : String
-    , body : List (Html msg)
+    , body : Element msg
     }
 
 
 map : (msg1 -> msg2) -> View msg1 -> View msg2
-map fn doc =
-    { title = doc.title
-    , body = List.map (Html.map fn) doc.body
+map fn view =
+    { title = view.title
+    , body = Element.map fn view.body
     }
 
 
 placeholder : String -> View msg
 placeholder moduleName =
-    { title = "Placeholder - " ++ moduleName
-    , body = [ Html.text moduleName ]
+    { title = "Placeholder"
+    , body = Element.text moduleName
     }
