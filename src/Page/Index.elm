@@ -32,9 +32,10 @@ page =
         |> Page.buildNoState { view = view }
 
 
-data : DataSource Data
+data : DataSource.DataSource Data
 data =
-    DataSource.succeed ["folder1", "folder2"]
+    DataSource.succeed ()
+
 
 
 head :
@@ -58,8 +59,7 @@ head static =
 
 
 type alias Data =
-    List String
-
+    ()
 
 view :
     Maybe PageUrl
@@ -69,5 +69,6 @@ view :
 view maybeUrl sharedModel static =
     { title = ""
     , body = 
-        Element.row [] (List.map Element.text static.data)
+        Element.column []
+            [ Element.text "index" ]
     }
