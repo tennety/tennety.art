@@ -43,7 +43,6 @@ type SharedMsg
 
 type alias Folder =
     { name: String
-    , path: String
     }
 
 type alias Data =
@@ -58,6 +57,10 @@ type alias Model =
     { menuState : MenuState
     }
 
+type alias Page =
+    { path: Path
+    , route: Maybe Route
+    }
 
 init :
     Maybe Browser.Navigation.Key
@@ -97,8 +100,8 @@ subscriptions _ _ =
 data : DataSource.DataSource Data
 data =
     DataSource.succeed
-        [ { name = "folder1", path = "/folder1" }
-        , { name = "folder2", path = "/folder2" }
+        [ { name = "folder1" }
+        , { name = "folder2" }
         ]
         
 toggleMenu : MenuState -> MenuState
@@ -122,8 +125,21 @@ homeLink =
         }
 
 
-nav : MenuState -> Data -> Element msg
-nav menuState folders =
+navLink folderName =
+    let
+        url = (Route.Folder_ { folder = folderName }) |> Route.routeToPath |> String.join "/"
+    in
+    Element.link
+      [ Element.width Element.fill
+      , Element.paddingXY 25 15
+      , Font.size (Palette.scaled 2)
+      , Font.center
+      ]
+      { url = url, label = folderName |> Element.text }
+
+
+nav : MenuState -> Page -> Data -> Element msg
+nav menuState page folders =
     case menuState of
         Open ->
             Element.column
@@ -140,7 +156,7 @@ nav menuState folders =
                     , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
                     , Element.Border.color Palette.color.dark
                     ]
-                    (List.map (.name >> Element.text) folders)
+                    (List.map (.name >> navLink) folders)
                 , Element.column
                     [ Element.Region.navigation
                     , Element.centerX
@@ -207,7 +223,7 @@ view sharedData page model toMsg pageView =
                     [ Element.width Element.fill
                     , Font.size 20
                     , Font.family [ Font.typeface "Yrsa" ]
-                    , Element.inFront (nav model.menuState sharedData)
+                    , Element.inFront (nav model.menuState page sharedData)
                     , Element.inFront (menuButton toMsg model.menuState)
                     ]
     , title = pageView.title
