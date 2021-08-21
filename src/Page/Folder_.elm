@@ -1,4 +1,4 @@
-module Page.Folder_ exposing (Model, Msg, Data, page)
+module Page.Folder_ exposing (Data, Model, Msg, page)
 
 import DataSource exposing (DataSource)
 import Head
@@ -17,8 +17,10 @@ type alias Model =
 type alias Msg =
     Never
 
+
 type alias RouteParams =
     { folder : String }
+
 
 page : Page RouteParams Data
 page =
@@ -33,15 +35,14 @@ page =
 routes : DataSource (List RouteParams)
 routes =
     DataSource.succeed
-        [{folder = "folder1" }
-        ,{folder = "folder2" }
+        [ { folder = "folder1" }
+        , { folder = "folder2" }
         ]
 
 
 data : RouteParams -> DataSource Data
 data routeParams =
     DataSource.succeed ()
-
 
 
 head :

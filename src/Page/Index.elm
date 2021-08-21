@@ -1,6 +1,7 @@
 module Page.Index exposing (Data, Model, Msg, page)
 
 import DataSource exposing (DataSource)
+import Element exposing (Element)
 import Head
 import Head.Seo as Seo
 import Page exposing (Page, StaticPayload)
@@ -8,7 +9,6 @@ import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Shared
 import View exposing (View)
-import Element exposing (Element)
 
 
 type alias Model =
@@ -37,7 +37,6 @@ data =
     DataSource.succeed ()
 
 
-
 head :
     StaticPayload Data RouteParams
     -> List Head.Tag
@@ -61,6 +60,7 @@ head static =
 type alias Data =
     ()
 
+
 view :
     Maybe PageUrl
     -> Shared.Model
@@ -68,7 +68,7 @@ view :
     -> View Msg
 view maybeUrl sharedModel static =
     { title = ""
-    , body = 
+    , body =
         Element.column []
             [ Element.text "index" ]
     }
