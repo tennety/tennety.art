@@ -2,21 +2,22 @@ module Shared exposing (Data, Model, Msg(..), SharedMsg(..), template)
 
 import Browser.Navigation
 import DataSource
-import Html exposing (Html)
-import Html.Attributes as Attr
-import Pages.Flags
-import Pages.PageUrl exposing (PageUrl)
-import Path exposing (Path)
-import Route exposing (Route)
-import SharedTemplate exposing (SharedTemplate)
-import View exposing (View)
 import Element exposing (Element)
 import Element.Border
 import Element.Font as Font
 import Element.Input as Input
 import Element.Region
-import Palette
+import Html exposing (Html)
+import Html.Attributes as Attr
 import Icons
+import Json.Decode as Decode exposing (Decoder, decodeValue)
+import Pages.Flags exposing (Flags(..))
+import Pages.PageUrl exposing (PageUrl)
+import Palette
+import Path exposing (Path)
+import Route exposing (Route)
+import SharedTemplate exposing (SharedTemplate)
+import View exposing (View)
 
 
 template : SharedTemplate Msg Model Data msg
@@ -37,13 +38,17 @@ type Msg
         , fragment : Maybe String
         }
     | MenuToggled
+    | ColorSchemeToggled
+
 
 type SharedMsg
     = NoOp
 
+
 type alias Folder =
-    { name: String
+    { name : String
     }
+
 
 type alias Data =
     List Folder
@@ -53,14 +58,24 @@ type MenuState
     = Open
     | Closed
 
+
 type alias Model =
     { menuState : MenuState
+    , colorScheme : ColorScheme
     }
 
+
 type alias Page =
-    { path: Path
-    , route: Maybe Route
+    { path : Path
+    , route : Maybe Route
     }
+
+
+type ColorScheme
+    = Light
+    | Dark
+    | NoPreference
+
 
 init :
     Maybe Browser.Navigation.Key
@@ -77,7 +92,24 @@ init :
             }
     -> ( Model, Cmd Msg )
 init navigationKey flags maybePagePath =
-    ( { menuState = Open }
+    let
+        decodeResult =
+            case flags of
+                BrowserFlags val ->
+                    Decode.decodeValue colorSchemeDecoder val
+
+                PreRenderFlags ->
+                    Ok Dark
+
+        colorScheme =
+            case decodeResult of
+                Ok pref ->
+                    pref
+
+                Err _ ->
+                    Dark
+    in
+    ( { menuState = Closed, colorScheme = colorScheme }
     , Cmd.none
     )
 
@@ -88,8 +120,11 @@ update msg model =
         OnPageChange _ ->
             ( { model | menuState = Closed }, Cmd.none )
 
-        MenuToggled -> 
+        MenuToggled ->
             ( { model | menuState = toggleMenu model.menuState }, Cmd.none )
+
+        ColorSchemeToggled ->
+            ( { model | colorScheme = toggleScheme model.colorScheme }, Cmd.none )
 
 
 subscriptions : Path -> Model -> Sub Msg
@@ -103,7 +138,8 @@ data =
         [ { name = "folder1" }
         , { name = "folder2" }
         ]
-        
+
+
 toggleMenu : MenuState -> MenuState
 toggleMenu state =
     case state of
@@ -112,6 +148,40 @@ toggleMenu state =
 
         Closed ->
             Open
+
+
+toggleScheme : ColorScheme -> ColorScheme
+toggleScheme scheme =
+    case scheme of
+        Light ->
+            Dark
+
+        Dark ->
+            Light
+
+        NoPreference ->
+            Light
+
+
+colorSchemeDecoder : Decoder ColorScheme
+colorSchemeDecoder =
+    Decode.string
+        |> Decode.andThen
+            (\scheme ->
+                case scheme of
+                    "light" ->
+                        Decode.succeed Light
+
+                    "dark" ->
+                        Decode.succeed Dark
+
+                    "no-preference" ->
+                        Decode.succeed Light
+
+                    _ ->
+                        Decode.fail "Unknown colorscheme"
+            )
+
 
 homeLink =
     Element.link
@@ -127,15 +197,16 @@ homeLink =
 
 navLink folderName =
     let
-        url = (Route.Folder_ { folder = folderName }) |> Route.routeToPath |> String.join "/"
+        url =
+            Route.Folder_ { folder = folderName } |> Route.routeToPath |> String.join "/"
     in
     Element.link
-      [ Element.width Element.fill
-      , Element.paddingXY 25 15
-      , Font.size (Palette.scaled 2)
-      , Font.center
-      ]
-      { url = url, label = folderName |> Element.text }
+        [ Element.width Element.fill
+        , Element.paddingXY 25 15
+        , Font.size (Palette.scaled 2)
+        , Font.center
+        ]
+        { url = url, label = folderName |> Element.text }
 
 
 nav : MenuState -> Page -> Data -> Element msg
@@ -182,8 +253,10 @@ nav menuState page folders =
                         }
                     ]
                 ]
+
         Closed ->
             Element.none
+
 
 menuButton : (Msg -> msg) -> MenuState -> Element msg
 menuButton toMsg state =
@@ -206,6 +279,28 @@ menuButton toMsg state =
         }
 
 
+colorSchemeToggle : (Msg -> msg) -> ColorScheme -> Element msg
+colorSchemeToggle toMsg scheme =
+    let
+        icon =
+            case scheme of
+                Light ->
+                    Icons.moon
+
+                Dark ->
+                    Icons.sun
+
+                NoPreference ->
+                    Icons.sun
+    in
+    Input.button
+        [ Element.padding 10
+        , Element.alignRight
+        ]
+        { onPress = Just (toMsg ColorSchemeToggled)
+        , label = Element.html icon
+        }
+
 
 view :
     Data
@@ -218,13 +313,15 @@ view :
     -> View msg
     -> { body : Html msg, title : String }
 view sharedData page model toMsg pageView =
-    { body =  pageView.body
-                |> Element.layout
-                    [ Element.width Element.fill
-                    , Font.size 20
-                    , Font.family [ Font.typeface "Yrsa" ]
-                    , Element.inFront (nav model.menuState page sharedData)
-                    , Element.inFront (menuButton toMsg model.menuState)
-                    ]
+    { body =
+        pageView.body
+            |> Element.layout
+                [ Element.width Element.fill
+                , Font.size 20
+                , Font.family [ Font.typeface "Yrsa" ]
+                , Element.inFront (nav model.menuState page sharedData)
+                , Element.inFront (menuButton toMsg model.menuState)
+                , Element.inFront (colorSchemeToggle toMsg model.colorScheme)
+                ]
     , title = pageView.title
     }
