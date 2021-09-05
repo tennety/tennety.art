@@ -1,9 +1,15 @@
-module Palette exposing (blogHeading, color, fromElmColor, heading, scaled)
+module Palette exposing (ColorScheme(..), blogHeading, color, fromElmColor, heading, scaled)
 
 import Color
 import Element exposing (Element)
 import Element.Font as Font
 import Element.Region
+
+
+type ColorScheme
+    = Light
+    | Dark
+    | NoPreference
 
 
 color =

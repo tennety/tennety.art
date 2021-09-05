@@ -1,8 +1,10 @@
 module Shared exposing (Data, Model, Msg(..), SharedMsg(..), template)
 
 import Browser.Navigation
+import Color
 import DataSource
 import Element exposing (Element)
+import Element.Background
 import Element.Border
 import Element.Font as Font
 import Element.Input as Input
@@ -10,10 +12,10 @@ import Element.Region
 import Html exposing (Html)
 import Html.Attributes as Attr
 import Icons
-import Json.Decode as Decode exposing (Decoder, decodeValue)
+import Json.Decode as Decode exposing (Decoder)
 import Pages.Flags exposing (Flags(..))
 import Pages.PageUrl exposing (PageUrl)
-import Palette
+import Palette exposing (ColorScheme(..))
 import Path exposing (Path)
 import Route exposing (Route)
 import SharedTemplate exposing (SharedTemplate)
@@ -69,12 +71,6 @@ type alias Page =
     { path : Path
     , route : Maybe Route
     }
-
-
-type ColorScheme
-    = Light
-    | Dark
-    | NoPreference
 
 
 init :
@@ -209,13 +205,29 @@ navLink folderName =
         { url = url, label = folderName |> Element.text }
 
 
-nav : MenuState -> Page -> Data -> Element msg
-nav menuState page folders =
-    case menuState of
+nav : Model -> Page -> Data -> Element msg
+nav model page folders =
+    case model.menuState of
+        Closed ->
+            Element.none
+
         Open ->
+            let
+                backgroundColor =
+                    case model.colorScheme of
+                        Light ->
+                            Palette.fromElmColor Color.white
+
+                        Dark ->
+                            Palette.color.darker
+
+                        NoPreference ->
+                            Palette.color.neutral
+            in
             Element.column
                 [ Element.width Element.fill
                 , Element.height Element.fill
+                , Element.Background.color backgroundColor
                 , Element.centerX
                 , Element.htmlAttribute (Attr.class "menu")
                 ]
@@ -254,12 +266,9 @@ nav menuState page folders =
                     ]
                 ]
 
-        Closed ->
-            Element.none
-
 
 menuButton : (Msg -> msg) -> MenuState -> Element msg
-menuButton toMsg state =
+menuButton msgMap state =
     let
         icon =
             case state of
@@ -274,13 +283,13 @@ menuButton toMsg state =
         , Element.htmlAttribute (Attr.title "menu")
         , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
         ]
-        { onPress = Just (toMsg MenuToggled)
+        { onPress = Just (msgMap MenuToggled)
         , label = Element.html icon
         }
 
 
 colorSchemeToggle : (Msg -> msg) -> ColorScheme -> Element msg
-colorSchemeToggle toMsg scheme =
+colorSchemeToggle msgMap scheme =
     let
         icon =
             case scheme of
@@ -297,7 +306,7 @@ colorSchemeToggle toMsg scheme =
         [ Element.padding 10
         , Element.alignRight
         ]
-        { onPress = Just (toMsg ColorSchemeToggled)
+        { onPress = Just (msgMap ColorSchemeToggled)
         , label = Element.html icon
         }
 
@@ -313,13 +322,28 @@ view :
     -> View msg
     -> { body : Html msg, title : String }
 view sharedData page model toMsg pageView =
+    let
+        ( fontColor, backgroundColor, bodyClass ) =
+            case model.colorScheme of
+                Light ->
+                    ( Palette.color.darkest, Palette.fromElmColor Color.white, "light" )
+
+                Dark ->
+                    ( Palette.color.lightest, Palette.color.darker, "dark" )
+
+                NoPreference ->
+                    ( Palette.color.neutral, Palette.color.neutral, "" )
+    in
     { body =
         pageView.body
             |> Element.layout
                 [ Element.width Element.fill
+                , Element.htmlAttribute (Attr.class bodyClass)
+                , Font.color fontColor
+                , Element.Background.color backgroundColor
                 , Font.size 20
                 , Font.family [ Font.typeface "Yrsa" ]
-                , Element.inFront (nav model.menuState page sharedData)
+                , Element.inFront (nav model page sharedData)
                 , Element.inFront (menuButton toMsg model.menuState)
                 , Element.inFront (colorSchemeToggle toMsg model.colorScheme)
                 ]
