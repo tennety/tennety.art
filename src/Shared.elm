@@ -3,6 +3,7 @@ module Shared exposing (Data, Model, Msg(..), SharedMsg(..), template)
 import Browser.Navigation
 import Color
 import DataSource
+import DataSource.Glob as Glob
 import Element exposing (Element)
 import Element.Background
 import Element.Border
@@ -18,6 +19,7 @@ import Pages.PageUrl exposing (PageUrl)
 import Palette exposing (ColorScheme(..))
 import Path exposing (Path)
 import Route exposing (Route)
+import Set
 import SharedTemplate exposing (SharedTemplate)
 import View exposing (View)
 
@@ -47,13 +49,8 @@ type SharedMsg
     = NoOp
 
 
-type alias Folder =
-    { name : String
-    }
-
-
 type alias Data =
-    List Folder
+    Set.Set String
 
 
 type MenuState
@@ -130,10 +127,14 @@ subscriptions _ _ =
 
 data : DataSource.DataSource Data
 data =
-    DataSource.succeed
-        [ { name = "folder1" }
-        , { name = "folder2" }
-        ]
+    (Glob.succeed Basics.identity
+        |> Glob.match (Glob.literal "content/")
+        |> Glob.capture Glob.wildcard
+        |> Glob.match (Glob.literal "/")
+        |> Glob.match Glob.wildcard
+        |> Glob.toDataSource
+    )
+        |> DataSource.map Set.fromList
 
 
 toggleMenu : MenuState -> MenuState
@@ -239,7 +240,7 @@ nav model page folders =
                     , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
                     , Element.Border.color Palette.color.dark
                     ]
-                    (List.map (.name >> navLink) folders)
+                    (folders |> Set.toList |> List.map navLink)
                 , Element.column
                     [ Element.Region.navigation
                     , Element.centerX
