@@ -1,6 +1,8 @@
 module Page.Folder_ exposing (Data, Model, Msg, page)
 
 import DataSource exposing (DataSource)
+import DataSource.Glob as Glob
+import Element exposing (Element)
 import Head
 import Head.Seo as Seo
 import Page exposing (Page, PageWithState, StaticPayload)
@@ -35,14 +37,21 @@ page =
 routes : DataSource (List RouteParams)
 routes =
     DataSource.succeed
-        [ { folder = "folder1" }
-        , { folder = "folder2" }
+        [ { folder = "comics" }
+        , { folder = "printmaking" }
         ]
 
 
 data : RouteParams -> DataSource Data
 data routeParams =
-    DataSource.succeed ()
+    Glob.succeed Basics.identity
+        |> Glob.match (Glob.literal "content/")
+        |> Glob.match (Glob.literal routeParams.folder)
+        |> Glob.match (Glob.literal "/")
+        |> Glob.capture Glob.wildcard
+        |> Glob.match (Glob.literal ".md")
+        |> Glob.match Glob.wildcard
+        |> Glob.toDataSource
 
 
 head :
@@ -66,7 +75,7 @@ head static =
 
 
 type alias Data =
-    ()
+    List String
 
 
 view :
@@ -75,4 +84,13 @@ view :
     -> StaticPayload Data RouteParams
     -> View Msg
 view maybeUrl sharedModel static =
-    View.placeholder "Folder_"
+    let
+        _ =
+            Debug.log "static" static
+    in
+    { title = static.routeParams.folder
+    , body =
+        Element.column
+            []
+            (static.data |> List.map Element.text)
+    }

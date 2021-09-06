@@ -130,7 +130,7 @@ data =
     (Glob.succeed Basics.identity
         |> Glob.match (Glob.literal "content/")
         |> Glob.capture Glob.wildcard
-        |> Glob.match (Glob.literal "/")
+        |> Glob.match (Glob.oneOf ( ( "md", () ), [ ( "/", () ) ] ))
         |> Glob.match Glob.wildcard
         |> Glob.toDataSource
     )
