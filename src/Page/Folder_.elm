@@ -36,10 +36,12 @@ page =
 
 routes : DataSource (List RouteParams)
 routes =
-    DataSource.succeed
-        [ { folder = "comics" }
-        , { folder = "printmaking" }
-        ]
+    Glob.succeed RouteParams
+        |> Glob.match (Glob.literal "content/")
+        |> Glob.capture Glob.wildcard
+        |> Glob.match (Glob.literal "/")
+        |> Glob.match Glob.wildcard
+        |> Glob.toDataSource
 
 
 data : RouteParams -> DataSource Data
