@@ -1,10 +1,15 @@
 module Page.Folder_ exposing (Data, Model, Msg, page)
 
 import DataSource exposing (DataSource)
+import DataSource.File
 import DataSource.Glob as Glob
 import Element exposing (Element)
+import Element.Font
+import Element.Region exposing (description)
 import Head
 import Head.Seo as Seo
+import Html.Attributes as Attr
+import OptimizedDecoder as Decode exposing (Decoder)
 import Page exposing (Page, PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
@@ -46,14 +51,43 @@ routes =
 
 data : RouteParams -> DataSource Data
 data routeParams =
+    fileList routeParams
+        |> DataSource.map
+            (List.map
+                (DataSource.File.onlyFrontmatter postFrontmatterDecoder)
+            )
+        |> DataSource.resolve
+
+
+fileList : RouteParams -> DataSource (List String)
+fileList routeParams =
     Glob.succeed Basics.identity
         |> Glob.match (Glob.literal "content/")
+        |> Glob.captureFilePath
         |> Glob.match (Glob.literal routeParams.folder)
         |> Glob.match (Glob.literal "/")
-        |> Glob.capture Glob.wildcard
-        |> Glob.match (Glob.literal ".md")
         |> Glob.match Glob.wildcard
+        |> Glob.match (Glob.literal ".md")
         |> Glob.toDataSource
+
+
+type alias Preview =
+    { thumb : String
+    , description : String
+    , published : String
+    }
+
+
+type alias Data =
+    List Preview
+
+
+postFrontmatterDecoder : Decoder Preview
+postFrontmatterDecoder =
+    Decode.map3 Preview
+        (Decode.field "thumb" Decode.string)
+        (Decode.field "description" Decode.string)
+        (Decode.field "published" Decode.string)
 
 
 head :
@@ -76,8 +110,26 @@ head static =
         |> Seo.website
 
 
-type alias Data =
-    List String
+title : RouteParams -> Element msg
+title route =
+    [ Element.text route.folder ]
+        |> Element.paragraph
+            [ Element.Font.size 36
+            , Element.Font.center
+            , Element.Font.family [ Element.Font.typeface "IM Fell English" ]
+            , Element.Font.semiBold
+            , Element.padding 16
+            ]
+
+
+postThumb : Preview -> Element Msg
+postThumb metadata =
+    Element.image
+        [ Element.width (Element.px 150)
+        , Element.height (Element.px 150)
+        , Element.htmlAttribute (Attr.class "image-preview")
+        ]
+        { src = metadata.thumb, description = metadata.description }
 
 
 view :
@@ -86,13 +138,18 @@ view :
     -> StaticPayload Data RouteParams
     -> View Msg
 view maybeUrl sharedModel static =
-    let
-        _ =
-            Debug.log "static" static
-    in
     { title = static.routeParams.folder
     , body =
         Element.column
-            []
-            (static.data |> List.map Element.text)
+            [ Element.padding 20
+            , Element.centerX
+            ]
+            [ Element.column
+                [ Element.spacing 20 ]
+                [ title static.routeParams
+                , Element.wrappedRow
+                    [ Element.spacing 40 ]
+                    (static.data |> List.map postThumb)
+                ]
+            ]
     }
