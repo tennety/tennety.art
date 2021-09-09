@@ -1,4 +1,4 @@
-module Palette exposing (ColorScheme(..), blogHeading, color, fromElmColor, heading, scaled)
+module Palette exposing (ColorPreference(..), blogHeading, colorScheme, heading, scaled)
 
 import Color
 import Element exposing (Element)
@@ -6,10 +6,17 @@ import Element.Font as Font
 import Element.Region
 
 
-type ColorScheme
+type ColorPreference
     = Light
     | Dark
-    | NoPreference
+
+
+type alias ColorScheme =
+    { backgroundColor : Element.Color
+    , foregroundColor : Element.Color
+    , borders : Element.Color
+    , bodyClass : String
+    }
 
 
 color =
@@ -66,3 +73,31 @@ blogHeading title =
         , Font.center
         ]
         [ Element.text title ]
+
+
+lightColorScheme : ColorScheme
+lightColorScheme =
+    { backgroundColor = fromElmColor Color.white
+    , foregroundColor = color.darkest
+    , borders = color.dark
+    , bodyClass = "light"
+    }
+
+
+darkColorScheme : ColorScheme
+darkColorScheme =
+    { backgroundColor = color.darker
+    , foregroundColor = color.lightest
+    , borders = color.neutral
+    , bodyClass = "dark"
+    }
+
+
+colorScheme : ColorPreference -> ColorScheme
+colorScheme pref =
+    case pref of
+        Light ->
+            lightColorScheme
+
+        Dark ->
+            darkColorScheme

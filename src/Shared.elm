@@ -1,7 +1,6 @@
 module Shared exposing (Data, Model, Msg(..), SharedMsg(..), template)
 
 import Browser.Navigation
-import Color
 import DataSource
 import DataSource.Glob as Glob
 import Element exposing (Element)
@@ -16,7 +15,7 @@ import Icons
 import Json.Decode as Decode exposing (Decoder)
 import Pages.Flags exposing (Flags(..))
 import Pages.PageUrl exposing (PageUrl)
-import Palette exposing (ColorScheme(..))
+import Palette exposing (ColorPreference(..))
 import Path exposing (Path)
 import Route exposing (Route)
 import Set
@@ -60,7 +59,7 @@ type MenuState
 
 type alias Model =
     { menuState : MenuState
-    , colorScheme : ColorScheme
+    , colorPreference : ColorPreference
     }
 
 
@@ -89,7 +88,7 @@ init navigationKey flags maybePagePath =
         decodeResult =
             case flags of
                 BrowserFlags val ->
-                    Decode.decodeValue colorSchemeDecoder val
+                    Decode.decodeValue colorPreferenceDecoder val
 
                 PreRenderFlags ->
                     Ok Dark
@@ -102,7 +101,7 @@ init navigationKey flags maybePagePath =
                 Err _ ->
                     Dark
     in
-    ( { menuState = Closed, colorScheme = colorScheme }
+    ( { menuState = Closed, colorPreference = colorScheme }
     , Cmd.none
     )
 
@@ -117,7 +116,7 @@ update msg model =
             ( { model | menuState = toggleMenu model.menuState }, Cmd.none )
 
         ColorSchemeToggled ->
-            ( { model | colorScheme = toggleScheme model.colorScheme }, Cmd.none )
+            ( { model | colorPreference = toggleScheme model.colorPreference }, Cmd.none )
 
 
 subscriptions : Path -> Model -> Sub Msg
@@ -147,7 +146,7 @@ toggleMenu state =
             Open
 
 
-toggleScheme : ColorScheme -> ColorScheme
+toggleScheme : ColorPreference -> ColorPreference
 toggleScheme scheme =
     case scheme of
         Light ->
@@ -156,12 +155,9 @@ toggleScheme scheme =
         Dark ->
             Light
 
-        NoPreference ->
-            Light
 
-
-colorSchemeDecoder : Decoder ColorScheme
-colorSchemeDecoder =
+colorPreferenceDecoder : Decoder ColorPreference
+colorPreferenceDecoder =
     Decode.string
         |> Decode.andThen
             (\scheme ->
@@ -180,12 +176,16 @@ colorSchemeDecoder =
             )
 
 
-homeLink =
+colorValues model =
+    Palette.colorScheme model.colorPreference
+
+
+homeLink model =
     Element.link
         [ Element.centerX
         , Element.padding 10
         , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
-        , Element.Border.color Palette.color.dark
+        , Element.Border.color (model |> colorValues |> .borders)
         ]
         { url = "/"
         , label = Palette.blogHeading "tennety.art"
@@ -213,32 +213,20 @@ nav model page folders =
             Element.none
 
         Open ->
-            let
-                backgroundColor =
-                    case model.colorScheme of
-                        Light ->
-                            Palette.fromElmColor Color.white
-
-                        Dark ->
-                            Palette.color.darker
-
-                        NoPreference ->
-                            Palette.color.neutral
-            in
             Element.column
                 [ Element.width Element.fill
                 , Element.height Element.fill
-                , Element.Background.color backgroundColor
+                , Element.Background.color (model |> colorValues |> .backgroundColor)
                 , Element.centerX
                 , Element.htmlAttribute (Attr.class "menu")
                 ]
-                [ homeLink
+                [ homeLink model
                 , Element.column
                     [ Element.Region.navigation
                     , Element.centerX
                     , Element.padding 15
                     , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
-                    , Element.Border.color Palette.color.dark
+                    , Element.Border.color (model |> colorValues |> .borders)
                     ]
                     (folders |> Set.toList |> List.map navLink)
                 , Element.column
@@ -289,7 +277,7 @@ menuButton msgMap state =
         }
 
 
-colorSchemeToggle : (Msg -> msg) -> ColorScheme -> Element msg
+colorSchemeToggle : (Msg -> msg) -> ColorPreference -> Element msg
 colorSchemeToggle msgMap scheme =
     let
         icon =
@@ -298,9 +286,6 @@ colorSchemeToggle msgMap scheme =
                     Icons.moon
 
                 Dark ->
-                    Icons.sun
-
-                NoPreference ->
                     Icons.sun
     in
     Input.button
@@ -323,30 +308,18 @@ view :
     -> View msg
     -> { body : Html msg, title : String }
 view sharedData page model toMsg pageView =
-    let
-        ( fontColor, backgroundColor, bodyClass ) =
-            case model.colorScheme of
-                Light ->
-                    ( Palette.color.darkest, Palette.fromElmColor Color.white, "light" )
-
-                Dark ->
-                    ( Palette.color.lightest, Palette.color.darker, "dark" )
-
-                NoPreference ->
-                    ( Palette.color.neutral, Palette.color.neutral, "" )
-    in
     { body =
         pageView.body
             |> Element.layout
                 [ Element.width Element.fill
-                , Element.htmlAttribute (Attr.class bodyClass)
-                , Font.color fontColor
-                , Element.Background.color backgroundColor
+                , Element.htmlAttribute (Attr.class (model |> colorValues |> .bodyClass))
+                , Font.color (model |> colorValues |> .foregroundColor)
+                , Element.Background.color (model |> colorValues |> .backgroundColor)
                 , Font.size 20
                 , Font.family [ Font.typeface "Yrsa" ]
                 , Element.inFront (nav model page sharedData)
                 , Element.inFront (menuButton toMsg model.menuState)
-                , Element.inFront (colorSchemeToggle toMsg model.colorScheme)
+                , Element.inFront (colorSchemeToggle toMsg model.colorPreference)
                 ]
     , title = pageView.title
     }
