@@ -219,6 +219,7 @@ nav model page folders =
                 , Element.Background.color (model |> colorValues |> .backgroundColor)
                 , Element.centerX
                 , Element.htmlAttribute (Attr.class "menu")
+                , Element.padding (Palette.scaled 3)
                 ]
                 [ homeLink model
                 , Element.column
@@ -256,45 +257,66 @@ nav model page folders =
                 ]
 
 
-menuButton : (Msg -> msg) -> MenuState -> Element msg
-menuButton msgMap state =
+menuButton : (Msg -> msg) -> Model -> Element msg
+menuButton msgMap model =
     let
         icon =
-            case state of
+            case model.menuState of
                 Open ->
                     Icons.close
 
                 Closed ->
                     Icons.menu
+
+        size =
+            Palette.scaled 3
     in
-    Input.button
-        [ Element.padding 10
-        , Element.htmlAttribute (Attr.title "menu")
-        , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
+    Element.el
+        [ Element.padding (Palette.scaled 2)
+        , Element.alignLeft
         ]
-        { onPress = Just (msgMap MenuToggled)
-        , label = Element.html icon
-        }
+        (Input.button
+            [ Element.Border.rounded (size // 2)
+            , Element.focused [ Element.Border.glow (model |> colorValues |> .borders) 1 ]
+            , Element.Region.description "menu button"
+            , Element.htmlAttribute (Attr.title "menu")
+            , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
+            ]
+            { onPress = Just (msgMap MenuToggled)
+            , label = Element.el [ Element.centerX, Element.centerY, Element.height (Element.px size), Element.width (Element.px size), Font.color (model |> colorValues |> .foregroundColor) ] (Element.html icon)
+            }
+        )
 
 
-colorSchemeToggle : (Msg -> msg) -> ColorPreference -> Element msg
-colorSchemeToggle msgMap scheme =
+colorSchemeToggle : (Msg -> msg) -> Model -> Element msg
+colorSchemeToggle msgMap model =
     let
         icon =
-            case scheme of
+            case model.colorPreference of
                 Light ->
                     Icons.moon
 
                 Dark ->
                     Icons.sun
+
+        size =
+            Palette.scaled 3
     in
-    Input.button
-        [ Element.padding 10
+    Element.el
+        [ Element.padding (Palette.scaled 2)
         , Element.alignRight
         ]
-        { onPress = Just (msgMap ColorSchemeToggled)
-        , label = Element.html icon
-        }
+        (Input.button
+            [ Element.Border.rounded (size // 2)
+            , Element.focused [ Element.Border.glow (model |> colorValues |> .borders) 1 ]
+            , Element.Region.description "menu button"
+            , Element.htmlAttribute (Attr.title "menu")
+            , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
+            ]
+            { onPress = Just (msgMap ColorSchemeToggled)
+            , label = Element.el [ Element.height (Element.px size), Element.width (Element.px size), Font.color (model |> colorValues |> .foregroundColor) ] (Element.html icon)
+            }
+        )
 
 
 view :
@@ -315,11 +337,12 @@ view sharedData page model toMsg pageView =
                 , Element.htmlAttribute (Attr.class (model |> colorValues |> .bodyClass))
                 , Font.color (model |> colorValues |> .foregroundColor)
                 , Element.Background.color (model |> colorValues |> .backgroundColor)
-                , Font.size 20
+                , Element.padding (Palette.scaled 3)
+                , Font.size (Palette.scaled 1)
                 , Font.family [ Font.typeface "Yrsa" ]
                 , Element.inFront (nav model page sharedData)
-                , Element.inFront (menuButton toMsg model.menuState)
-                , Element.inFront (colorSchemeToggle toMsg model.colorPreference)
+                , Element.inFront (menuButton toMsg model)
+                , Element.inFront (colorSchemeToggle toMsg model)
                 ]
     , title = pageView.title
     }

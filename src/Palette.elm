@@ -21,11 +21,11 @@ type alias ColorScheme =
 
 color =
     { lightest = Element.rgb255 0xF7 0xFA 0xFC
-    , lighter = Element.rgb255 0xE2 0xE8 0xF0
-    , light = Element.rgb255 0xCB 0xD5 0xE0
-    , neutral = Element.rgb255 0xA0 0xAE 0xC0
-    , dark = Element.rgb255 0x4A 0x55 0x68
-    , darker = Element.rgb255 0x2D 0x37 0x48
+    , lighter = Element.rgb255 0xDC 0xDF 0xE2
+    , light = Element.rgb255 0xC0 0xC4 0xC8
+    , neutral = Element.rgb255 0x89 0x8D 0x94
+    , dark = Element.rgb255 0x52 0x57 0x60
+    , darker = Element.rgb255 0x36 0x3C 0x46
     , darkest = Element.rgb255 0x1A 0x20 0x2C
     }
 
@@ -78,7 +78,7 @@ blogHeading title =
 lightColorScheme : ColorScheme
 lightColorScheme =
     { backgroundColor = fromElmColor Color.white
-    , foregroundColor = color.darkest
+    , foregroundColor = color.darker
     , borders = color.dark
     , bodyClass = "light"
     }
@@ -86,8 +86,8 @@ lightColorScheme =
 
 darkColorScheme : ColorScheme
 darkColorScheme =
-    { backgroundColor = color.darker
-    , foregroundColor = color.lightest
+    { backgroundColor = color.darkest
+    , foregroundColor = color.lighter
     , borders = color.neutral
     , bodyClass = "dark"
     }
