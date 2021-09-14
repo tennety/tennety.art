@@ -1,4 +1,4 @@
-module Shared exposing (Data, Model, Msg(..), SharedMsg(..), template)
+module Shared exposing (Data, Model, Msg(..), SharedMsg(..), colorValues, homeLink, template)
 
 import Browser.Navigation
 import DataSource
@@ -183,7 +183,7 @@ colorValues model =
 homeLink model =
     Element.link
         [ Element.centerX
-        , Element.padding 10
+        , Element.paddingEach { bottom = 10, left = 10, right = 10, top = 0 }
         , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
         , Element.Border.color (model |> colorValues |> .borders)
         ]
@@ -194,8 +194,11 @@ homeLink model =
 
 navLink folderName =
     let
+        folderNameNoTrailingPeriod =
+            String.replace "." "" folderName
+
         url =
-            Route.Folder_ { folder = folderName } |> Route.routeToPath |> String.join "/"
+            Route.Folder_ { folder = folderNameNoTrailingPeriod } |> Route.routeToPath |> String.join "/"
     in
     Element.link
         [ Element.width Element.fill
@@ -203,7 +206,7 @@ navLink folderName =
         , Font.size (Palette.scaled 2)
         , Font.center
         ]
-        { url = url, label = folderName |> Element.text }
+        { url = url, label = folderNameNoTrailingPeriod |> Element.text }
 
 
 nav : Model -> Page -> Data -> Element msg
@@ -219,7 +222,7 @@ nav model page folders =
                 , Element.Background.color (model |> colorValues |> .backgroundColor)
                 , Element.centerX
                 , Element.htmlAttribute (Attr.class "menu")
-                , Element.padding (Palette.scaled 3)
+                , Element.padding (Palette.scaled 2)
                 ]
                 [ homeLink model
                 , Element.column
@@ -291,13 +294,13 @@ menuButton msgMap model =
 colorSchemeToggle : (Msg -> msg) -> Model -> Element msg
 colorSchemeToggle msgMap model =
     let
-        icon =
+        ( icon, desc ) =
             case model.colorPreference of
                 Light ->
-                    Icons.moon
+                    ( Icons.moon, "dark" )
 
                 Dark ->
-                    Icons.sun
+                    ( Icons.sun, "light" )
 
         size =
             Palette.scaled 3
@@ -309,9 +312,9 @@ colorSchemeToggle msgMap model =
         (Input.button
             [ Element.Border.rounded (size // 2)
             , Element.focused [ Element.Border.glow (model |> colorValues |> .borders) 1 ]
-            , Element.Region.description "menu button"
-            , Element.htmlAttribute (Attr.title "menu")
-            , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
+            , Element.Region.description ("change colorscheme to " ++ desc)
+            , Element.htmlAttribute (Attr.title "colorscheme toggle")
+            , Element.htmlAttribute (Attr.attribute "aria-label" "colorscheme toggle")
             ]
             { onPress = Just (msgMap ColorSchemeToggled)
             , label = Element.el [ Element.height (Element.px size), Element.width (Element.px size), Font.color (model |> colorValues |> .foregroundColor) ] (Element.html icon)
@@ -334,10 +337,11 @@ view sharedData page model toMsg pageView =
         pageView.body
             |> Element.layout
                 [ Element.width Element.fill
+                , Element.height Element.fill
                 , Element.htmlAttribute (Attr.class (model |> colorValues |> .bodyClass))
                 , Font.color (model |> colorValues |> .foregroundColor)
                 , Element.Background.color (model |> colorValues |> .backgroundColor)
-                , Element.padding (Palette.scaled 3)
+                , Element.padding (Palette.scaled 2)
                 , Font.size (Palette.scaled 1)
                 , Font.family [ Font.typeface "Yrsa" ]
                 , Element.inFront (nav model page sharedData)

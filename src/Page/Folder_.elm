@@ -13,6 +13,7 @@ import OptimizedDecoder as Decode exposing (Decoder)
 import Page exposing (Page, PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
+import Set
 import Shared
 import View exposing (View)
 
@@ -41,12 +42,16 @@ page =
 
 routes : DataSource (List RouteParams)
 routes =
-    Glob.succeed RouteParams
+    (Glob.succeed Basics.identity
         |> Glob.match (Glob.literal "content/")
         |> Glob.capture Glob.wildcard
         |> Glob.match (Glob.literal "/")
         |> Glob.match Glob.wildcard
         |> Glob.toDataSource
+    )
+        |> DataSource.map Set.fromList
+        |> DataSource.map Set.toList
+        |> DataSource.map (List.map RouteParams)
 
 
 data : RouteParams -> DataSource Data
@@ -132,6 +137,12 @@ postThumb metadata =
         { src = metadata.thumb, description = metadata.description }
 
 
+linkToPost : String -> Element msg -> Element msg
+linkToPost postPath content =
+    Element.link [ Element.centerX, Element.width Element.fill ]
+        { url = postPath, label = content }
+
+
 view :
     Maybe PageUrl
     -> Shared.Model
@@ -149,7 +160,7 @@ view maybeUrl sharedModel static =
                 [ title static.routeParams
                 , Element.wrappedRow
                     [ Element.spacing 40 ]
-                    (static.data |> List.map postThumb)
+                    (static.data |> List.map (postThumb >> linkToPost "/"))
                 ]
             ]
     }

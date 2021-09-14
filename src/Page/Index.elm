@@ -2,8 +2,11 @@ module Page.Index exposing (Data, Model, Msg, page)
 
 import DataSource exposing (DataSource)
 import Element exposing (Element)
+import Element.Background
+import Element.Region
 import Head
 import Head.Seo as Seo
+import Html.Attributes as Attr
 import Page exposing (Page, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
@@ -69,6 +72,20 @@ view :
 view maybeUrl sharedModel static =
     { title = ""
     , body =
-        Element.column []
-            [ Element.text "index" ]
+        Element.column
+            [ Element.Background.color (sharedModel |> Shared.colorValues |> .backgroundColor)
+            , Element.Region.mainContent
+            , Element.centerX
+            ]
+            [ Shared.homeLink sharedModel
+            , Element.image
+                [ Element.width Element.fill
+                , Element.htmlAttribute (Attr.class "hero-image")
+                , Element.centerX
+                ]
+                { src = "images/index-covers/hummer-swing-bw.png"
+                , description = "Article cover photo"
+                }
+            , Element.none
+            ]
     }

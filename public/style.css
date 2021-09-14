@@ -4,9 +4,8 @@
   box-sizing: border-box;
 }
 
-.hero-image {
+.hero-image img {
   border-radius: 1vw;
-  overflow: hidden;
 }
 
 .avatar img, .image-preview img {
