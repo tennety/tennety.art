@@ -3,6 +3,7 @@ module Page.Folder_ exposing (Data, Model, Msg, page)
 import DataSource exposing (DataSource)
 import DataSource.File
 import DataSource.Glob as Glob
+import Date
 import Element exposing (Element)
 import Element.Font
 import Element.Region exposing (description)
@@ -62,6 +63,7 @@ data routeParams =
                 (DataSource.File.onlyFrontmatter postFrontmatterDecoder)
             )
         |> DataSource.resolve
+        |> DataSource.map (List.sortWith publishDateDesc)
 
 
 fileList : RouteParams -> DataSource (List String)
@@ -79,7 +81,7 @@ fileList routeParams =
 type alias Preview =
     { thumb : String
     , description : String
-    , published : String
+    , published : Date.Date
     }
 
 
@@ -87,12 +89,29 @@ type alias Data =
     List Preview
 
 
+publishDateDesc : Preview -> Preview -> Order
+publishDateDesc metadata1 metadata2 =
+    Date.compare metadata2.published metadata1.published
+
+
 postFrontmatterDecoder : Decoder Preview
 postFrontmatterDecoder =
     Decode.map3 Preview
         (Decode.field "thumb" Decode.string)
         (Decode.field "description" Decode.string)
-        (Decode.field "published" Decode.string)
+        (Decode.field "published"
+            (Decode.string
+                |> Decode.andThen
+                    (\isoString ->
+                        case Date.fromIsoString isoString of
+                            Ok date ->
+                                Decode.succeed date
+
+                            Err error ->
+                                Decode.fail error
+                    )
+            )
+        )
 
 
 head :
