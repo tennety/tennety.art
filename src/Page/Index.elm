@@ -86,6 +86,5 @@ view maybeUrl sharedModel static =
                 { src = "images/index-covers/hummer-swing-bw.png"
                 , description = "Article cover photo"
                 }
-            , Element.none
             ]
     }

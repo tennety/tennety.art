@@ -179,10 +179,6 @@ view :
     -> StaticPayload Data RouteParams
     -> View Msg
 view maybeUrl sharedModel static =
-    let
-        _ =
-            Debug.log "static.data" static.path
-    in
     { title = static.routeParams.folder
     , body =
         Element.column
