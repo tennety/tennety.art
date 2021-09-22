@@ -308,6 +308,7 @@ colorSchemeToggle msgMap model =
     Element.el
         [ Element.padding (Palette.scaled 2)
         , Element.alignRight
+        , Element.alpha 0.4
         ]
         (Input.button
             [ Element.Border.rounded (size // 2)
