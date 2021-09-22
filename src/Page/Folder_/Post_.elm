@@ -4,13 +4,19 @@ import DataSource exposing (DataSource)
 import DataSource.File
 import DataSource.Glob as Glob
 import Date
+import Element exposing (Element)
+import Element.Background
+import Element.Font as Font
+import Element.Region exposing (description)
 import Head
 import Head.Seo as Seo
+import Html.Attributes as Attr
 import OptimizedDecoder as Decode exposing (Decoder)
 import Page exposing (Page, PageWithState, StaticPayload)
 import Page.Folder_ exposing (PathWithSlug)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
+import Palette
 import Set
 import Shared
 import View exposing (View)
@@ -94,18 +100,22 @@ type alias Data =
     , title : String
     , author : String
     , image : String
+    , description : String
     , published : Date.Date
+    , shopLink : Maybe String
     }
 
 
 postDecoder : String -> Decoder Data
 postDecoder body =
-    Decode.map5 (Data body)
+    Decode.map7 (Data body)
+        -- TODO: support single and multiple
         (Decode.field "type" Decode.string)
         (Decode.field "title" Decode.string)
         (Decode.field "author" Decode.string)
         -- TODO: match against Glob in images
         (Decode.field "image" Decode.string)
+        (Decode.field "description" Decode.string)
         (Decode.field "published"
             (Decode.string
                 |> Decode.andThen
@@ -119,6 +129,30 @@ postDecoder body =
                     )
             )
         )
+        (Decode.field "shop-link" Decode.string |> Decode.maybe)
+
+
+shopLink maybePath =
+    case maybePath of
+        Just shopPath ->
+            Element.link
+                [ Element.width Element.fill
+                , Element.paddingXY 25 15
+                , Font.center
+                ]
+                { url = shopPath
+                , label = Element.text "Shop prints ≫"
+                }
+
+        Nothing ->
+            Element.none
+
+
+publishedDateView publishedDate =
+    Element.text
+        (publishedDate
+            |> Date.format "MMMM ddd, yyyy"
+        )
 
 
 view :
@@ -127,8 +161,25 @@ view :
     -> StaticPayload Data RouteParams
     -> View Msg
 view maybeUrl sharedModel static =
-    let
-        _ =
-            Debug.log "data" static.data
-    in
-    View.placeholder "Folder_.Post_"
+    { title = String.join " :: " [ static.routeParams.folder, static.routeParams.post ]
+    , body =
+        Element.column
+            [ Element.padding 30
+            , Element.spacing 20
+            , Element.Region.mainContent
+            , Element.centerX
+            ]
+            [ Palette.blogHeading static.data.title
+            , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (sharedModel |> Shared.colorValues |> .foregroundColor), Font.center ] [ publishedDateView static.data.published ]
+            , Element.image
+                [ Element.width Element.fill
+                , Element.htmlAttribute (Attr.class "hero-image")
+                , Element.centerX
+                ]
+                { src = "/" ++ static.data.image
+                , description = static.data.description
+                }
+            , shopLink static.data.shopLink
+            , Element.text static.data.body
+            ]
+    }
