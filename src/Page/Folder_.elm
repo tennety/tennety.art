@@ -1,4 +1,4 @@
-module Page.Folder_ exposing (Data, Model, Msg, page)
+module Page.Folder_ exposing (Data, Model, Msg, PathWithSlug, page)
 
 import DataSource exposing (DataSource)
 import DataSource.File
@@ -14,6 +14,8 @@ import OptimizedDecoder as Decode exposing (Decoder)
 import Page exposing (Page, PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
+import Path exposing (Path)
+import Route
 import Set
 import Shared
 import View exposing (View)
@@ -60,26 +62,33 @@ data routeParams =
     fileList routeParams
         |> DataSource.map
             (List.map
-                (DataSource.File.onlyFrontmatter postFrontmatterDecoder)
+                (\{ path, slug } -> DataSource.File.onlyFrontmatter (postFrontmatterDecoder slug) path)
             )
         |> DataSource.resolve
         |> DataSource.map (List.sortWith publishDateDesc)
 
 
-fileList : RouteParams -> DataSource (List String)
+fileList : RouteParams -> DataSource (List PathWithSlug)
 fileList routeParams =
-    Glob.succeed Basics.identity
-        |> Glob.match (Glob.literal "content/")
+    Glob.succeed PathWithSlug
         |> Glob.captureFilePath
+        |> Glob.match (Glob.literal "content/")
         |> Glob.match (Glob.literal routeParams.folder)
         |> Glob.match (Glob.literal "/")
-        |> Glob.match Glob.wildcard
+        |> Glob.capture Glob.wildcard
         |> Glob.match (Glob.literal ".md")
         |> Glob.toDataSource
 
 
+type alias PathWithSlug =
+    { path : String
+    , slug : String
+    }
+
+
 type alias Preview =
-    { thumb : String
+    { name : String
+    , thumb : String
     , description : String
     , published : Date.Date
     }
@@ -94,9 +103,9 @@ publishDateDesc metadata1 metadata2 =
     Date.compare metadata2.published metadata1.published
 
 
-postFrontmatterDecoder : Decoder Preview
-postFrontmatterDecoder =
-    Decode.map3 Preview
+postFrontmatterDecoder : String -> Decoder Preview
+postFrontmatterDecoder name =
+    Decode.map3 (Preview name)
         (Decode.field "thumb" Decode.string)
         (Decode.field "description" Decode.string)
         (Decode.field "published"
@@ -146,20 +155,22 @@ title route =
             ]
 
 
-postThumb : Preview -> Element Msg
-postThumb metadata =
-    Element.image
-        [ Element.width (Element.px 150)
-        , Element.height (Element.px 150)
-        , Element.htmlAttribute (Attr.class "image-preview")
-        ]
-        { src = metadata.thumb, description = metadata.description }
+postThumb : Path -> Preview -> Element Msg
+postThumb path metadata =
+    let
+        url slug =
+            path |> Path.toSegments |> (\l -> l ++ [ slug ]) |> Path.join |> Path.toAbsolute
 
-
-linkToPost : String -> Element msg -> Element msg
-linkToPost postPath content =
+        content =
+            Element.image
+                [ Element.width (Element.px 150)
+                , Element.height (Element.px 150)
+                , Element.htmlAttribute (Attr.class "image-preview")
+                ]
+                { src = metadata.thumb, description = metadata.description }
+    in
     Element.link [ Element.centerX, Element.width Element.fill ]
-        { url = postPath, label = content }
+        { url = url metadata.name, label = content }
 
 
 view :
@@ -168,6 +179,10 @@ view :
     -> StaticPayload Data RouteParams
     -> View Msg
 view maybeUrl sharedModel static =
+    let
+        _ =
+            Debug.log "static.data" static.path
+    in
     { title = static.routeParams.folder
     , body =
         Element.column
@@ -179,7 +194,7 @@ view maybeUrl sharedModel static =
                 [ title static.routeParams
                 , Element.wrappedRow
                     [ Element.spacing 40 ]
-                    (static.data |> List.map (postThumb >> linkToPost "/"))
+                    (static.data |> List.map (postThumb static.path))
                 ]
             ]
     }
