@@ -198,7 +198,7 @@ navLink folderName =
             String.replace "." "" folderName
 
         url =
-            Route.Folder_ { folder = folderNameNoTrailingPeriod } |> Route.routeToPath |> String.join "/"
+            Route.Folder_ { folder = folderNameNoTrailingPeriod } |> Route.routeToPath |> Path.join |> Path.toAbsolute
     in
     Element.link
         [ Element.width Element.fill
