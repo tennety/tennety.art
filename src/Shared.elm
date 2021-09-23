@@ -338,7 +338,6 @@ view sharedData page model toMsg pageView =
         pageView.body
             |> Element.layout
                 [ Element.width Element.fill
-                , Element.height Element.fill
                 , Element.htmlAttribute (Attr.class (model |> colorValues |> .bodyClass))
                 , Font.color (model |> colorValues |> .foregroundColor)
                 , Element.Background.color (model |> colorValues |> .backgroundColor)

@@ -11,6 +11,8 @@ import Element.Region exposing (description)
 import Head
 import Head.Seo as Seo
 import Html.Attributes as Attr
+import Markdown.Parser
+import Markdown.Renderer
 import OptimizedDecoder as Decode exposing (Decoder)
 import Page exposing (Page, PageWithState, StaticPayload)
 import Page.Folder_ exposing (PathWithSlug)
@@ -95,7 +97,7 @@ head static =
 
 
 type alias Data =
-    { body : String
+    { body : List (Element Never)
     , postType : String
     , title : String
     , author : String
@@ -108,7 +110,7 @@ type alias Data =
 
 postDecoder : String -> Decoder Data
 postDecoder body =
-    Decode.map7 (Data body)
+    Decode.map7 (Data (processMarkDown body))
         -- TODO: support single and multiple
         (Decode.field "type" Decode.string)
         (Decode.field "title" Decode.string)
@@ -130,6 +132,22 @@ postDecoder body =
             )
         )
         (Decode.field "shop-link" Decode.string |> Decode.maybe)
+
+
+processMarkDown : String -> List (Element Never)
+processMarkDown body =
+    body
+        |> Markdown.Parser.parse
+        |> Result.mapError (\_ -> "Markdown error.")
+        |> Result.andThen
+            (\blocks ->
+                Markdown.Renderer.render
+                    Markdown.Renderer.defaultHtmlRenderer
+                    blocks
+            )
+        |> Result.map
+            (List.map Element.html)
+        |> Result.withDefault [ Element.none ]
 
 
 shopLink maybePath =
@@ -180,6 +198,10 @@ view maybeUrl sharedModel static =
                 , description = static.data.description
                 }
             , shopLink static.data.shopLink
-            , Element.text static.data.body
+            , Element.paragraph
+                [ Element.width (Element.fill |> Element.maximum 800)
+                , Element.htmlAttribute (Attr.class "content")
+                ]
+                static.data.body
             ]
     }
