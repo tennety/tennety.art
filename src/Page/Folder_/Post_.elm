@@ -5,9 +5,8 @@ import DataSource.File
 import DataSource.Glob as Glob
 import Date
 import Element exposing (Element)
-import Element.Background
 import Element.Font as Font
-import Element.Region exposing (description)
+import Element.Region
 import Head
 import Head.Seo as Seo
 import Html.Attributes as Attr
@@ -15,11 +14,9 @@ import Markdown.Parser
 import Markdown.Renderer
 import OptimizedDecoder as Decode exposing (Decoder)
 import Page exposing (Page, PageWithState, StaticPayload)
-import Page.Folder_ exposing (PathWithSlug)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Palette
-import Set
 import Shared
 import View exposing (View)
 
@@ -61,17 +58,17 @@ data : RouteParams -> DataSource Data
 data routeParams =
     file routeParams
         |> DataSource.andThen
-            (\{ path, slug } -> DataSource.File.bodyWithFrontmatter postDecoder path)
+            (\path -> DataSource.File.bodyWithFrontmatter postDecoder path)
 
 
-file : RouteParams -> DataSource PathWithSlug
+file : RouteParams -> DataSource String
 file routeParams =
-    Glob.succeed PathWithSlug
+    Glob.succeed Basics.identity
         |> Glob.captureFilePath
         |> Glob.match (Glob.literal "content/")
         |> Glob.match (Glob.literal routeParams.folder)
         |> Glob.match (Glob.literal "/")
-        |> Glob.capture (Glob.literal routeParams.post)
+        |> Glob.match (Glob.literal routeParams.post)
         |> Glob.match (Glob.literal ".md")
         |> Glob.expectUniqueMatch
 

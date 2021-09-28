@@ -1,4 +1,4 @@
-module Page.Folder_ exposing (Data, Model, Msg, PathWithSlug, page)
+module Page.Folder_ exposing (Data, Model, Msg, page)
 
 import DataSource exposing (DataSource)
 import DataSource.File
@@ -6,7 +6,6 @@ import DataSource.Glob as Glob
 import Date
 import Element exposing (Element)
 import Element.Font
-import Element.Region exposing (description)
 import Head
 import Head.Seo as Seo
 import Html.Attributes as Attr
@@ -15,7 +14,6 @@ import Page exposing (Page, PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Path exposing (Path)
-import Route
 import Set
 import Shared
 import View exposing (View)
@@ -31,6 +29,18 @@ type alias Msg =
 
 type alias RouteParams =
     { folder : String }
+
+
+type FilePath
+    = FilePath
+
+
+type ThumbPath
+    = ThumbPath
+
+
+type AssetPath a
+    = AssetPath String
 
 
 page : Page RouteParams Data
@@ -62,15 +72,21 @@ data routeParams =
     fileList routeParams
         |> DataSource.map
             (List.map
-                (\{ path, slug } -> DataSource.File.onlyFrontmatter (postFrontmatterDecoder slug) path)
+                (\{ path, slug } ->
+                    let
+                        (AssetPath pathName) =
+                            path
+                    in
+                    DataSource.File.onlyFrontmatter (postFrontmatterDecoder slug) pathName
+                )
             )
         |> DataSource.resolve
         |> DataSource.map (List.sortWith publishDateDesc)
 
 
-fileList : RouteParams -> DataSource (List PathWithSlug)
+fileList : RouteParams -> DataSource (List (PathWithSlug FilePath))
 fileList routeParams =
-    Glob.succeed PathWithSlug
+    Glob.succeed (\path slug -> PathWithSlug (AssetPath path) slug)
         |> Glob.captureFilePath
         |> Glob.match (Glob.literal "content/")
         |> Glob.match (Glob.literal routeParams.folder)
@@ -80,15 +96,30 @@ fileList routeParams =
         |> Glob.toDataSource
 
 
-type alias PathWithSlug =
-    { path : String
+thumbList : DataSource (List (AssetPath ThumbPath))
+thumbList =
+    Glob.succeed AssetPath
+        |> Glob.captureFilePath
+        |> Glob.match (Glob.literal "public/images/thumbnails")
+        |> Glob.match Glob.wildcard
+        |> Glob.match (Glob.literal ".png")
+        |> Glob.toDataSource
+
+
+
+-- hasValidThumb : Preview -> List (PathWithSlug ThumbPath) -> Bool
+-- hasValidThumb preview thumbPaths =
+
+
+type alias PathWithSlug a =
+    { path : AssetPath a
     , slug : String
     }
 
 
 type alias Preview =
     { name : String
-    , thumb : String
+    , thumb : AssetPath ThumbPath
     , description : String
     , published : Date.Date
     }
@@ -106,7 +137,7 @@ publishDateDesc metadata1 metadata2 =
 postFrontmatterDecoder : String -> Decoder Preview
 postFrontmatterDecoder name =
     Decode.map3 (Preview name)
-        (Decode.field "thumb" Decode.string)
+        (Decode.field "thumb" (Decode.string |> Decode.map AssetPath))
         (Decode.field "description" Decode.string)
         (Decode.field "published"
             (Decode.string
@@ -158,6 +189,9 @@ title route =
 postThumb : Path -> Preview -> Element Msg
 postThumb path metadata =
     let
+        (AssetPath thumbPath) =
+            metadata.thumb
+
         url slug =
             path |> Path.toSegments |> (\l -> l ++ [ slug ]) |> Path.join |> Path.toAbsolute
 
@@ -167,7 +201,7 @@ postThumb path metadata =
                 , Element.height (Element.px 150)
                 , Element.htmlAttribute (Attr.class "image-preview")
                 ]
-                { src = metadata.thumb, description = metadata.description }
+                { src = thumbPath, description = metadata.description }
     in
     Element.link [ Element.centerX, Element.width Element.fill ]
         { url = url metadata.name, label = content }
