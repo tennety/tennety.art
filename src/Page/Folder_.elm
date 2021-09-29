@@ -69,16 +69,20 @@ routes =
 
 data : RouteParams -> DataSource Data
 data routeParams =
-    fileList routeParams
-        |> DataSource.map
-            (List.map
-                (\{ path, slug } ->
-                    let
-                        (AssetPath pathName) =
-                            path
-                    in
-                    DataSource.File.onlyFrontmatter (postFrontmatterDecoder slug) pathName
-                )
+    thumbList
+        |> DataSource.andThen
+            (\allThumbs ->
+                fileList routeParams
+                    |> DataSource.map
+                        (List.map
+                            (\{ path, slug } ->
+                                let
+                                    (AssetPath pathName) =
+                                        path
+                                in
+                                DataSource.File.onlyFrontmatter (postFrontmatterDecoder slug allThumbs) pathName
+                            )
+                        )
             )
         |> DataSource.resolve
         |> DataSource.map (List.sortWith publishDateDesc)
@@ -98,17 +102,13 @@ fileList routeParams =
 
 thumbList : DataSource (List (AssetPath ThumbPath))
 thumbList =
-    Glob.succeed AssetPath
+    Glob.succeed (\thumbPath -> thumbPath |> String.replace "public/" "" |> AssetPath)
         |> Glob.captureFilePath
-        |> Glob.match (Glob.literal "public/images/thumbnails")
+        |> Glob.match (Glob.literal "public/images/")
         |> Glob.match Glob.wildcard
-        |> Glob.match (Glob.literal ".png")
+        |> Glob.match (Glob.literal "/")
+        |> Glob.match Glob.wildcard
         |> Glob.toDataSource
-
-
-
--- hasValidThumb : Preview -> List (PathWithSlug ThumbPath) -> Bool
--- hasValidThumb preview thumbPaths =
 
 
 type alias PathWithSlug a =
@@ -134,10 +134,22 @@ publishDateDesc metadata1 metadata2 =
     Date.compare metadata2.published metadata1.published
 
 
-postFrontmatterDecoder : String -> Decoder Preview
-postFrontmatterDecoder name =
+postFrontmatterDecoder : String -> List (AssetPath ThumbPath) -> Decoder Preview
+postFrontmatterDecoder name allThumbs =
     Decode.map3 (Preview name)
-        (Decode.field "thumb" (Decode.string |> Decode.map AssetPath))
+        (Decode.field "thumb"
+            (Decode.string
+                |> Decode.map AssetPath
+                |> Decode.andThen
+                    (\assetPath ->
+                        if List.member assetPath allThumbs then
+                            Decode.succeed assetPath
+
+                        else
+                            Decode.fail "thumbnail not found"
+                    )
+            )
+        )
         (Decode.field "description" Decode.string)
         (Decode.field "published"
             (Decode.string
