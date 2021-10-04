@@ -1,5 +1,6 @@
 module Page.Folder_ exposing (Data, Model, Msg, page)
 
+import AssetPath exposing (AssetPath(..), FilePath, ImagePath)
 import DataSource exposing (DataSource)
 import DataSource.File
 import DataSource.Glob as Glob
@@ -29,18 +30,6 @@ type alias Msg =
 
 type alias RouteParams =
     { folder : String }
-
-
-type FilePath
-    = FilePath
-
-
-type ThumbPath
-    = ThumbPath
-
-
-type AssetPath a
-    = AssetPath String
 
 
 page : Page RouteParams Data
@@ -88,7 +77,7 @@ data routeParams =
         |> DataSource.map (List.sortWith publishDateDesc)
 
 
-fileList : RouteParams -> DataSource (List (PathWithSlug FilePath))
+fileList : RouteParams -> DataSource (List PathWithSlug)
 fileList routeParams =
     Glob.succeed (\path slug -> PathWithSlug (AssetPath path) slug)
         |> Glob.captureFilePath
@@ -100,7 +89,7 @@ fileList routeParams =
         |> Glob.toDataSource
 
 
-thumbList : DataSource (List (AssetPath ThumbPath))
+thumbList : DataSource (List (AssetPath ImagePath))
 thumbList =
     Glob.succeed (\thumbPath -> thumbPath |> String.replace "public/" "" |> AssetPath)
         |> Glob.captureFilePath
@@ -111,15 +100,15 @@ thumbList =
         |> Glob.toDataSource
 
 
-type alias PathWithSlug a =
-    { path : AssetPath a
+type alias PathWithSlug =
+    { path : AssetPath FilePath
     , slug : String
     }
 
 
 type alias Preview =
     { name : String
-    , thumb : AssetPath ThumbPath
+    , thumb : AssetPath ImagePath
     , description : String
     , published : Date.Date
     }
@@ -134,7 +123,7 @@ publishDateDesc metadata1 metadata2 =
     Date.compare metadata2.published metadata1.published
 
 
-postFrontmatterDecoder : String -> List (AssetPath ThumbPath) -> Decoder Preview
+postFrontmatterDecoder : String -> List (AssetPath ImagePath) -> Decoder Preview
 postFrontmatterDecoder name allThumbs =
     Decode.map3 (Preview name)
         (Decode.field "thumb"

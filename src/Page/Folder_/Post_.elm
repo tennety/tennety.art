@@ -1,5 +1,6 @@
 module Page.Folder_.Post_ exposing (Data, Model, Msg, page)
 
+import AssetPath exposing (..)
 import DataSource exposing (DataSource)
 import DataSource.File
 import DataSource.Glob as Glob
@@ -56,14 +57,20 @@ routes =
 
 data : RouteParams -> DataSource Data
 data routeParams =
-    file routeParams
+    imageList routeParams
         |> DataSource.andThen
-            (\path -> DataSource.File.bodyWithFrontmatter postDecoder path)
+            (\folderImages ->
+                file routeParams
+                    |> DataSource.andThen
+                        (\(AssetPath path) ->
+                            DataSource.File.bodyWithFrontmatter (postDecoder folderImages) path
+                        )
+            )
 
 
-file : RouteParams -> DataSource String
+file : RouteParams -> DataSource (AssetPath FilePath)
 file routeParams =
-    Glob.succeed Basics.identity
+    Glob.succeed AssetPath
         |> Glob.captureFilePath
         |> Glob.match (Glob.literal "content/")
         |> Glob.match (Glob.literal routeParams.folder)
@@ -71,6 +78,17 @@ file routeParams =
         |> Glob.match (Glob.literal routeParams.post)
         |> Glob.match (Glob.literal ".md")
         |> Glob.expectUniqueMatch
+
+
+imageList : RouteParams -> DataSource (List (AssetPath ImagePath))
+imageList routeParams =
+    Glob.succeed (\thumbPath -> thumbPath |> String.replace "public/" "" |> AssetPath)
+        |> Glob.captureFilePath
+        |> Glob.match (Glob.literal "public/images/")
+        |> Glob.match (Glob.literal routeParams.folder)
+        |> Glob.match (Glob.literal "/")
+        |> Glob.match Glob.wildcard
+        |> Glob.toDataSource
 
 
 head :
@@ -98,22 +116,33 @@ type alias Data =
     , postType : String
     , title : String
     , author : String
-    , image : String
+    , image : AssetPath ImagePath
     , description : String
     , published : Date.Date
     , shopLink : Maybe String
     }
 
 
-postDecoder : String -> Decoder Data
-postDecoder body =
+postDecoder : List (AssetPath ImagePath) -> String -> Decoder Data
+postDecoder imagePathList body =
     Decode.map7 (Data (processMarkDown body))
         -- TODO: support single and multiple
         (Decode.field "type" Decode.string)
         (Decode.field "title" Decode.string)
         (Decode.field "author" Decode.string)
-        -- TODO: match against Glob in images
-        (Decode.field "image" Decode.string)
+        (Decode.field "image"
+            (Decode.string
+                |> Decode.map AssetPath
+                |> Decode.andThen
+                    (\assetPath ->
+                        if List.member assetPath imagePathList then
+                            Decode.succeed assetPath
+
+                        else
+                            Decode.fail "hero image not found"
+                    )
+            )
+        )
         (Decode.field "description" Decode.string)
         (Decode.field "published"
             (Decode.string
@@ -186,14 +215,7 @@ view maybeUrl sharedModel static =
             ]
             [ Palette.blogHeading static.data.title
             , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (sharedModel |> Shared.colorValues |> .foregroundColor), Font.center ] [ publishedDateView static.data.published ]
-            , Element.image
-                [ Element.width Element.fill
-                , Element.htmlAttribute (Attr.class "hero-image")
-                , Element.centerX
-                ]
-                { src = "/" ++ static.data.image
-                , description = static.data.description
-                }
+            , heroImage static.data
             , shopLink static.data.shopLink
             , Element.paragraph
                 [ Element.width (Element.fill |> Element.maximum 800)
@@ -202,3 +224,18 @@ view maybeUrl sharedModel static =
                 static.data.body
             ]
     }
+
+
+heroImage staticData =
+    let
+        (AssetPath imagePath) =
+            staticData.image
+    in
+    Element.image
+        [ Element.width Element.fill
+        , Element.htmlAttribute (Attr.class "hero-image")
+        , Element.centerX
+        ]
+        { src = "/" ++ imagePath
+        , description = staticData.description
+        }
