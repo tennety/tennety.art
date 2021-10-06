@@ -1,14 +1,16 @@
-module Page.Index exposing (Data, Model, Msg, page)
+module Page.About exposing (Data, Model, Msg, page)
 
 import DataSource exposing (DataSource)
 import Element exposing (Element)
+import Element.Font as Font
 import Element.Region
 import Head
 import Head.Seo as Seo
 import Html.Attributes as Attr
-import Page exposing (Page, StaticPayload)
+import Page exposing (Page, PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
+import Palette
 import Shared
 import View exposing (View)
 
@@ -34,7 +36,11 @@ page =
         |> Page.buildNoState { view = view }
 
 
-data : DataSource.DataSource Data
+type alias Data =
+    ()
+
+
+data : DataSource Data
 data =
     DataSource.succeed ()
 
@@ -59,10 +65,6 @@ head static =
         |> Seo.website
 
 
-type alias Data =
-    ()
-
-
 view :
     Maybe PageUrl
     -> Shared.Model
@@ -72,17 +74,28 @@ view maybeUrl sharedModel static =
     { title = ""
     , body =
         Element.column
-            [ Element.Region.mainContent
+            [ Element.spacing 70
+            , Element.Region.mainContent
             , Element.centerX
+            , Font.center
             ]
-            [ Shared.homeLink sharedModel
+            [ Palette.blogHeading "about the artist"
             , Element.image
-                [ Element.width Element.fill
-                , Element.htmlAttribute (Attr.class "hero-image")
+                [ Element.width (Element.px 175)
+                , Element.htmlAttribute (Attr.class "avatar")
                 , Element.centerX
                 ]
-                { src = "images/index-covers/hummer-swing-bw.png"
-                , description = "Article cover photo"
+                { src = "images/author/tennety.jpeg"
+                , description = "Chandu Tennety"
                 }
+            , Element.paragraph
+                [ Element.width (Element.fill |> Element.maximum 500)
+                , Element.spacing (Palette.scaled 1)
+                , Element.htmlAttribute (Attr.class "content")
+                , Font.size (Palette.scaled 2)
+                ]
+                [ Element.text "Chandu Tennety" |> Element.el [ Font.bold ]
+                , Element.text " is a self-taught artist and has been drawing for as long as he can remember. He lives in Ohio with his musician spouse and daughter (an artist in her own right) and loves to linger in the spaces between reality and metaphor."
+                ]
             ]
     }

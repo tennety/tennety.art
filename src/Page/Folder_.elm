@@ -217,16 +217,11 @@ view maybeUrl sharedModel static =
     { title = static.routeParams.folder
     , body =
         Element.column
-            [ Element.padding 100
-            , Element.centerX
-            ]
-            [ Element.column
-                [ Element.spacing 40 ]
-                [ title static.routeParams
-                , Element.wrappedRow
-                    [ Element.spacing 80
-                    ]
-                    (static.data |> List.map (postThumb static.path))
+            [ Element.spacing 40 ]
+            [ title static.routeParams
+            , Element.wrappedRow
+                [ Element.spacing 80
                 ]
+                (static.data |> List.map (postThumb static.path))
             ]
     }

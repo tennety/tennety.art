@@ -335,7 +335,11 @@ view :
     -> { body : Html msg, title : String }
 view sharedData page model toMsg pageView =
     { body =
-        pageView.body
+        [ pageView.body ]
+            |> Element.column
+                [ Element.padding 100
+                , Element.centerX
+                ]
             |> Element.layout
                 [ Element.width Element.fill
                 , Element.htmlAttribute (Attr.class (model |> colorValues |> .bodyClass))
@@ -344,6 +348,7 @@ view sharedData page model toMsg pageView =
                 , Element.padding (Palette.scaled 2)
                 , Font.size (Palette.scaled 1)
                 , Font.family [ Font.typeface "Yrsa" ]
+                , Font.extraLight
                 , Element.inFront (nav model page sharedData)
                 , Element.inFront (menuButton toMsg model)
                 , Element.inFront (colorSchemeToggle toMsg model)
