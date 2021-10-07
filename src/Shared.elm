@@ -222,7 +222,7 @@ nav model page folders =
                 , Element.Background.color (model |> colorValues |> .backgroundColor)
                 , Element.centerX
                 , Element.htmlAttribute (Attr.class "menu")
-                , Element.padding (Palette.scaled 2)
+                , Element.paddingXY 70 95
                 ]
                 [ homeLink model
                 , Element.column
@@ -337,7 +337,7 @@ view sharedData page model toMsg pageView =
     { body =
         [ pageView.body ]
             |> Element.column
-                [ Element.padding 100
+                [ Element.padding 70
                 , Element.centerX
                 ]
             |> Element.layout
