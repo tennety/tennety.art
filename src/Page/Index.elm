@@ -73,7 +73,6 @@ view maybeUrl sharedModel static =
     , body =
         Element.column
             [ Element.Region.mainContent
-            , Element.spacing 70
             , Element.centerX
             ]
             [ Shared.homeLink sharedModel
