@@ -77,7 +77,7 @@ blogHeading title =
 
 lightColorScheme : ColorScheme
 lightColorScheme =
-    { backgroundColor = fromElmColor Color.white
+    { backgroundColor = color.lightest
     , foregroundColor = color.darker
     , borders = color.dark
     , bodyClass = "light"

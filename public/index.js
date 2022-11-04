@@ -6,16 +6,22 @@ export default {
   load: async function (elmLoaded) {
     loader()
     window._lload("https://www.googletagmanager.com/gtag/js?id=UA-157882374-1", () => {
-      console.log("pups")
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
       gtag('config', 'UA-157882374-1');
     })
+    window._lload('https://storage.ko-fi.com/cdn/scripts/overlay-widget.js', () => {
+      kofiWidgetOverlay.draw('tennetyart', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Support me',
+        'floating-chat.donateButton.background-color': '#363c46',
+        'floating-chat.donateButton.text-color': '#f7fafc'
+      });
+    })
 
     const app = await elmLoaded;
-    console.log("App loaded", app);
   },
   flags: function () {
     const colorSchemePreference = ['light', 'dark', 'no-preference'].find(pref => window.matchMedia(`(prefers-color-scheme: ${pref})`).matches)
