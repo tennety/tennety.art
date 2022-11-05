@@ -232,31 +232,11 @@ nav model page folders =
                     , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
                     , Element.Border.color (model |> colorValues |> .borders)
                     ]
-                    (folders |> Set.toList |> List.map navLink)
-                , Element.column
-                    [ Element.Region.navigation
-                    , Element.centerX
-                    , Element.padding 15
-                    ]
-                    [ Element.newTabLink
-                        [ Element.width Element.fill
-                        , Element.paddingXY 25 15
-                        , Font.size (Palette.scaled 2)
-                        , Font.center
+                    (List.concat
+                        [ folders |> Set.toList |> List.map navLink
+                        , [ navLink "links" ]
                         ]
-                        { url = "https://instagram.com/tennety.art"
-                        , label = Element.row [ Element.centerX ] [ Element.html Icons.instagram, Element.text " instagram" ]
-                        }
-                    , Element.newTabLink
-                        [ Element.width Element.fill
-                        , Element.paddingXY 25 15
-                        , Font.size (Palette.scaled 2)
-                        , Font.center
-                        ]
-                        { url = "https://shop.tennety.art"
-                        , label = Element.row [ Element.centerX ] [ Element.html Icons.shoppingBag, Element.text " shop" ]
-                        }
-                    ]
+                    )
                 ]
 
 
