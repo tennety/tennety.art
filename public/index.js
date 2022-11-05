@@ -5,12 +5,12 @@ import loader from "/little-loader.js";
 export default {
   load: async function (elmLoaded) {
     loader()
-    window._lload("https://www.googletagmanager.com/gtag/js?id=UA-157882374-1", () => {
+    window._lload("https://www.googletagmanager.com/gtag/js?id=G-HL4W824LYR", () => {
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
-      gtag('config', 'UA-157882374-1');
+    
+      gtag('config', 'G-HL4W824LYR');
     })
     window._lload('https://storage.ko-fi.com/cdn/scripts/overlay-widget.js', () => {
       kofiWidgetOverlay.draw('tennetyart', {
