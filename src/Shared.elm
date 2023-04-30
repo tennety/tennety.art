@@ -232,11 +232,7 @@ nav model page folders =
                     , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
                     , Element.Border.color (model |> colorValues |> .borders)
                     ]
-                    (List.concat
-                        [ folders |> Set.toList |> List.map navLink
-                        , [ navLink "links" ]
-                        ]
-                    )
+                    (folders |> Set.toList |> List.map navLink)
                 ]
 
 
