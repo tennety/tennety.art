@@ -4,7 +4,7 @@
   "author": "Chandu Tennety",
   "title": "Smiley Face",
   "description": "Late night conversation with my child",
-  "image": "images/comics/SmileyFace-lores.jpeg",
+  "images": [ "images/comics/SmileyFace-lores.jpeg" ],
   "thumb": "images/thumbnails/smiley.png",
   "published": "2019-06-12",
 }

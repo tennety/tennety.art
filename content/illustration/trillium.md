@@ -4,7 +4,7 @@
   "author": "Chandu Tennety",
   "title": "Trillium",
   "description": "Digital illustration of an imaginary woodland spirit",
-  "image": "images/illustration/trillium.png",
+  "images": [ "images/illustration/trillium.png" ],
   "thumb": "images/illustration/trillium.png",
   "published": "2021-02-05",
 }

@@ -4,7 +4,7 @@
   "author": "Chandu Tennety",
   "title": "All Our Monsters",
   "description": "Issue 1 cover art",
-  "image": "images/comics/Front_Cover.png",
+  "images": [ "images/comics/Front_Cover.png" ],
   "thumb": "images/thumbnails/Front_Cover_thumb.png",
   "published": "2022-11-01",
 }

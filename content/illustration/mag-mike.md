@@ -4,7 +4,7 @@
   "author": "Chandu Tennety",
   "title": "Mag and Mike",
   "description": "Pencil illustration of Mag and Mike",
-  "image": "images/illustration/mag-mike.jpg",
+  "images": [ "images/illustration/mag-mike.jpg" ],
   "thumb": "images/illustration/mag-mike.jpg",
   "published": "2020-11-01",
 }

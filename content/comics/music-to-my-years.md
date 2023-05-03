@@ -4,7 +4,7 @@
   "author": "Chandu Tennety",
   "title": "Music to My Years",
   "description": "Music to My Years",
-  "image": "images/comics/music-to-my-years.png",
+  "images": [ "images/comics/music-to-my-years.png" ],
   "thumb": "images/thumbnails/music-to-my-years.png",
   "published": "2020-10-01",
 }

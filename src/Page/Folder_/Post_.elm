@@ -116,7 +116,7 @@ type alias Data =
     , postType : String
     , title : String
     , author : String
-    , image : AssetPath ImagePath
+    , images : List (AssetPath ImagePath)
     , description : String
     , published : Date.Date
     , shopLink : Maybe String
@@ -130,16 +130,16 @@ postDecoder imagePathList body =
         (Decode.field "type" Decode.string)
         (Decode.field "title" Decode.string)
         (Decode.field "author" Decode.string)
-        (Decode.field "image"
-            (Decode.string
-                |> Decode.map AssetPath
+        (Decode.field "images"
+            (Decode.list Decode.string
+                |> Decode.map (List.map AssetPath)
                 |> Decode.andThen
-                    (\assetPath ->
-                        if List.member assetPath imagePathList then
-                            Decode.succeed assetPath
+                    (\assetPaths ->
+                        if List.all (\aPath -> List.member aPath imagePathList) assetPaths then
+                            Decode.succeed assetPaths
 
                         else
-                            Decode.fail "hero image not found"
+                            Decode.fail "image not found"
                     )
             )
         )
@@ -213,29 +213,36 @@ view maybeUrl sharedModel static =
             , Element.Region.mainContent
             , Element.centerX
             ]
-            [ Palette.blogHeading static.data.title
-            , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (sharedModel |> Shared.colorValues |> .foregroundColor), Font.center ] [ publishedDateView static.data.published ]
-            , heroImage static.data
-            , shopLink static.data.shopLink
-            , Element.paragraph
-                [ Element.width (Element.fill |> Element.maximum 800)
-                , Element.htmlAttribute (Attr.class "content")
-                ]
-                static.data.body
-            ]
+            ([ Palette.blogHeading static.data.title
+             , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (sharedModel |> Shared.colorValues |> .foregroundColor), Font.center ] [ publishedDateView static.data.published ]
+             , shopLink static.data.shopLink
+             ]
+                ++ heroImage static.data.images static.data.description
+                ++ [ Element.paragraph
+                        [ Element.width (Element.fill |> Element.maximum 800)
+                        , Element.htmlAttribute (Attr.class "content")
+                        ]
+                        static.data.body
+                   ]
+            )
     }
 
 
-heroImage staticData =
-    let
-        (AssetPath imagePath) =
-            staticData.image
-    in
-    Element.image
-        [ Element.width Element.fill
-        , Element.htmlAttribute (Attr.class "hero-image")
-        , Element.centerX
-        ]
-        { src = "/" ++ imagePath
-        , description = staticData.description
-        }
+heroImage : List (AssetPath a) -> String -> List (Element msg)
+heroImage staticDataImages staticDataDescription =
+    staticDataImages
+        |> List.map
+            (\assetPath ->
+                let
+                    (AssetPath imagePath) =
+                        assetPath
+                in
+                Element.image
+                    [ Element.width Element.fill
+                    , Element.htmlAttribute (Attr.class "hero-image")
+                    , Element.centerX
+                    ]
+                    { src = "/" ++ imagePath
+                    , description = staticDataDescription
+                    }
+            )

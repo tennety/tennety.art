@@ -4,7 +4,7 @@
   "author": "Chandu Tennety",
   "title": "Can't breathe",
   "description": "",
-  "image": "images/political/cant-breathe.png",
+  "images": [ "images/political/cant-breathe.png" ],
   "thumb": "images/thumbnails/cant-breathe-thumb.png",
   "published": "2020-06-01",
 }
