@@ -1,6 +1,7 @@
 module Page.Folder_.Post_ exposing (Data, Model, Msg, page)
 
 import AssetPath exposing (..)
+import Browser.Navigation
 import DataSource exposing (DataSource)
 import DataSource.File
 import DataSource.Glob as Glob
@@ -10,7 +11,10 @@ import Element.Font as Font
 import Element.Region
 import Head
 import Head.Seo as Seo
+import Html exposing (a)
 import Html.Attributes as Attr
+import List.NonEmpty exposing (NonEmpty)
+import List.NonEmpty.Zipper exposing (Zipper)
 import Markdown.Parser
 import Markdown.Renderer
 import OptimizedDecoder as Decode exposing (Decoder)
@@ -18,30 +22,61 @@ import Page exposing (Page, PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Palette
+import Path exposing (Path)
 import Shared
 import View exposing (View)
 
 
 type alias Model =
-    ()
+    { book : Zipper (AssetPath ImagePath)
+    }
 
 
-type alias Msg =
-    Never
+type Msg
+    = Next
+    | Previous
+    | First
+    | Last
 
 
 type alias RouteParams =
     { folder : String, post : String }
 
 
-page : Page RouteParams Data
+init : Maybe PageUrl -> Shared.Model -> StaticPayload Data RouteParams -> ( Model, Cmd Msg )
+init maybePageUrl sharedModel static =
+    ( { book = List.NonEmpty.Zipper.fromNonEmpty static.data.images }, Cmd.none )
+
+
+update : PageUrl -> Maybe Browser.Navigation.Key -> Shared.Model -> StaticPayload Data RouteParams -> Msg -> Model -> ( Model, Cmd Msg )
+update pageUrl navigationKey sharedModel static msg model =
+    case msg of
+        Next ->
+            ( { model | book = List.NonEmpty.Zipper.attemptNext model.book }, Cmd.none )
+
+        Previous ->
+            ( { model | book = List.NonEmpty.Zipper.attemptPrev model.book }, Cmd.none )
+
+        First ->
+            ( { model | book = List.NonEmpty.Zipper.start model.book }, Cmd.none )
+
+        Last ->
+            ( { model | book = List.NonEmpty.Zipper.end model.book }, Cmd.none )
+
+
+subscriptions : Maybe PageUrl -> RouteParams -> Path.Path -> Model -> Sub Msg
+subscriptions maybePageUrl routeParams path model =
+    Sub.none
+
+
+page : PageWithState RouteParams Data Model Msg
 page =
     Page.prerender
         { head = head
         , routes = routes
         , data = data
         }
-        |> Page.buildNoState { view = view }
+        |> Page.buildWithLocalState { init = init, update = update, subscriptions = subscriptions, view = view }
 
 
 routes : DataSource (List RouteParams)
@@ -112,11 +147,11 @@ head static =
 
 
 type alias Data =
-    { body : List (Element Never)
+    { body : List (Element Msg)
     , postType : String
     , title : String
     , author : String
-    , images : List (AssetPath ImagePath)
+    , images : NonEmpty (AssetPath ImagePath)
     , description : String
     , published : Date.Date
     , shopLink : Maybe String
@@ -141,6 +176,7 @@ postDecoder imagePathList body =
                         else
                             Decode.fail "image not found"
                     )
+                |> Decode.map fromData
             )
         )
         (Decode.field "description" Decode.string)
@@ -160,7 +196,7 @@ postDecoder imagePathList body =
         (Decode.field "shop-link" Decode.string |> Decode.maybe)
 
 
-processMarkDown : String -> List (Element Never)
+processMarkDown : String -> List (Element Msg)
 processMarkDown body =
     body
         |> Markdown.Parser.parse
@@ -202,9 +238,10 @@ publishedDateView publishedDate =
 view :
     Maybe PageUrl
     -> Shared.Model
+    -> Model
     -> StaticPayload Data RouteParams
     -> View Msg
-view maybeUrl sharedModel static =
+view maybeUrl sharedModel model static =
     { title = String.join " :: " [ static.routeParams.folder, static.routeParams.post ]
     , body =
         Element.column
@@ -213,36 +250,44 @@ view maybeUrl sharedModel static =
             , Element.Region.mainContent
             , Element.centerX
             ]
-            ([ Palette.blogHeading static.data.title
-             , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (sharedModel |> Shared.colorValues |> .foregroundColor), Font.center ] [ publishedDateView static.data.published ]
-             , shopLink static.data.shopLink
-             ]
-                ++ heroImage static.data.images static.data.description
-                ++ [ Element.paragraph
-                        [ Element.width (Element.fill |> Element.maximum 800)
-                        , Element.htmlAttribute (Attr.class "content")
-                        ]
-                        static.data.body
-                   ]
-            )
+            [ Palette.blogHeading static.data.title
+            , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (sharedModel |> Shared.colorValues |> .foregroundColor), Font.center ] [ publishedDateView static.data.published ]
+            , shopLink static.data.shopLink
+            , heroImage (List.NonEmpty.Zipper.current model.book) static.data.description
+            , Element.paragraph
+                [ Element.width (Element.fill |> Element.maximum 800)
+                , Element.htmlAttribute (Attr.class "content")
+                ]
+                static.data.body
+            ]
     }
 
 
-heroImage : List (AssetPath a) -> String -> List (Element msg)
-heroImage staticDataImages staticDataDescription =
-    staticDataImages
-        |> List.map
-            (\assetPath ->
-                let
-                    (AssetPath imagePath) =
-                        assetPath
-                in
-                Element.image
-                    [ Element.width Element.fill
-                    , Element.htmlAttribute (Attr.class "hero-image")
-                    , Element.centerX
-                    ]
-                    { src = "/" ++ imagePath
-                    , description = staticDataDescription
-                    }
-            )
+heroImage : AssetPath a -> String -> Element msg
+heroImage assetPath staticDataDescription =
+    let
+        (AssetPath imagePath) =
+            assetPath
+    in
+    Element.image
+        [ Element.width Element.fill
+        , Element.htmlAttribute (Attr.class "hero-image")
+        , Element.centerX
+        ]
+        { src = "/" ++ imagePath
+        , description = staticDataDescription
+        }
+
+
+
+-- Jeroen said I could: https://jfmengels.net/safe-unsafe-operations-in-elm/
+
+
+fromData : List a -> NonEmpty a
+fromData list =
+    case list of
+        h :: xs ->
+            List.NonEmpty.fromCons h xs
+
+        [] ->
+            fromData list
