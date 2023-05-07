@@ -174,12 +174,13 @@ postDecoder imagePathList body =
                 |> Decode.map (List.map AssetPath)
                 |> Decode.andThen
                     (\assetPaths ->
-                        if List.all (\aPath -> List.member aPath imagePathList) assetPaths then
+                        if (List.length assetPaths > 0) && List.all (\aPath -> List.member aPath imagePathList) assetPaths then
                             Decode.succeed assetPaths
 
                         else
                             Decode.fail "image not found"
                     )
+                -- We know if we got here that we have at least one image
                 |> Decode.map fromData
             )
         )
@@ -258,7 +259,7 @@ view maybeUrl sharedModel model static =
             , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (sharedModel |> Shared.colorValues |> .foregroundColor), Font.center ] [ publishedDateView static.data.published ]
             , shopLink static.data.shopLink
             , heroImage (List.NonEmpty.Zipper.current model.book) static.data.description
-            , toolbar sharedModel
+            , toolbar (List.NonEmpty.Zipper.length model.book) sharedModel
             , Element.paragraph
                 [ Element.width (Element.fill |> Element.maximum 800)
                 , Element.htmlAttribute (Attr.class "content")
@@ -284,15 +285,19 @@ heroImage assetPath staticDataDescription =
         }
 
 
-toolbar : Shared.Model -> Element Msg
-toolbar sharedModel =
-    Element.row
-        [ Element.centerX ]
-        [ toolbarButton sharedModel First Icons.skipBack
-        , toolbarButton sharedModel Previous Icons.chevronLeft
-        , toolbarButton sharedModel Next Icons.chevronRight
-        , toolbarButton sharedModel Last Icons.skipForward
-        ]
+toolbar : Int -> Shared.Model -> Element Msg
+toolbar bookLength sharedModel =
+    if bookLength > 1 then
+        Element.row
+            [ Element.centerX ]
+            [ toolbarButton sharedModel First Icons.skipBack
+            , toolbarButton sharedModel Previous Icons.chevronLeft
+            , toolbarButton sharedModel Next Icons.chevronRight
+            , toolbarButton sharedModel Last Icons.skipForward
+            ]
+
+    else
+        Element.none
 
 
 toolbarButton : Shared.Model -> Msg -> Html Msg -> Element Msg
