@@ -1,10 +1,14 @@
 module Icons exposing
-    ( close
+    ( chevronLeft
+    , chevronRight
+    , close
     , instagram
     , menu
     , moon
     , pencil
     , shoppingBag
+    , skipBack
+    , skipForward
     , sun
     )
 
@@ -71,3 +75,33 @@ moon =
 sun : Html msg
 sun =
     svg [ fill "none", viewBox "0 0 24 24", stroke "currentColor" ] [ Svg.path [ strokeLinecap "round", strokeLinejoin "round", strokeWidth "2", d "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" ] [] ]
+
+
+chevronLeft : Html msg
+chevronLeft =
+    svgFeatherIcon "chevron-left"
+        [ Svg.polyline [ points "15 18 9 12 15 6" ] []
+        ]
+
+
+chevronRight : Html msg
+chevronRight =
+    svgFeatherIcon "chevron-right"
+        [ Svg.polyline [ points "9 18 15 12 9 6" ] []
+        ]
+
+
+skipBack : Html msg
+skipBack =
+    svgFeatherIcon "skip-back"
+        [ Svg.polygon [ points "19 20 9 12 19 4 19 20" ] []
+        , Svg.line [ x1 "5", y1 "19", x2 "5", y2 "5" ] []
+        ]
+
+
+skipForward : Html msg
+skipForward =
+    svgFeatherIcon "skip-forward"
+        [ Svg.polygon [ points "5 4 15 12 5 20 5 4" ] []
+        , Svg.line [ x1 "19", y1 "5", x2 "19", y2 "19" ] []
+        ]

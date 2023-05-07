@@ -7,12 +7,16 @@ import DataSource.File
 import DataSource.Glob as Glob
 import Date
 import Element exposing (Element)
+import Element.Background
+import Element.Border
 import Element.Font as Font
+import Element.Input as Input
 import Element.Region
 import Head
 import Head.Seo as Seo
-import Html exposing (a)
+import Html exposing (Html, a)
 import Html.Attributes as Attr
+import Icons
 import List.NonEmpty exposing (NonEmpty)
 import List.NonEmpty.Zipper exposing (Zipper)
 import Markdown.Parser
@@ -23,7 +27,7 @@ import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Palette
 import Path exposing (Path)
-import Shared
+import Shared exposing (colorValues)
 import View exposing (View)
 
 
@@ -254,6 +258,7 @@ view maybeUrl sharedModel model static =
             , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (sharedModel |> Shared.colorValues |> .foregroundColor), Font.center ] [ publishedDateView static.data.published ]
             , shopLink static.data.shopLink
             , heroImage (List.NonEmpty.Zipper.current model.book) static.data.description
+            , toolbar sharedModel
             , Element.paragraph
                 [ Element.width (Element.fill |> Element.maximum 800)
                 , Element.htmlAttribute (Attr.class "content")
@@ -276,6 +281,35 @@ heroImage assetPath staticDataDescription =
         ]
         { src = "/" ++ imagePath
         , description = staticDataDescription
+        }
+
+
+toolbar : Shared.Model -> Element Msg
+toolbar sharedModel =
+    Element.row
+        [ Element.centerX ]
+        [ toolbarButton sharedModel First Icons.skipBack
+        , toolbarButton sharedModel Previous Icons.chevronLeft
+        , toolbarButton sharedModel Next Icons.chevronRight
+        , toolbarButton sharedModel Last Icons.skipForward
+        ]
+
+
+toolbarButton : Shared.Model -> Msg -> Html Msg -> Element Msg
+toolbarButton sharedModel msg icon =
+    let
+        size =
+            Palette.scaled 3
+    in
+    Input.button
+        [ Element.Border.rounded (size // 2)
+        , Element.focused [ Element.Border.glow (sharedModel |> colorValues |> .borders) 1 ]
+        , Element.Region.description "menu button"
+        , Element.htmlAttribute (Attr.title "menu")
+        , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
+        ]
+        { onPress = Just msg
+        , label = Element.el [ Element.centerX, Element.centerY, Element.height (Element.px size), Element.width (Element.px size), Font.color (sharedModel |> colorValues |> .foregroundColor) ] (Element.html icon)
         }
 
 
