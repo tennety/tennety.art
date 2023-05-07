@@ -7,6 +7,8 @@ import Element.Border
 import Element.Font
 import Head
 import Head.Seo as Seo
+import Html exposing (Html)
+import Icons
 import Page exposing (Page, PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
@@ -41,6 +43,7 @@ type alias Data =
 
 type alias Link =
     { name : String
+    , icon : Html Never
     , href : String
     }
 
@@ -48,11 +51,11 @@ type alias Link =
 data : DataSource Data
 data =
     DataSource.succeed
-        [ { name = "Read a free comic", href = "https://ko-fi.com/album/The-Marionette-P5P0G3Z7F" }
-        , { name = "Buy me a tea", href = "https://ko-fi.com/tennetyart" }
-        , { name = "Commission me", href = "https://ko-fi.com/tennetyart/commissions" }
-        , { name = "Website", href = "https://tennety.art" }
-        , { name = "Instagram", href = "https://instagram.com/tennety.art" }
+        [ { name = "Read a free comic", icon = Icons.bookOpen, href = "https://ko-fi.com/album/The-Marionette-P5P0G3Z7F" }
+        , { name = "Buy me a tea", icon = Icons.coffee, href = "https://ko-fi.com/tennetyart" }
+        , { name = "Commission me", icon = Icons.pencil, href = "https://ko-fi.com/tennetyart/commissions" }
+        , { name = "Website", icon = Icons.externalLink, href = "https://tennety.art" }
+        , { name = "Instagram", icon = Icons.instagram, href = "https://instagram.com/tennety.art" }
         ]
 
 
@@ -68,7 +71,7 @@ title staticTitle =
             ]
 
 
-linky : Color -> Link -> Element msg
+linky : Color -> Link -> Element Never
 linky shadowColor link =
     Element.newTabLink
         [ Element.Border.shadow { offset = ( 0, 1 ), size = 1.0, blur = 5.0, color = shadowColor }
@@ -80,7 +83,7 @@ linky shadowColor link =
             [ Element.Border.shadow { offset = ( 0, 0 ), size = 0.0, blur = 3.0, color = shadowColor }
             ]
         ]
-        { url = link.href, label = Element.text link.name }
+        { url = link.href, label = Element.row [ Element.spaceEvenly ] [ Element.html link.icon, Element.text (" " ++ link.name) ] }
 
 
 head :

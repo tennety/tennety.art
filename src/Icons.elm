@@ -1,7 +1,10 @@
 module Icons exposing
-    ( chevronLeft
+    ( bookOpen
+    , chevronLeft
     , chevronRight
     , close
+    , coffee
+    , externalLink
     , instagram
     , menu
     , moon
@@ -104,4 +107,32 @@ skipForward =
     svgFeatherIcon "skip-forward"
         [ Svg.polygon [ points "5 4 15 12 5 20 5 4" ] []
         , Svg.line [ x1 "19", y1 "5", x2 "19", y2 "19" ] []
+        ]
+
+
+bookOpen : Html msg
+bookOpen =
+    svgFeatherIcon "book-open"
+        [ Svg.path [ d "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" ] []
+        , Svg.path [ d "M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" ] []
+        ]
+
+
+coffee : Html msg
+coffee =
+    svgFeatherIcon "coffee"
+        [ Svg.path [ d "M18 8h1a4 4 0 0 1 0 8h-1" ] []
+        , Svg.path [ d "M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" ] []
+        , Svg.line [ x1 "6", y1 "1", x2 "6", y2 "4" ] []
+        , Svg.line [ x1 "10", y1 "1", x2 "10", y2 "4" ] []
+        , Svg.line [ x1 "14", y1 "1", x2 "14", y2 "4" ] []
+        ]
+
+
+externalLink : Html msg
+externalLink =
+    svgFeatherIcon "external-link"
+        [ Svg.path [ d "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" ] []
+        , Svg.polyline [ points "15 3 21 3 21 9" ] []
+        , Svg.line [ x1 "10", y1 "14", x2 "21", y2 "3" ] []
         ]

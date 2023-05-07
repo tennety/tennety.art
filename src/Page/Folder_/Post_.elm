@@ -289,29 +289,32 @@ toolbar : Int -> Shared.Model -> Element Msg
 toolbar bookLength sharedModel =
     if bookLength > 1 then
         Element.row
-            [ Element.centerX ]
-            [ toolbarButton sharedModel First Icons.skipBack
-            , toolbarButton sharedModel Previous Icons.chevronLeft
-            , toolbarButton sharedModel Next Icons.chevronRight
-            , toolbarButton sharedModel Last Icons.skipForward
+            [ Element.centerX
+            , Element.padding 10
+            , Element.spacing 30
+            , Element.Border.rounded 4
+            , Element.Border.width 1
+            ]
+            [ toolbarButton sharedModel First "go to the first page" Icons.skipBack
+            , toolbarButton sharedModel Previous "go to the previous page" Icons.chevronLeft
+            , toolbarButton sharedModel Next "go to the next page" Icons.chevronRight
+            , toolbarButton sharedModel Last "go to the last page" Icons.skipForward
             ]
 
     else
         Element.none
 
 
-toolbarButton : Shared.Model -> Msg -> Html Msg -> Element Msg
-toolbarButton sharedModel msg icon =
+toolbarButton : Shared.Model -> Msg -> String -> Html Msg -> Element Msg
+toolbarButton sharedModel msg buttonLabel icon =
     let
         size =
-            Palette.scaled 3
+            Palette.scaled 2
     in
     Input.button
         [ Element.Border.rounded (size // 2)
         , Element.focused [ Element.Border.glow (sharedModel |> colorValues |> .borders) 1 ]
-        , Element.Region.description "menu button"
-        , Element.htmlAttribute (Attr.title "menu")
-        , Element.htmlAttribute (Attr.attribute "aria-label" "menu")
+        , Element.Region.description buttonLabel
         ]
         { onPress = Just msg
         , label = Element.el [ Element.centerX, Element.centerY, Element.height (Element.px size), Element.width (Element.px size), Font.color (sharedModel |> colorValues |> .foregroundColor) ] (Element.html icon)
