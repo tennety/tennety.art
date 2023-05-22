@@ -15,7 +15,7 @@ export default {
     window._lload('https://storage.ko-fi.com/cdn/scripts/overlay-widget.js', () => {
       kofiWidgetOverlay.draw('tennetyart', {
         'type': 'floating-chat',
-        'floating-chat.donateButton.text': 'Support me',
+        'floating-chat.donateButton.text': 'Buy me tea!',
         'floating-chat.donateButton.background-color': '#363c46',
         'floating-chat.donateButton.text-color': '#f7fafc'
       });
