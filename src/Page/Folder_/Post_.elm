@@ -258,6 +258,7 @@ view maybeUrl sharedModel model static =
             [ Palette.blogHeading static.data.title
             , Element.paragraph [ Font.size (Palette.scaled -1), Font.color (sharedModel |> Shared.colorValues |> .foregroundColor), Font.center ] [ publishedDateView static.data.published ]
             , shopLink static.data.shopLink
+            , toolbar (List.NonEmpty.Zipper.length model.book) sharedModel
             , heroImage (List.NonEmpty.Zipper.current model.book) static.data.description
             , toolbar (List.NonEmpty.Zipper.length model.book) sharedModel
             , Element.paragraph
