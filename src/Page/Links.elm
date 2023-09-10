@@ -51,7 +51,8 @@ type alias Link =
 data : DataSource Data
 data =
     DataSource.succeed
-        [ { name = "Read a free comic", icon = Icons.bookOpen, href = "https://ko-fi.com/album/The-Marionette-P5P0G3Z7F" }
+        [ { name = "WTF bird sticker", icon = Icons.coffee, href = "https://ko-fi.com/s/75c2e18f62" }
+        , { name = "Read a free comic", icon = Icons.bookOpen, href = "https://ko-fi.com/album/The-Marionette-P5P0G3Z7F" }
         , { name = "Buy me a tea", icon = Icons.coffee, href = "https://ko-fi.com/tennetyart" }
         , { name = "Commission me", icon = Icons.pencil, href = "https://ko-fi.com/tennetyart/commissions" }
         , { name = "Website", icon = Icons.externalLink, href = "https://tennety.art" }
