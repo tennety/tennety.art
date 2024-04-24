@@ -220,13 +220,13 @@ processMarkDown body =
 shopLink maybePath =
     case maybePath of
         Just shopPath ->
-            Element.link
+            Element.newTabLink
                 [ Element.width Element.fill
                 , Element.paddingXY 25 15
                 , Font.center
                 ]
                 { url = shopPath
-                , label = Element.text "Shop prints ≫"
+                , label = Element.text "Shop ≫"
                 }
 
         Nothing ->
