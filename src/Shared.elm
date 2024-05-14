@@ -329,5 +329,5 @@ view sharedData page model toMsg pageView =
                 , Element.inFront (menuButton toMsg model)
                 , Element.inFront (colorSchemeToggle toMsg model)
                 ]
-    , title = pageView.title
+    , title = "tennety.art :: " ++ pageView.title
     }

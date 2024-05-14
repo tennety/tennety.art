@@ -17,7 +17,7 @@ import Head.Seo as Seo
 import Html exposing (Html, a)
 import Html.Attributes as Attr
 import Icons
-import List.NonEmpty exposing (NonEmpty)
+import List.NonEmpty as NonEmpty exposing (NonEmpty)
 import List.NonEmpty.Zipper exposing (Zipper)
 import Markdown.Parser
 import Markdown.Renderer
@@ -134,18 +134,22 @@ head :
     StaticPayload Data RouteParams
     -> List Head.Tag
 head static =
+    let
+        (AssetPath path) =
+            static.data.images |> NonEmpty.head
+    in
     Seo.summary
         { canonicalUrlOverride = Nothing
-        , siteName = "elm-pages"
+        , siteName = "tennety.art"
         , image =
-            { url = Pages.Url.external "TODO"
-            , alt = "elm-pages logo"
+            { url = path |> Path.fromString |> Pages.Url.fromPath
+            , alt = static.data.title
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = "TODO"
+        , description = static.data.description
         , locale = Nothing
-        , title = "TODO title" -- metadata.title -- TODO
+        , title = static.data.title
         }
         |> Seo.website
 
@@ -165,7 +169,6 @@ type alias Data =
 postDecoder : List (AssetPath ImagePath) -> String -> Decoder Data
 postDecoder imagePathList body =
     Decode.map7 (Data (processMarkDown body))
-        -- TODO: support single and multiple
         (Decode.field "type" Decode.string)
         (Decode.field "title" Decode.string)
         (Decode.field "author" Decode.string)
@@ -330,7 +333,7 @@ fromData : List a -> NonEmpty a
 fromData list =
     case list of
         h :: xs ->
-            List.NonEmpty.fromCons h xs
+            NonEmpty.fromCons h xs
 
         [] ->
             fromData list

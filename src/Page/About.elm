@@ -11,6 +11,7 @@ import Page exposing (Page, PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Palette
+import Path
 import Shared
 import View exposing (View)
 
@@ -51,16 +52,16 @@ head :
 head static =
     Seo.summary
         { canonicalUrlOverride = Nothing
-        , siteName = "elm-pages"
+        , siteName = "tennety.art"
         , image =
-            { url = Pages.Url.external "TODO"
-            , alt = "elm-pages logo"
+            { url = "images/author/tennety.jpeg" |> Path.fromString |> Pages.Url.fromPath
+            , alt = "artist photo"
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = "TODO"
+        , description = "about the artist"
         , locale = Nothing
-        , title = "TODO title" -- metadata.title -- TODO
+        , title = "About the Artist"
         }
         |> Seo.website
 
@@ -71,7 +72,7 @@ view :
     -> StaticPayload Data RouteParams
     -> View Msg
 view maybeUrl sharedModel static =
-    { title = ""
+    { title = "about the artist"
     , body =
         Element.column
             [ Element.spacing 70

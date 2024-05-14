@@ -161,16 +161,16 @@ head :
 head static =
     Seo.summary
         { canonicalUrlOverride = Nothing
-        , siteName = "elm-pages"
+        , siteName = "tennety.art"
         , image =
             { url = Pages.Url.external "TODO"
-            , alt = "elm-pages logo"
+            , alt = static.routeParams.folder
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = "TODO"
+        , description = static.routeParams.folder
         , locale = Nothing
-        , title = "TODO title" -- metadata.title -- TODO
+        , title = static.routeParams.folder
         }
         |> Seo.website
 

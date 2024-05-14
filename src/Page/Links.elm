@@ -12,6 +12,7 @@ import Icons
 import Page exposing (Page, PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
+import Path
 import Shared
 import View exposing (View)
 
@@ -93,16 +94,16 @@ head :
 head static =
     Seo.summary
         { canonicalUrlOverride = Nothing
-        , siteName = "elm-pages"
+        , siteName = "tennety.art"
         , image =
-            { url = Pages.Url.external "TODO"
-            , alt = "elm-pages logo"
+            { url = "images/author/tennety.jpeg" |> Path.fromString |> Pages.Url.fromPath
+            , alt = "artist photo"
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = "TODO"
+        , description = "Linktree for Chandu Tennety"
         , locale = Nothing
-        , title = "TODO title" -- metadata.title -- TODO
+        , title = "important links"
         }
         |> Seo.website
 
