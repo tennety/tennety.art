@@ -155,6 +155,28 @@ postFrontmatterDecoder name allThumbs =
         )
 
 
+seoImage : String -> Maybe Preview -> Seo.Image
+seoImage folder maybeMetadata =
+    let
+        url =
+            case maybeMetadata of
+                Just preview ->
+                    let
+                        (AssetPath thumb) =
+                            preview.thumb
+                    in
+                    thumb
+
+                Nothing ->
+                    "images/index-covers/hummer-swing-bw.png"
+    in
+    { url = url |> Path.fromString |> Pages.Url.fromPath
+    , alt = folder
+    , dimensions = Nothing
+    , mimeType = Nothing
+    }
+
+
 head :
     StaticPayload Data RouteParams
     -> List Head.Tag
@@ -162,12 +184,7 @@ head static =
     Seo.summary
         { canonicalUrlOverride = Nothing
         , siteName = "tennety.art"
-        , image =
-            { url = Pages.Url.external "TODO"
-            , alt = static.routeParams.folder
-            , dimensions = Nothing
-            , mimeType = Nothing
-            }
+        , image = seoImage static.routeParams.folder (List.head static.data)
         , description = static.routeParams.folder
         , locale = Nothing
         , title = static.routeParams.folder
