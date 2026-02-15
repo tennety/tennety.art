@@ -9,9 +9,18 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tiptap/extension-image": "^3.19.0",
+    "@tiptap/extension-link": "^3.19.0",
+    "@tiptap/react": "^3.19.0",
+    "@tiptap/starter-kit": "^3.19.0",
+    "gray-matter": "^4.0.3",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1",
+    "turndown": "^7.2.2",
+    "unified": "^11.0.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

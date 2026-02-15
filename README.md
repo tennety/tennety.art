@@ -1,36 +1,157 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# tennety.art v3 — Illustration Portfolio
 
-## Getting Started
+A modern, fast static site generator for showcasing illustration work. Features a local WYSIWYG editor, markdown-based content, and automatic static site generation with Netlify deployment.
 
-First, run the development server:
+## Technologies
+
+- **Framework**: NextJS 16 (App Router)
+- **Styling**: Tailwind CSS v4
+- **Editor**: TipTap (WYSIWYG) with image uploads
+- **Markdown**: gray-matter + remark
+- **Deployment**: Netlify (static export)
+- **Language**: TypeScript
+
+## Setup
+
+### Prerequisites
+- Node.js 18+ and npm
+
+### Installation
+
+```bash
+npm install
+```
+
+## Development
+
+Start the local development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **`/`** — Home page with all posts
+- **`/[slug]`** — Individual post pages
+- **`/admin`** — Local WYSIWYG editor
 
-## Learn More
+## Creating Posts
 
-To learn more about Next.js, take a look at the following resources:
+### Via Local Editor
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Navigate to [`http://localhost:3000/admin`](http://localhost:3000/admin)
+2. Enter a title
+3. Use the toolbar to format content:
+   - **B**/`I` — Bold/Italic
+   - `H1`/`H2` — Headings
+   - `•` List / `1.` List — Lists
+   - `<>` — Code blocks
+   - `🖼️ Image` — Upload images locally
+4. Click **Publish Post** to save
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Images are saved to `public/uploads/` and referenced in the markdown.
 
-## Deploy on Vercel
+### Manual Markdown
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Create a `.md` file in `content/posts/`:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```markdown
+---
+title: "My Illustration"
+date: "2026-02-14"
+---
+
+# My Illustration
+
+Content here...
+```
+
+## Building
+
+Build the static site:
+
+```bash
+npm run build
+```
+
+Output is generated in the `out/` directory (ready for Netlify).
+
+## Deployment
+
+### Netlify
+
+1. **Push to GitHub** and connect your repo to Netlify, or
+2. **Direct Deploy**: Copy the `out/` directory contents to a web host
+
+The `netlify.toml` file is pre-configured:
+- Build command: `npm run build`
+- Publish directory: `out`
+
+### Manual Static Hosting
+
+The `out/` directory contains a fully static site with no server required. Upload to:
+- Vercel
+- GitHub Pages
+- AWS S3
+- Any static host
+
+## File Structure
+
+```
+src/
+├── app/
+│   ├── (public)/
+│   │   └── page.tsx          # Home page
+│   ├── [slug]/
+│   │   └── page.tsx          # Post detail pages
+│   ├── admin/
+│   │   └── page.tsx          # Editor UI
+│   ├── api/
+│   │   ├── save/             # Save posts endpoint
+│   │   └── upload/           # Image upload endpoint
+│   ├── layout.tsx
+│   └── globals.css
+├── components/
+│   └── EditorToolbar.tsx      # TipTap toolbar
+├── lib/
+│   └── markdown.ts           # Post processing utilities
+└── types/
+    └── turndown.d.ts         # Type declarations
+content/
+├── posts/
+    └── example.md            # Example post
+public/
+├── uploads/                  # User-uploaded images
+```
+
+## Customization
+
+### Styling
+
+The site uses Tailwind CSS v4 with full prose support for rendered markdown. Edit `src/app/globals.css` for custom styles.
+
+### Editor Features
+
+Modify `src/components/EditorToolbar.tsx` to add/remove editor features. Available TipTap extensions:
+- `@tiptap/extension-image` — Images
+- `@tiptap/extension-link` — Links
+- `@tiptap/starter-kit` — Base formatting
+
+### Post Metadata
+
+Modify frontmatter in posts to add custom fields (e.g., tags, featured image, etc.). Update `src/lib/markdown.ts` to parse new fields.
+
+## Troubleshooting
+
+**SSR Hydration Errors**: Already handled with `immediatelyRender: false` on the TipTap editor.
+
+**Images Not Showing**: Check `public/uploads/` directory exists and images were saved there.
+
+**Build Fails**: Ensure `content/posts/` and `public/uploads/` directories exist.
+
+## License
+
+MIT
