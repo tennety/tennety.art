@@ -6,6 +6,7 @@
   --foreground: #171717;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --accent: #1a73e8;
   --font-heading: "Oldenburg", Georgia, serif;
   --font-body: "Quattrocento", Georgia, "Times New Roman", serif;
   --font-mono: var(--font-geist-mono);
@@ -15,6 +16,7 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --accent: #8ab4f8;
   }
 }
 
@@ -22,8 +24,57 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
+  font-size: large;
 }
 
 h1,h2,h3,h4,h5,h6 {
   font-family: var(--font-heading);
+}
+
+/* Typographic scales for subheadings */
+h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 1.8vw + 1rem, 2.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 1.25rem 0 0.5rem;
+}
+
+h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 1.2vw + 0.8rem, 1.5rem);
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 1rem 0 0.5rem;
+}
+
+h4 {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0.9rem 0 0.45rem;
+}
+
+h5 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.25;
+  margin: 0.75rem 0 0.4rem;
+}
+
+/* Links */
+a {
+  color: var(--accent);
+  font-family: var(--font-body);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 150ms ease, opacity 150ms ease;
+}
+
+a:hover,
+a:focus {
+  opacity: 0.85;
+  outline: none;
 }

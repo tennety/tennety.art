@@ -1,6 +1,7 @@
 import {getPostBySlug, getPostSlugs} from '@/lib/markdown'
 import type {Post} from '@/types/post'
 import {notFound} from 'next/navigation'
+import ImageGallery from '@/components/ImageGallery'
 
 export async function generateStaticParams() {
   const files = getPostSlugs()
@@ -20,6 +21,11 @@ export default async function PostPage({params}: {params: Promise<{slug: string}
           <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-50 mb-2">{post.frontmatter.title as string}</h1>
           <p className="text-gray-500 dark:text-gray-400">{new Date(post.frontmatter.date as string).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</p>
         </div>
+
+        {post.frontmatter.images && post.frontmatter.images.length > 0 ? (
+          <ImageGallery images={post.frontmatter.images as string[]} alt={post.frontmatter.title as string} />
+        ) : null}
+
         <div className="prose dark:prose-invert prose-lg max-w-none" dangerouslySetInnerHTML={{__html: post.content}} />
       </div>
     </article>
