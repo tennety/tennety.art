@@ -21,26 +21,26 @@ export default async function HomePage() {
             <p className="text-center text-gray-500 dark:text-gray-400 py-12">No posts yet. Create your first one in the editor!</p>
           ) : (
             sortedPosts.map((post: Post) => {
-              const imageSrc = (post.frontmatter.thumb as string) ?? (post.frontmatter.images && post.frontmatter.images.length ? (post.frontmatter.images[0] as string) : null)
+              const postImages = Array.isArray(post.frontmatter.images) ? post.frontmatter.images : []
+              const imageSrc = (post.frontmatter.thumb as string) ?? (postImages.length > 0 ? postImages[0] : null)
               return (
                 <Link key={post.slug} href={`/${post.slug}`}>
-                  <div className="group bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 p-6 cursor-pointer">
+                  <div className="group relative rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 overflow-hidden cursor-pointer aspect-[4/3] bg-gray-100 dark:bg-gray-900">
                     {imageSrc ? (
-                      <div className="mb-4 overflow-hidden rounded-md relative w-full h-44">
-                        <Image
-                          src={imageSrc}
-                          alt={(post.frontmatter.title as string) || post.slug}
-                          fill
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
+                      <Image
+                        src={imageSrc}
+                        alt={(post.frontmatter.title as string) || post.slug}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                        unoptimized
+                      />
                     ) : null}
-                    <h4 className="text-gray-900 dark:text-gray-50 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2">
-                      {post.frontmatter.title as string}
-                    </h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{new Date(post.frontmatter.date as string).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</p>
+                    <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-black/10 to-transparent p-3">
+                      <h4 className="text-white text-lg font-semibold mb-1 drop-shadow group-hover:text-blue-200 transition-colors">
+                        {post.frontmatter.title as string}
+                      </h4>
+                    </div>
                   </div>
                 </Link>
               )
