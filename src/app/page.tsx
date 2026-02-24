@@ -13,8 +13,8 @@ export default async function HomePage() {
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
       <div className="container mx-auto px-4 py-16 max-w-4xl">
         <div className="mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-50 mb-2">My Illustrations</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">A collection of digital artwork and creative projects</p>
+          <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-50 mb-2">Chandu Tennety</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400">Independent comic creator, cartoonist and illustrator</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedPosts.length === 0 ? (
