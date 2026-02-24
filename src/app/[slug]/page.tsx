@@ -22,8 +22,25 @@ export default async function PostPage({params}: {params: Promise<{slug: string}
           <p className="text-gray-500 dark:text-gray-400">{new Date(post.frontmatter.date as string).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</p>
         </div>
 
+
         {(post.frontmatter.images as string[])?.length > 0 ? (
           <ImageGallery images={post.frontmatter.images as string[]} alt={post.frontmatter.title as string} />
+        ) : null}
+
+        {post.frontmatter["shop-link"] ? (
+          <div className="mb-6">
+            <a
+              href={post.frontmatter["shop-link"] as string}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-fit"
+            >
+              <span
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium shadow focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
+                style={{ all: 'unset', display: 'inline-block', background: '#2563eb', color: '#fff', borderRadius: '0.375rem', padding: '0.5rem 1rem', fontWeight: 500, boxShadow: '0 1px 2px rgba(0,0,0,0.05)', transition: 'background 0.2s' }}
+              >Buy this</span>
+            </a>
+          </div>
         ) : null}
 
         <div className="prose dark:prose-invert prose-lg max-w-none [&>p]:my-4 [&>ul]:my-4 [&>ol]:my-4" dangerouslySetInnerHTML={{__html: post.content}} />
