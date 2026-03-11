@@ -11,8 +11,11 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
       <div className="container mx-auto px-4 py-16 max-w-6xl">
-        <div className="mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-50 mb-2">Chandu Tennety</h1>
+        <div className="mb-12 text-center">
+          <h1 className="inline-block text-5xl font-bold text-gray-900 dark:text-gray-50 mb-3 pb-4 border-b border-gray-300 dark:border-gray-600">
+            <span className="text-2xl text-gray-400 dark:text-gray-500 mb-3 block">the art of</span>
+            Chandu Tennety
+          </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">Independent comic creator, cartoonist and illustrator</p>
         </div>
         {sortedPosts.length === 0 ? (
