@@ -1,4 +1,14 @@
 import Link from 'next/link'
+import type {Metadata} from 'next'
+
+export const metadata: Metadata = {
+  title: 'About',
+  description: 'Chandu Tennety is an independent comics creator, cartoonist, and illustrator from Central Ohio.',
+  openGraph: {
+    title: 'About Chandu Tennety',
+    description: 'Independent comics creator, cartoonist, and illustrator from Central Ohio.',
+  },
+}
 
 export default function AboutPage() {
   return (

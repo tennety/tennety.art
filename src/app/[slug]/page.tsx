@@ -1,5 +1,6 @@
 import {getPostBySlug, getPostSlugs} from '@/lib/markdown'
 import type {Post} from '@/types/post'
+import type {Metadata} from 'next'
 import {notFound} from 'next/navigation'
 import ImageGallery from '@/components/ImageGallery'
 
@@ -9,6 +10,33 @@ export async function generateStaticParams() {
   return slugs.map((slug: string) => ({slug}))
 }
 export const dynamicParams = false
+
+export async function generateMetadata({params}: {params: Promise<{slug: string}>}): Promise<Metadata> {
+  const {slug} = await params
+  const post = await getPostBySlug(slug)
+  if (!post) return {}
+
+  const title = (post.frontmatter.title as string) || slug
+  const images = Array.isArray(post.frontmatter.images) ? post.frontmatter.images : []
+  const thumb = (post.frontmatter.thumb as string) || (images.length > 0 ? images[0] : undefined)
+
+  return {
+    title,
+    description: `${title} — artwork by Chandu Tennety`,
+    openGraph: {
+      title,
+      description: `${title} — artwork by Chandu Tennety`,
+      type: 'article',
+      publishedTime: post.frontmatter.date as string | undefined,
+      ...(thumb ? {images: [{url: thumb}]} : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      ...(thumb ? {images: [thumb]} : {}),
+    },
+  }
+}
 
 export default async function PostPage({params}: {params: Promise<{slug: string}>}) {
   const {slug} = await params

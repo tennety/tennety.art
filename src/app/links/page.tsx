@@ -1,4 +1,14 @@
 import {ArrowTopRightOnSquareIcon} from '@heroicons/react/24/outline'
+import type {Metadata} from 'next'
+
+export const metadata: Metadata = {
+  title: 'Links',
+  description: 'Links to Chandu Tennety\'s shop, commissions, social media, and more.',
+  openGraph: {
+    title: 'Links — Chandu Tennety',
+    description: 'Shop, commissions, social media, and more.',
+  },
+}
 
 const links = [
   {label: 'WTF bird sticker', href: 'https://ko-fi.com/s/75c2e18f62'},

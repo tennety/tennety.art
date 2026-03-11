@@ -11,7 +11,7 @@
   --accent: #1a73e8;
   --font-heading: "Oldenburg", Georgia, serif;
   --font-body: "Varela Round", Arial, sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-mono: monospace;
 }
 
 .dark {

@@ -1,21 +1,29 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const siteUrl = 'https://tennety.art'
 
 export const metadata: Metadata = {
-  title: "The Art of Chandu Tennety",
-  description: "Independent comic creator, cartoonist and illustrator",
+  title: {
+    default: 'The Art of Chandu Tennety',
+    template: '%s | Chandu Tennety',
+  },
+  description: 'Independent comic creator, cartoonist and illustrator',
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
+    siteName: 'The Art of Chandu Tennety',
+    title: 'The Art of Chandu Tennety',
+    description: 'Independent comic creator, cartoonist and illustrator',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'The Art of Chandu Tennety',
+    description: 'Independent comic creator, cartoonist and illustrator',
+  },
 };
 
 export default function RootLayout({
@@ -33,7 +41,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
         <Nav />
         {children}
