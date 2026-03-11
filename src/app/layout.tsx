@@ -18,11 +18,13 @@ export const metadata: Metadata = {
     siteName: 'The Art of Chandu Tennety',
     title: 'The Art of Chandu Tennety',
     description: 'Independent comic creator, cartoonist and illustrator',
+    images: [{url: '/images/hummer-swing-bw.png'}],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'The Art of Chandu Tennety',
     description: 'Independent comic creator, cartoonist and illustrator',
+    images: ['/images/hummer-swing-bw.png'],
   },
 };
 
