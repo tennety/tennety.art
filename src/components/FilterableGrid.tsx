@@ -58,7 +58,7 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
       <div className="flex items-center justify-end gap-3 mb-4">
         <button
           onClick={() => setFilterOpen(!filterOpen)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-md font-medium rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
         >
           {selectedTags.length > 0 ? <FunnelSolid className="w-4 h-4" /> : <FunnelOutline className="w-4 h-4" />}
           Filter
@@ -69,7 +69,7 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
         {selectedTags.length > 0 && (
           <button
             onClick={() => setSelectedTags([])}
-            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+            className="text-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
           >
             Clear all
           </button>
@@ -84,7 +84,7 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
               <button
                 key={tag}
                 onClick={() => toggleTag(tag)}
-                className={`inline-flex items-center gap-1 px-3 py-1 text-sm rounded-full border transition-colors ${
+                className={`inline-flex items-center gap-1 px-3 py-1 text-md rounded-full border transition-colors ${
                   isSelected
                     ? 'bg-blue-500 text-white border-blue-500'
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-400'

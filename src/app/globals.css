@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Oldenburg&family=Quattrocento:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oldenburg&family=Varela+Round&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -10,7 +10,7 @@
   --color-foreground: var(--foreground);
   --accent: #1a73e8;
   --font-heading: "Oldenburg", Georgia, serif;
-  --font-body: "Quattrocento", Georgia, "Times New Roman", serif;
+  --font-body: "Varela Round", Arial, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -65,16 +65,18 @@ h5 {
 }
 
 /* Links */
-a {
-  color: var(--accent);
-  font-family: var(--font-body);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 150ms ease, opacity 150ms ease;
-}
+@layer base {
+  a {
+    color: var(--accent);
+    font-family: var(--font-body);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 150ms ease, opacity 150ms ease;
+  }
 
-a:hover,
-a:focus {
-  opacity: 0.85;
-  outline: none;
+  a:hover,
+  a:focus {
+    opacity: 0.85;
+    outline: none;
+  }
 }
