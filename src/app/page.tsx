@@ -1,7 +1,6 @@
-import Link from 'next/link'
-import Image from 'next/image'
 import {getAllPosts} from '@/lib/markdown'
 import type {Post} from '@/types/post'
+import PostTile from '@/components/PostTile'
 
 export default async function HomePage() {
   const posts = await getAllPosts()
@@ -16,37 +15,26 @@ export default async function HomePage() {
           <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-50 mb-2">Chandu Tennety</h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">Independent comic creator, cartoonist and illustrator</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedPosts.length === 0 ? (
-            <p className="text-center text-gray-500 dark:text-gray-400 py-12">No posts yet. Create your first one in the editor!</p>
-          ) : (
-            sortedPosts.map((post: Post) => {
-              const postImages = Array.isArray(post.frontmatter.images) ? post.frontmatter.images : []
-              const imageSrc = (post.frontmatter.thumb as string) ?? (postImages.length > 0 ? postImages[0] : null)
-              return (
-                <Link key={post.slug} href={`/${post.slug}`}>
-                  <div className="group relative rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 overflow-hidden cursor-pointer aspect-[4/3] bg-gray-100 dark:bg-gray-900">
-                    {imageSrc ? (
-                      <Image
-                        src={imageSrc}
-                        alt={(post.frontmatter.title as string) || post.slug}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-110"
-                        unoptimized
-                      />
-                    ) : null}
-                    <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-black/10 to-transparent p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      <h4 className="text-white text-lg font-semibold mb-1 drop-shadow">
-                        {post.frontmatter.title as string}
-                      </h4>
-                    </div>
-                  </div>
-                </Link>
-              )
-            })
-          )}
-        </div>
+        {sortedPosts.length === 0 ? (
+          <p className="text-center text-gray-500 dark:text-gray-400 py-12">No posts yet. Create your first one in the editor!</p>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {sortedPosts.reduce<Post[][]>((acc, post, i) => {
+              if (i % 2 === 0) acc.push([post])
+              else acc[acc.length - 1].push(post)
+              return acc
+            }, []).map((pair, rowIdx) => (
+              <div
+                key={rowIdx}
+                className={`grid gap-4 ${rowIdx % 2 === 0 ? 'grid-cols-[1.6fr_1fr]' : 'grid-cols-[1fr_1.6fr]'}`}
+              >
+                {pair.map((post: Post, tileIdx: number) => (
+                  <PostTile key={post.slug} post={post} isLarge={rowIdx % 2 === tileIdx % 2} />
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   )
