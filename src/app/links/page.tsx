@@ -17,6 +17,7 @@ const links = [
   {label: 'Commission me', href: 'https://ko-fi.com/tennetyart/commissions'},
   {label: 'Shop', href: 'https://ko-fi.com/tennetyart/shop'},
   {label: 'Instagram', href: 'https://instagram.com/tennety.art'},
+  {label: 'News', href: 'https://news.tennety.art'},
 ]
 
 export default function LinksPage() {

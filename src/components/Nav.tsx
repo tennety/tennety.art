@@ -10,6 +10,7 @@ const navItems = [
   {label: 'About', href: '/about'},
   {label: 'Links', href: '/links'},
   {label: 'Shop', href: 'https://ko-fi.com/tennetyart/shop', external: true},
+  {label: 'News', href: 'https://news.tennety.art', external: true},
 ]
 
 export default function Nav() {
