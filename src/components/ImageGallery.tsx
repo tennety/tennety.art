@@ -19,7 +19,10 @@ export default function ImageGallery({images, alt}: Props) {
 
   return (
     <div className="mb-8">
-      <div className="relative w-full h-200 rounded-md overflow-hidden bg-gray-50 dark:bg-gray-800">
+      <div
+        className="relative w-full h-200 rounded-md overflow-hidden border"
+        style={{background: 'var(--surface)', borderColor: 'var(--border)'}}
+      >
         <Image
           key={images.join(',')}
           src={images[currentIndex]}
@@ -30,10 +33,22 @@ export default function ImageGallery({images, alt}: Props) {
           unoptimized
         />
       </div>
-      <div className="mt-3 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-        <button onClick={prev} aria-label="Previous image" className="px-3 py-1 border rounded bg-white dark:bg-gray-800">Prev</button>
+      <div className="mt-3 flex items-center justify-between text-sm" style={{color: 'var(--muted)'}}>
+        <button
+          onClick={prev}
+          aria-label="Previous image"
+          className="image-gallery-nav-btn"
+        >
+          Prev
+        </button>
         <div className="text-xs">{currentIndex + 1} / {images.length}</div>
-        <button onClick={next} aria-label="Next image" className="px-3 py-1 border rounded bg-white dark:bg-gray-800">Next</button>
+        <button
+          onClick={next}
+          aria-label="Next image"
+          className="image-gallery-nav-btn"
+        >
+          Next
+        </button>
       </div>
     </div>
   )
