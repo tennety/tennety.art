@@ -240,4 +240,72 @@ h5 {
     color: #fff;
     opacity: 1;
   }
+
+  .filter-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    background: var(--accent-soft);
+    color: var(--foreground);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .filter-toggle-btn:hover,
+  .filter-toggle-btn:focus {
+    background: var(--accent);
+    color: #fff;
+    opacity: 1;
+  }
+
+  .filter-clear-btn {
+    color: var(--muted);
+    transition: color 0.2s ease;
+  }
+
+  .filter-clear-btn:hover,
+  .filter-clear-btn:focus {
+    color: var(--foreground);
+    opacity: 1;
+  }
+
+  .filter-tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 9999px;
+    border: 1px solid;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .filter-tag-pill-selected {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .filter-tag-pill-selected:hover,
+  .filter-tag-pill-selected:focus {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    opacity: 1;
+  }
+
+  .filter-tag-pill-unselected {
+    background: var(--surface);
+    color: var(--foreground);
+    border-color: var(--border);
+  }
+
+  .filter-tag-pill-unselected:hover,
+  .filter-tag-pill-unselected:focus {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    opacity: 1;
+  }
 }

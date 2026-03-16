@@ -58,8 +58,7 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
       <div className="flex items-center justify-end gap-3 mb-4">
         <button
           onClick={() => setFilterOpen(!filterOpen)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-md font-medium rounded-md transition-colors"
-          style={{background: 'var(--accent-soft)', color: 'var(--foreground)'}}
+          className="filter-toggle-btn"
         >
           {selectedTags.length > 0 ? <FunnelSolid className="w-4 h-4" /> : <FunnelOutline className="w-4 h-4" />}
           Filter
@@ -70,8 +69,7 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
         {selectedTags.length > 0 && (
           <button
             onClick={() => setSelectedTags([])}
-            className="text-md transition-colors"
-            style={{color: 'var(--muted)'}}
+            className="filter-clear-btn text-md"
           >
             Clear all
           </button>
@@ -86,11 +84,7 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
               <button
                 key={tag}
                 onClick={() => toggleTag(tag)}
-                className="inline-flex items-center gap-1 px-3 py-1 text-md rounded-full border transition-colors"
-                style={isSelected
-                  ? {background: 'var(--accent)', color: '#ffffff', borderColor: 'var(--accent)'}
-                  : {background: 'var(--surface)', color: 'var(--foreground)', borderColor: 'var(--border)'}
-                }
+                className={`filter-tag-pill ${isSelected ? 'filter-tag-pill-selected' : 'filter-tag-pill-unselected'}`}
               >
                 {tag}
                 {isSelected && <XMarkIcon className="w-3.5 h-3.5" />}
