@@ -45,12 +45,10 @@ export default function LinksPage() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 text-center font-medium rounded-lg border transition-colors no-underline"
-                style={{background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--foreground)'}}
-                onMouseEnter={undefined}
+                className="links-card-link"
               >
                 {link.label}
-                <ArrowTopRightOnSquareIcon className="w-4 h-4" style={{color: 'var(--muted)'}} />
+                <ArrowTopRightOnSquareIcon className="w-4 h-4 links-card-link-icon" />
               </a>
             </li>
           ))}

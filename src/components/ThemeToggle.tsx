@@ -21,8 +21,7 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="mb-2 p-2 rounded-full transition-colors"
-      style={{background: 'var(--accent-soft)', color: 'var(--foreground)'}}
+      className="theme-toggle-btn mb-2"
     >
       {dark ? <SunIcon className="w-5 h-5" /> : <MoonIcon className="w-5 h-5" />}
     </button>

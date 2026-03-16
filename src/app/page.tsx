@@ -22,7 +22,7 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen" style={{background: 'var(--background)'}}>
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="mb-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+        <div className="mb-4 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
           <div className="mascot-hero p-2">
             <Image
               src="/images/Front.png"
@@ -35,7 +35,7 @@ export default async function HomePage() {
           </div>
           <div className="text-center sm:text-left">
             <h1 className="text-5xl sm:text-7xl font-bold mb-2 pb-2 border-b" style={{color: 'var(--foreground)', borderColor: 'var(--border)'}}>
-              <span className="text-2xl sm:text-4xl mb-1 block" style={{color: 'var(--muted)'}}>the art of</span>
+              <span className="text-2xl sm:text-4xl mb-1 font-normal block" style={{color: 'var(--muted)'}}>the art of</span>
               Chandu Tennety
             </h1>
             <p className="text-lg sm:text-xl" style={{color: 'var(--muted)'}}>Independent comic creator, cartoonist and illustrator</p>

@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
 import {ArrowTopRightOnSquareIcon} from '@heroicons/react/24/outline'
@@ -31,8 +30,7 @@ export default function Nav() {
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-md font-medium transition-colors no-underline"
-                      style={{color: 'var(--muted)'}}
+                      className="nav-link nav-link-external"
                     >
                       {item.label}
                       <ArrowTopRightOnSquareIcon className="w-4 h-4" />
@@ -44,11 +42,7 @@ export default function Nav() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-md transition-colors no-underline"
-                    style={{
-                      color: isActive ? 'var(--foreground)' : 'var(--muted)',
-                      fontWeight: isActive ? 700 : 500,
-                    }}
+                    className={`nav-link ${isActive ? 'nav-link-active' : ''}`}
                   >
                     {item.label}
                   </Link>
