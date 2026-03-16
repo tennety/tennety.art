@@ -1,4 +1,5 @@
 import {Suspense} from 'react'
+import Image from 'next/image'
 import {getAllPosts} from '@/lib/markdown'
 import type {Post} from '@/types/post'
 import FilterableGrid from '@/components/FilterableGrid'
@@ -19,17 +20,29 @@ export default async function HomePage() {
   ).sort()
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
+    <main className="min-h-screen" style={{background: 'var(--background)'}}>
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="mb-8 text-center">
-          <h1 className="inline-block text-7xl font-bold text-gray-900 dark:text-gray-50 mb-3 pb-2 border-b border-gray-300 dark:border-gray-600">
-            <span className="text-4xl text-gray-400 dark:text-gray-500 mb-1 block">the art of</span>
-            Chandu Tennety
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400">Independent comic creator, cartoonist and illustrator</p>
+        <div className="mb-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+          <div className="mascot-hero p-2">
+            <Image
+              src="/images/Front.png"
+              alt="A towhee bird on a branch saying Comics! Illustration!"
+              width={160}
+              height={227}
+              className="flex-shrink-0"
+              priority
+            />
+          </div>
+          <div className="text-center sm:text-left">
+            <h1 className="text-5xl sm:text-7xl font-bold mb-2 pb-2 border-b" style={{color: 'var(--foreground)', borderColor: 'var(--border)'}}>
+              <span className="text-2xl sm:text-4xl mb-1 block" style={{color: 'var(--muted)'}}>the art of</span>
+              Chandu Tennety
+            </h1>
+            <p className="text-lg sm:text-xl" style={{color: 'var(--muted)'}}>Independent comic creator, cartoonist and illustrator</p>
+          </div>
         </div>
         {sortedPosts.length === 0 ? (
-          <p className="text-center text-gray-500 dark:text-gray-400 py-12">No posts yet. Create your first one in the editor!</p>
+          <p className="text-center py-12" style={{color: 'var(--muted)'}}>No posts yet. Create your first one in the editor!</p>
         ) : (
           <Suspense>
             <FilterableGrid posts={sortedPosts} allTags={allTags} />

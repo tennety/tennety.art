@@ -13,7 +13,7 @@ export default function PostTile({post, isLarge}: PostTileProps) {
 
   return (
     <Link href={`/${post.slug}`} className={isLarge ? undefined : 'block h-full'}>
-      <div className={`group relative rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 overflow-hidden cursor-pointer ${isLarge ? 'aspect-[4/3]' : 'h-full'} bg-gray-100 dark:bg-gray-900`}>
+      <div className={`group relative rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 border overflow-hidden cursor-pointer ${isLarge ? 'aspect-[4/3]' : 'h-full'}`} style={{borderColor: 'var(--border)', background: 'var(--surface)'}}>
         {imageSrc ? (
           <Image
             src={imageSrc}
@@ -25,7 +25,7 @@ export default function PostTile({post, isLarge}: PostTileProps) {
           />
         ) : null}
         <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-black/30 to-transparent p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <h4 className="text-white text-lg font-semibold mb-1 drop-shadow group-hover:text-blue-200 transition-colors">
+          <h4 className="text-white text-lg font-semibold mb-1 drop-shadow transition-colors" style={{}}>
             {post.frontmatter.title as string}
           </h4>
           {Array.isArray(post.frontmatter.tags) && post.frontmatter.tags.length > 0 && (
@@ -33,7 +33,8 @@ export default function PostTile({post, isLarge}: PostTileProps) {
               {post.frontmatter.tags.map((tag: string, i: number) => (
                 <span
                   key={tag + i}
-                  className="inline-block bg-blue-500/80 text-white text-xs px-2 py-0.5 rounded-full truncate max-w-[7rem]"
+                  className="inline-block text-white text-xs px-2 py-0.5 rounded-full truncate max-w-[7rem]"
+                  style={{background: 'rgba(139, 58, 42, 0.85)'}}
                   title={tag}
                 >
                   {tag}

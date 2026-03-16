@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
 import {ArrowTopRightOnSquareIcon} from '@heroicons/react/24/outline'
@@ -17,42 +18,45 @@ export default function Nav() {
   const pathname = usePathname()
 
   return (
-    <nav className="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
-      <div className="container mx-auto max-w-6xl px-4 flex items-center justify-between h-12">
-        <ul className="flex items-center gap-6">
-          {navItems.map(item => {
-            const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
-            if (item.external) {
+    <nav className="w-full backdrop-blur-sm border-b sticky top-0 z-40" style={{background: 'color-mix(in srgb, var(--background) 80%, transparent)', borderColor: 'var(--border)'}}>
+      <div className="container mx-auto max-w-6xl px-4 flex items-end justify-between min-h-12">
+        <div className="flex items-end gap-6">
+          <ul className="flex items-center pb-2 gap-6">
+            {navItems.map(item => {
+              const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
+              if (item.external) {
+                return (
+                  <li key={item.href}>
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-md font-medium transition-colors no-underline"
+                      style={{color: 'var(--muted)'}}
+                    >
+                      {item.label}
+                      <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+                    </a>
+                  </li>
+                )
+              }
               return (
                 <li key={item.href}>
-                  <a
+                  <Link
                     href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-md font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors no-underline"
+                    className="text-md transition-colors no-underline"
+                    style={{
+                      color: isActive ? 'var(--foreground)' : 'var(--muted)',
+                      fontWeight: isActive ? 700 : 500,
+                    }}
                   >
                     {item.label}
-                    <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                  </a>
+                  </Link>
                 </li>
               )
-            }
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`text-md transition-colors no-underline ${
-                    isActive
-                      ? 'font-bold text-gray-900 dark:text-gray-50'
-                      : 'font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
+            })}
+          </ul>
+        </div>
         <ThemeToggle />
       </div>
     </nav>

@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import {ArrowTopRightOnSquareIcon} from '@heroicons/react/24/outline'
 import type {Metadata} from 'next'
 
@@ -22,10 +23,20 @@ const links = [
 
 export default function LinksPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
-      <div className="container mx-auto px-4 py-16 max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-50 mb-3 pb-2 border-b border-gray-300 dark:border-gray-600">Links</h1>
+    <main className="min-h-screen" style={{background: 'var(--background)'}}>
+      <div className="container mx-auto px-4 py-12 max-w-md">
+        <div className="mb-8 flex flex-col items-center">
+          <div className="mascot-hero p-2 mb-4">
+            <Image
+              src="/images/Front.png"
+              alt="A towhee bird on a branch saying Comics! Illustration!"
+              width={180}
+              height={255}
+              priority
+            />
+          </div>
+          <h1 className="text-5xl font-bold mb-3 pb-2 border-b" style={{color: 'var(--foreground)', borderColor: 'var(--border)'}}>Chandu Tennety</h1>
+          <p className="text-md" style={{color: 'var(--muted)'}}>Comics &middot; Illustration</p>
         </div>
         <ul className="flex flex-col gap-3">
           {links.map(link => (
@@ -34,10 +45,12 @@ export default function LinksPage() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 text-center font-medium rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline"
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 text-center font-medium rounded-lg border transition-colors no-underline"
+                style={{background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--foreground)'}}
+                onMouseEnter={undefined}
               >
                 {link.label}
-                <ArrowTopRightOnSquareIcon className="w-4 h-4 text-gray-400" />
+                <ArrowTopRightOnSquareIcon className="w-4 h-4" style={{color: 'var(--muted)'}} />
               </a>
             </li>
           ))}

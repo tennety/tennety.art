@@ -5,19 +5,37 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #2A1A10;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --accent: #1a73e8;
+  --accent: #8B3A2A;
+  --accent-hover: #6E2E22;
+  --accent-soft: #F5D6C6;
+  --accent-green: #2D8B6F;
+  --accent-green-hover: #247058;
+  --surface: #ffffff;
+  --surface-hover: #FDF5F0;
+  --border: #D4B5A0;
+  --muted: #8B7355;
+  --mascot-contrast: transparent;
   --font-heading: "Oldenburg", Georgia, serif;
   --font-body: "Varela Round", Arial, sans-serif;
   --font-mono: monospace;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --accent: #8ab4f8;
+  --background: #1A1210;
+  --foreground: #E8D5C4;
+  --accent: #D4785A;
+  --accent-hover: #E08B6A;
+  --accent-soft: #3D2A22;
+  --accent-green: #4DB895;
+  --accent-green-hover: #5FCAA6;
+  --surface: #241C18;
+  --surface-hover: #2E2420;
+  --border: #4A3830;
+  --muted: #A89480;
+  --mascot-contrast: #C8D9ED;
 }
 
 body {
@@ -62,6 +80,15 @@ h5 {
   font-weight: 400;
   line-height: 1.25;
   margin: 0.75rem 0 0.4rem;
+}
+
+.mascot-hero {
+  border-radius: 1rem;
+}
+
+.dark .mascot-hero {
+  background: radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--mascot-contrast) 24%, transparent) 0%, transparent 72%);
+  box-shadow: 0 0 44px color-mix(in srgb, var(--mascot-contrast) 22%, transparent);
 }
 
 /* Links */
