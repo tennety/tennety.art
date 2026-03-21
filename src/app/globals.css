@@ -355,6 +355,17 @@ h5 {
     transform: translateY(1px);
   }
 
+  .image-gallery-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .image-gallery-nav-btn:disabled:hover,
+  .image-gallery-nav-btn:disabled:focus {
+    background: var(--accent-soft);
+    color: var(--foreground);
+  }
+
   .links-card-link {
     display: flex;
     align-items: center;

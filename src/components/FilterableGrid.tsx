@@ -76,6 +76,21 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
         )}
       </div>
 
+      {selectedTags.length > 0 && !filterOpen && (
+        <div className="flex flex-wrap justify-end gap-2 mb-6">
+          {selectedTags.map(tag => (
+            <button
+              key={tag}
+              onClick={() => toggleTag(tag)}
+              className="filter-tag-pill filter-tag-pill-selected"
+            >
+              {tag}
+              <XMarkIcon className="w-3.5 h-3.5" />
+            </button>
+          ))}
+        </div>
+      )}
+
       {filterOpen && (
         <div className="flex flex-wrap justify-end gap-2 mb-6">
           {allTags.map(tag => {

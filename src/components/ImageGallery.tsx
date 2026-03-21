@@ -37,6 +37,7 @@ export default function ImageGallery({images, alt}: Props) {
         <button
           onClick={prev}
           aria-label="Previous image"
+          disabled={currentIndex === 0}
           className="image-gallery-nav-btn"
         >
           Prev
@@ -45,6 +46,7 @@ export default function ImageGallery({images, alt}: Props) {
         <button
           onClick={next}
           aria-label="Next image"
+          disabled={currentIndex === images.length - 1}
           className="image-gallery-nav-btn"
         >
           Next

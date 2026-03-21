@@ -1,7 +1,9 @@
+import Link from 'next/link'
 import {getPostBySlug, getPostSlugs} from '@/lib/markdown'
 import type {Post} from '@/types/post'
 import type {Metadata} from 'next'
 import {notFound} from 'next/navigation'
+import {ArrowLeftIcon} from '@heroicons/react/24/outline'
 import ImageGallery from '@/components/ImageGallery'
 
 export async function generateStaticParams() {
@@ -45,9 +47,26 @@ export default async function PostPage({params}: {params: Promise<{slug: string}
   return (
     <article className="min-h-screen" style={{background: 'var(--background)'}}>
       <div className="container mx-auto px-4 py-12 max-w-3xl">
+        <Link href="/" className="inline-flex items-center gap-1 mb-6 nav-link no-underline text-sm">
+          <ArrowLeftIcon className="w-4 h-4" />
+          Back to Posts
+        </Link>
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2" style={{color: 'var(--foreground)'}}>{post.frontmatter.title as string}</h1>
-          <p style={{color: 'var(--muted)'}}>{new Date(post.frontmatter.date as string).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</p>
+          <p style={{color: 'var(--muted)'}} className="mb-3">{new Date(post.frontmatter.date as string).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</p>
+          {Array.isArray(post.frontmatter.tags) && post.frontmatter.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {(post.frontmatter.tags as string[]).map((tag: string) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center px-3 py-1 text-sm rounded-full border"
+                  style={{background: 'var(--surface)', color: 'var(--foreground)', borderColor: 'var(--border)'}}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
 
