@@ -1,7 +1,10 @@
 import {getPostSlugs} from '@/lib/markdown'
 import type {MetadataRoute} from 'next'
+import {SITE_URL} from '@/lib/constants'
 
-const siteUrl = 'https://tennety.art'
+export const dynamic = 'force-static'
+
+const siteUrl = SITE_URL
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const slugs = getPostSlugs().map(f => f.replace(/\.md$/, ''))

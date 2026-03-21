@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from 'next/server'
 import fs from 'fs'
 import path from 'path'
+import {UPLOADS_DIR} from '@/lib/constants'
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData()
@@ -10,15 +11,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({error: 'No file provided'}, {status: 400})
   }
 
-  const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, {recursive: true})
+  if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, {recursive: true})
   }
 
-  const filename = `${Date.now()}-${file.name}`
-  const filePath = path.join(uploadsDir, filename)
+  // Sanitize filename: strip path separators, keep only safe characters
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+  const filename = `${Date.now()}-${safeName}`
+  const filePath = path.join(UPLOADS_DIR, filename)
   const buffer = await file.arrayBuffer()
   fs.writeFileSync(filePath, Buffer.from(buffer))
 
-  return NextResponse.json({url: `/uploads/${filename}`})
+  return NextResponse.json({url: `/images/${filename}`})
 }

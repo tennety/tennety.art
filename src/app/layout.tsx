@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "@/components/Nav";
+import {SITE_URL} from '@/lib/constants';
 
-const siteUrl = 'https://tennety.art'
+const siteUrl = SITE_URL
 
 export const metadata: Metadata = {
   title: {

@@ -1,38 +1,25 @@
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
 import {remark} from 'remark'
 import html from 'remark-html'
+import {getPostSlugs, readPostFile} from '@/lib/posts-service'
+import type {Post} from '@/types/post'
 
-const postsDir = path.join(process.cwd(), 'content', 'posts')
+export {getPostSlugs}
 
-export function getPostSlugs() {
-  return fs.readdirSync(postsDir).filter((f) => f.endsWith('.md'))
-}
+export async function getPostBySlug(slug?: string): Promise<Post | null> {
+  if (!slug || typeof slug !== 'string') return null
 
-export async function getPostBySlug(slug?: string) {
-  if (!slug || typeof slug !== 'string') {
-    return null
-  }
-  const realSlug = slug.replace(/\.md$/, '')
-  const fullPath = path.join(postsDir, `${realSlug}.md`)
-  const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const {data, content} = matter(fileContents)
-  const processedContent = await remark().use(html).process(content)
-  const contentHtml = processedContent.toString()
+  const result = readPostFile(slug)
+  if (!result) return null
+
+  const processedContent = await remark().use(html).process(result.rawContent)
   return {
-    slug: realSlug,
-    frontmatter: data,
-    content: contentHtml,
+    slug: slug.replace(/\.md$/, ''),
+    frontmatter: result.frontmatter,
+    content: processedContent.toString(),
   }
 }
 
-export async function getAllPosts() {
+export async function getAllPosts(): Promise<(Post | null)[]> {
   const slugs = getPostSlugs()
-  const posts = await Promise.all(
-    slugs.map(async (slug) => {
-      return getPostBySlug(slug)
-    })
-  )
-  return posts
+  return Promise.all(slugs.map((slug) => getPostBySlug(slug)))
 }

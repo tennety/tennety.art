@@ -3,11 +3,23 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-green: var(--accent-green);
+  --color-accent-green-hover: var(--accent-green-hover);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+}
+
 :root {
   --background: #ffffff;
   --foreground: #2A1A10;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --accent: #8B3A2A;
   --accent-hover: #6E2E22;
   --accent-soft: #F5D6C6;

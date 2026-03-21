@@ -20,8 +20,7 @@ export default function ImageGallery({images, alt}: Props) {
   return (
     <div className="mb-8">
       <div
-        className="relative w-full h-200 rounded-md overflow-hidden border"
-        style={{background: 'var(--surface)', borderColor: 'var(--border)'}}
+        className="relative w-full h-200 rounded-md overflow-hidden border bg-surface border-border"
       >
         <Image
           key={images.join(',')}
@@ -33,7 +32,7 @@ export default function ImageGallery({images, alt}: Props) {
           unoptimized
         />
       </div>
-      <div className="mt-3 flex items-center justify-between text-sm" style={{color: 'var(--muted)'}}>
+      <div className="mt-3 flex items-center justify-between text-sm text-muted">
         <button
           onClick={prev}
           aria-label="Previous image"

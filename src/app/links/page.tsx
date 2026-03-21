@@ -23,7 +23,7 @@ const links = [
 
 export default function LinksPage() {
   return (
-    <main className="min-h-screen" style={{background: 'var(--background)'}}>
+    <main className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12 max-w-md">
         <div className="mb-8 flex flex-col items-center">
           <div className="mascot-hero p-2 mb-4">
@@ -35,8 +35,8 @@ export default function LinksPage() {
               priority
             />
           </div>
-          <h1 className="text-5xl font-bold mb-3 pb-2 border-b" style={{color: 'var(--foreground)', borderColor: 'var(--border)'}}>Chandu Tennety</h1>
-          <p className="text-md" style={{color: 'var(--muted)'}}>Comics &middot; Illustration</p>
+          <h1 className="text-5xl font-bold mb-3 pb-2 border-b text-foreground border-border">Chandu Tennety</h1>
+          <p className="text-md text-muted">Comics &middot; Illustration</p>
         </div>
         <ul className="flex flex-col gap-3">
           {links.map(link => (

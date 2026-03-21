@@ -43,8 +43,7 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
   const filteredPosts = selectedTags.length === 0
     ? posts
     : posts.filter(post => {
-        const postTags = Array.isArray(post.frontmatter.tags) ? post.frontmatter.tags : []
-        return selectedTags.some(tag => postTags.includes(tag))
+        return selectedTags.some(tag => post.frontmatter.tags.includes(tag))
       })
 
   const pairs = filteredPosts.reduce<Post[][]>((acc, post, i) => {
@@ -63,7 +62,7 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
           {selectedTags.length > 0 ? <FunnelSolid className="w-4 h-4" /> : <FunnelOutline className="w-4 h-4" />}
           Filter
           {selectedTags.length > 0 && (
-            <span className="ml-1 px-1.5 py-0.5 text-xs text-white rounded-full" style={{background: 'var(--accent)'}}>{selectedTags.length}</span>
+            <span className="ml-1 px-1.5 py-0.5 text-xs text-white rounded-full bg-accent">{selectedTags.length}</span>
           )}
         </button>
         {selectedTags.length > 0 && (
@@ -110,7 +109,7 @@ export default function FilterableGrid({posts, allTags}: FilterableGridProps) {
       )}
 
       {filteredPosts.length === 0 ? (
-        <p className="text-center py-12" style={{color: 'var(--muted)'}}>No posts match the selected tags.</p>
+        <p className="text-center py-12 text-muted">No posts match the selected tags.</p>
       ) : (
         <div className="flex flex-col gap-4">
           {pairs.map((pair, rowIdx) => (

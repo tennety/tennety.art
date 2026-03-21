@@ -17,7 +17,7 @@ export default function Nav() {
   const pathname = usePathname()
 
   return (
-    <nav className="w-full backdrop-blur-sm border-b sticky top-0 z-40" style={{background: 'color-mix(in srgb, var(--background) 80%, transparent)', borderColor: 'var(--border)'}}>
+    <nav className="w-full backdrop-blur-sm border-b sticky top-0 z-40 border-border" style={{background: 'color-mix(in srgb, var(--background) 80%, transparent)'}}>
       <div className="container mx-auto max-w-6xl px-4 flex items-end justify-between min-h-12">
         <div className="flex items-end gap-6">
           <ul className="flex items-center pb-2 gap-6">
