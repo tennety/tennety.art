@@ -35,7 +35,7 @@ export default function LinksPage() {
               priority
             />
           </div>
-          <h1 className="text-5xl font-bold mb-3 pb-2 border-b text-foreground border-border">Chandu Tennety</h1>
+          <h1 className="text-center sm:text-left text-5xl font-bold mb-3 pb-2 border-b text-foreground border-border">Chandu Tennety</h1>
           <p className="text-md text-muted">Comics &middot; Illustration</p>
         </div>
         <ul className="flex flex-col gap-3">
