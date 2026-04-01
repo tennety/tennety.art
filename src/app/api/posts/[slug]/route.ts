@@ -1,5 +1,11 @@
 import {NextRequest, NextResponse} from 'next/server'
-import {readPostFile} from '@/lib/posts-service'
+import {getPostSlugs, readPostFile} from '@/lib/posts-service'
+
+export const dynamic = 'force-static'
+
+export async function generateStaticParams() {
+  return getPostSlugs().map(f => ({slug: f.replace(/\.md$/, '')}))
+}
 
 export async function GET(req: NextRequest, ctx: {params: Promise<{slug: string}>}) {
   const {slug} = await ctx.params

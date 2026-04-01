@@ -2,6 +2,12 @@ import {NextRequest, NextResponse} from 'next/server'
 import {isValidSlug, sanitizeSlug} from '@/lib/validation'
 import {writePostFile} from '@/lib/posts-service'
 
+export const dynamic = 'force-static'
+
+export async function GET() {
+  return NextResponse.json({error: 'Not available'}, {status: 404})
+}
+
 export async function POST(req: NextRequest) {
   const {body, slug: rawSlug} = await req.json()
   if (typeof body !== 'string' || typeof rawSlug !== 'string') {

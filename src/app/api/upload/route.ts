@@ -3,6 +3,12 @@ import fs from 'fs'
 import path from 'path'
 import {UPLOADS_DIR} from '@/lib/constants'
 
+export const dynamic = 'force-static'
+
+export async function GET() {
+  return NextResponse.json({error: 'Not available'}, {status: 404})
+}
+
 export async function POST(req: NextRequest) {
   const formData = await req.formData()
   const file = formData.get('file') as File
