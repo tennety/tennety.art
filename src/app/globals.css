@@ -426,7 +426,8 @@ h5 {
   .filter-tag-pill:focus-visible,
   .nav-link:focus-visible,
   .theme-toggle-btn:focus-visible,
-  .links-card-link:focus-visible {
+  .links-card-link:focus-visible,
+  .hamburger-btn:focus-visible {
     outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 28%, transparent);

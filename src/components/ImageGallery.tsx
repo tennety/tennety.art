@@ -20,7 +20,7 @@ export default function ImageGallery({images, alt}: Props) {
   return (
     <div className="mb-8">
       <div
-        className="relative w-full h-200 rounded-md overflow-hidden border bg-surface border-border"
+        className="relative w-full h-[60vh] md:h-200 rounded-md overflow-hidden border bg-surface border-border"
       >
         <Image
           key={images.join(',')}
